@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Mora Mora · Control de Merma</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--verde:#1A6B3C;--verde2:#27AE60;--verde3:#E8F5EE;--azul:#1A3A5C;--azul2:#2E5F9E;--azul3:#EBF4FF;--rojo:#B22222;--rojo2:#FDE8E8;--ambar:#C07000;--ambar2:#FEF3E2;--gris:#718096;--brd:#E2E8F0;--bg:#F7F9FC;--card:#fff;--txt:#1A202C;--sw:224px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);font-size:14px;}
+#login-screen{min-height:100vh;background:linear-gradient(160deg,#0B2318,#1A3A5C 60%,#0D3355);display:flex;align-items:center;justify-content:center;padding:20px;}
+.login-box{background:#fff;border-radius:20px;padding:40px;width:100%;max-width:400px;box-shadow:0 30px 80px rgba(0,0,0,.4);}
+.login-logo{text-align:center;margin-bottom:28px;}.login-logo .leaf{font-size:40px;display:block;margin-bottom:8px;}
+.login-logo h1{font-size:24px;font-weight:800;color:var(--azul);}.login-logo p{font-size:12px;color:var(--gris);margin-top:2px;}
+.field{margin-bottom:16px;}.field label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--txt);margin-bottom:6px;}
+.field input{width:100%;padding:11px 14px;border:2px solid var(--brd);border-radius:10px;font-size:14px;outline:none;transition:border-color .15s;font-family:inherit;}
+.field input:focus{border-color:var(--azul2);}
+.err-msg{display:none;background:var(--rojo2);color:var(--rojo);border-radius:8px;padding:10px 14px;font-size:12px;margin-bottom:14px;text-align:center;font-weight:600;}
+.btn-login{width:100%;padding:13px;background:linear-gradient(135deg,var(--verde),#1E8449);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;}
+.btn-login:hover{opacity:.88;}
+
+
+
+
+
+#app{display:none;}
+.layout{display:flex;min-height:100vh;}
+.sidebar{width:var(--sw);background:var(--azul);position:fixed;top:0;left:0;height:100vh;display:flex;flex-direction:column;z-index:100;overflow-y:auto;}
+.sb-logo{padding:16px;border-bottom:1px solid rgba(255,255,255,.1);flex-shrink:0;}
+.sb-logo h2{color:#fff;font-size:13px;font-weight:800;}.sb-logo span{color:rgba(255,255,255,.4);font-size:10px;display:block;margin-top:2px;}
+.sb-nav{flex:1;padding:6px 0;}
+.sb-section{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:rgba(255,255,255,.3);padding:10px 16px 4px;}
+.sb-item{display:flex;align-items:center;gap:9px;padding:9px 16px;color:rgba(255,255,255,.6);font-size:12px;font-weight:500;cursor:pointer;transition:.15s;position:relative;border:none;background:none;width:100%;text-align:left;font-family:inherit;}
+.sb-item:hover{background:rgba(255,255,255,.08);color:#fff;}
+.sb-item.active{background:rgba(255,255,255,.14);color:#fff;}
+.sb-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--verde2);border-radius:0 2px 2px 0;}
+.sb-item .ic{font-size:14px;width:18px;text-align:center;}
+.sb-badge{margin-left:auto;background:var(--rojo);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;}
+.sb-user{padding:12px 16px;border-top:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:9px;flex-shrink:0;}
+.sb-avatar{width:30px;height:30px;border-radius:50%;background:var(--verde);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;}
+.sb-uinfo{flex:1;overflow:hidden;}.sb-uname{font-size:11px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.sb-urole{font-size:10px;color:rgba(255,255,255,.4);}
+.sb-logout{color:rgba(255,255,255,.3);cursor:pointer;font-size:14px;padding:4px;background:none;border:none;}.sb-logout:hover{color:#fff;}
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;}
+.topbar{height:50px;background:#fff;border-bottom:1px solid var(--brd);display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:50;}
+.topbar-title{font-size:14px;font-weight:700;}.topbar-sub{font-size:11px;color:var(--gris);}
+.topbar-right{margin-left:auto;}.clock{font-size:11px;color:var(--gris);font-family:monospace;}
+.content{padding:18px 20px;flex:1;}
+.page{display:none;}.page.active{display:block;}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:16px;}
+.kpi-grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-bottom:16px;}
+.kpi{background:var(--card);border-radius:12px;padding:14px 16px;border:1px solid var(--brd);position:relative;overflow:hidden;}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi.blue::before{background:var(--azul2);}.kpi.red::before{background:var(--rojo);}
+.kpi.amber::before{background:#E67E22;}.kpi.green::before{background:var(--verde2);}
+.kpi.purple::before{background:#7F77DD;}.kpi.teal::before{background:#00897B;}
+.kpi-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gris);}
+.kpi-val{font-size:21px;font-weight:800;margin:3px 0 2px;line-height:1.1;}.kpi-sub{font-size:11px;color:var(--gris);}
+.up{color:var(--rojo);font-weight:700;}.dn{color:var(--verde2);font-weight:700;}
+.card{background:var(--card);border-radius:12px;padding:16px;border:1px solid var(--brd);margin-bottom:13px;}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
+.card-title{font-size:13px;font-weight:700;}.card-sub{font-size:11px;color:var(--gris);margin-top:2px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;}
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;}
+.badge-ok{background:var(--verde3);color:#1A6B3C;}.badge-mod{background:var(--ambar2);color:var(--ambar);}
+.badge-crit{background:var(--rojo2);color:var(--rojo);}
+.pill{display:inline-flex;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;text-transform:uppercase;}
+.pill-ok{background:var(--verde3);color:#1A6B3C;}.pill-mod{background:var(--ambar2);color:var(--ambar);}
+.pill-crit{background:var(--rojo2);color:var(--rojo);}.pill-na{background:#EDF2F7;color:var(--gris);}
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--gris);padding:7px 9px;border-bottom:2px solid var(--brd);text-align:left;white-space:nowrap;}
+.tbl td{padding:7px 9px;font-size:12px;border-bottom:1px solid #F1F5F9;vertical-align:middle;}
+.tbl tbody tr:hover{background:#F8FAFC;}.mono{font-family:monospace;}
+.branch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:13px;}
+.branch-card{background:var(--card);border-radius:12px;padding:13px;border:1px solid var(--brd);cursor:pointer;transition:.15s;border-left:4px solid;}
+.branch-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.08);}
+.bc-ok{border-left-color:var(--verde2);}.bc-mod{border-left-color:#E67E22;}.bc-crit{border-left-color:var(--rojo);}.bc-na{border-left-color:var(--brd);}
+.bc-name{font-size:13px;font-weight:700;margin-bottom:3px;}
+.bc-pct{font-size:20px;font-weight:800;margin-bottom:2px;}
+.bc-pct-ok{color:var(--verde2);}.bc-pct-mod{color:#E67E22;}.bc-pct-crit{color:var(--rojo);}
+.bc-meta{font-size:10px;color:var(--gris);}
+.bc-bar{height:4px;background:#EDF2F7;border-radius:2px;margin-top:7px;overflow:hidden;}
+.bc-fill{height:100%;border-radius:2px;}
+.rank-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #F1F5F9;}
+.rank-row:last-child{border:none;}
+.rank-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+.rk1{background:#FFD700;color:#7A5C00;}.rk2{background:#C0C0C0;color:#444;}.rk3{background:#CD7F32;color:#5C2D00;}.rkn{background:#EDF2F7;color:var(--gris);}
+.rank-name{flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.rank-bar{flex:1;height:5px;background:#EDF2F7;border-radius:3px;overflow:hidden;}
+.rank-fill{height:100%;border-radius:3px;}
+.rank-val{width:54px;font-size:11px;font-family:monospace;text-align:right;font-weight:700;}
+.alert-item{display:flex;gap:10px;padding:10px 12px;border-radius:10px;margin-bottom:7px;border:1px solid;}
+.alert-crit{background:var(--rojo2);border-color:#FBCFCF;}.alert-mod{background:var(--ambar2);border-color:#FDDCA0;}.alert-ok{background:var(--verde3);border-color:#B3E8C9;}
+.alert-ico{font-size:16px;flex-shrink:0;}.alert-body{flex:1;}
+.alert-title{font-size:12px;font-weight:700;margin-bottom:2px;}.alert-desc{font-size:11px;color:var(--gris);}
+.cat-tabs{display:flex;gap:6px;margin-bottom:13px;flex-wrap:wrap;}
+.cat-tab{padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--brd);background:var(--card);color:var(--gris);transition:.15s;font-family:inherit;}
+.cat-tab.active{background:var(--azul);color:#fff;border-color:var(--azul);}
+/* TOP 10 sucursal tabs */
+.suc-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:13px;}
+.suc-tab{padding:5px 11px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--brd);background:var(--card);color:var(--gris);transition:.15s;font-family:inherit;}
+.suc-tab.active{background:var(--azul);color:#fff;border-color:var(--azul);}
+.status-row{display:flex;gap:6px;margin-bottom:13px;flex-wrap:wrap;}
+.status-chip{background:var(--bg);border:1px solid var(--brd);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;}
+.suc-filter{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:13px;}
+.suc-chip{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--brd);background:var(--card);color:var(--gris);transition:.15s;font-family:inherit;}
+.suc-chip.active{background:var(--azul);color:#fff;border-color:var(--azul);}
+.menu-toggle{display:none;background:none;border:none;font-size:22px;cursor:pointer;color:var(--txt);}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99;}.overlay.show{display:block;}
+@media(max-width:900px){.sidebar{transform:translateX(-100%);transition:.25s;}.sidebar.open{transform:translateX(0);}.main{margin-left:0;}.menu-toggle{display:block;}.kpi-grid,.kpi-grid-5,.g2,.g3,.branch-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:560px){.kpi-grid,.kpi-grid-5,.g2,.g3,.branch-grid{grid-template-columns:1fr;}.content{padding:13px;}}
+</style>
+</head>
+<body>
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo"><span class="leaf">🌿</span><h1>Mora Mora</h1><p>Control de Merma · 2026</p></div>
+    <div class="field"><label>Correo</label><input type="text" id="inp-email" placeholder="correo@moramora.mx" onkeydown="if(event.key==='Enter')document.getElementById('inp-pass').focus()"></div>
+    <div class="field"><label>Contraseña</label><input type="password" id="inp-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()"></div>
+    <div class="err-msg" id="err-msg">Correo o contraseña incorrectos</div>
+    <button class="btn-login" onclick="login()">Iniciar sesión</button>
+
+  </div>
+</div>
+
+<div id="app">
+  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sb-logo"><h2>🌿 ControlMerma</h2><span>Mora Mora · 2026</span></div>
+      <nav class="sb-nav">
+        <div class="sb-section">Jugos Cold Pressed</div>
+        <button class="sb-item active" onclick="showPage('dashboard')"><span class="ic">📊</span>Dashboard — Jugos CP</button>
+        <button class="sb-item" onclick="showPage('margen')"><span class="ic">💰</span>Margen & Utilidad</button>
+        <button class="sb-item" onclick="showPage('alertas')"><span class="ic">🔔</span>Alertas<span class="sb-badge">3</span></button>
+        <div class="sb-section">Análisis</div>
+        <button class="sb-item" onclick="showPage('sucursales')"><span class="ic">🏪</span>Por Sucursal</button>
+        <button class="sb-item" onclick="showPage('categorias')"><span class="ic">📦</span>Por Categoría</button>
+        <button class="sb-item" onclick="showPage('insumos')"><span class="ic">📋</span>Merma General</button>
+        <button class="sb-item" onclick="showPage('historico')"><span class="ic">📈</span>Histórico</button>
+      </nav>
+      <div class="sb-user">
+        <div class="sb-avatar" id="u-avatar">MM</div>
+        <div class="sb-uinfo"><div class="sb-uname" id="u-name">–</div><div class="sb-urole" id="u-role">–</div></div>
+        <button class="sb-logout" onclick="logout()">⏻</button>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+        <div><div class="topbar-title" id="page-title">Dashboard — Jugos Cold Pressed</div><div class="topbar-sub" id="page-sub">S11–S27 · 2026</div></div>
+        <div class="topbar-right"><span class="clock" id="clock"></span></div>
+      </header>
+      <div class="content">
+
+        <!-- DASHBOARD -->
+        <div class="page active" id="page-dashboard">
+          <div class="kpi-grid-5">
+            <div class="kpi blue"><div class="kpi-label">Ventas S27</div><div class="kpi-val">$133,441</div><div class="kpi-sub"><span class="down">↓ −2.1%</span> vs S26 · semana completa</div></div>
+            <div class="kpi red"><div class="kpi-label">Merma S27</div><div class="kpi-val">$14,818</div><div class="kpi-sub"><span class="down">↓ −$2,486</span> vs S26</div></div>
+            <div class="kpi amber"><div class="kpi-label">% Merma S27</div><div class="kpi-val">23.2%</div><div class="kpi-sub"><span class="badge badge-mod">Moderada</span></div></div>
+            <div class="kpi green"><div class="kpi-label">Merma reportada S27</div><div class="kpi-val">$6,921</div><div class="kpi-sub">Desv: $7,269 (62.2%)</div></div>
+            <div class="kpi purple"><div class="kpi-label">Semanas registradas</div><div class="kpi-val">27</div><div class="kpi-sub">S11 → S27 + Ene/Feb</div></div>
+          </div>
+          <div class="g2">
+            <div class="card">
+              <div class="card-head"><div><div class="card-title">% Merma semanal vs Política</div><div class="card-sub">S11–S27 · línea roja = 22% · línea naranja = 30%</div></div><span class="badge badge-mod">S27: 23.2%</span></div>
+              <div style="position:relative;height:200px"><canvas id="ch-trend"></canvas></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><div><div class="card-title">Desviación semanal ($)</div><div class="card-sub">Variación de merma vs semana anterior</div></div></div>
+              <div style="position:relative;height:200px"><canvas id="ch-desv"></canvas></div>
+            </div>
+          </div>
+          <div class="g2">
+            <div class="card">
+              <div class="card-head"><div><div class="card-title">🔔 Alertas activas</div></div><span class="badge badge-crit">3 críticas</span></div>
+              <div id="dash-alerts"></div>
+              <button onclick="showPage('alertas')" style="margin-top:10px;padding:6px 12px;border:1.5px solid var(--brd);border-radius:8px;background:#fff;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit">Ver todas →</button>
+            </div>
+            <div class="card">
+              <div class="card-head"><div><div class="card-title">Ranking — % Merma promedio por sucursal</div></div></div>
+              <div id="dash-rank"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MARGEN -->
+        <div class="page" id="page-margen">
+          <div class="kpi-grid">
+            <div class="kpi green"><div class="kpi-label">Utilidad % promedio</div><div class="kpi-val">59.8%</div><div class="kpi-sub">S11–S27 acumulado</div></div>
+            <div class="kpi blue"><div class="kpi-label">Ventas acumuladas</div><div class="kpi-val">$1.93M</div><div class="kpi-sub">S11–S27 Jugos CP</div></div>
+            <div class="kpi teal"><div class="kpi-label">Margen total S27</div><div class="kpi-val">$81,772</div><div class="kpi-sub">Ventas − Costo − Merma S27</div></div>
+            <div class="kpi red"><div class="kpi-label">Impacto merma total</div><div class="kpi-val">$216,870</div><div class="kpi-sub">Acumulado S11–S27</div></div>
+          </div>
+          <div class="g2">
+            <div class="card">
+              <div class="card-head"><div><div class="card-title">Utilidad % por semana</div><div class="card-sub">S11–S27 · teal = utilidad, rojo = % merma</div></div></div>
+              <div style="position:relative;height:210px"><canvas id="ch-util"></canvas></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><div><div class="card-title">Merma $ vs Ventas $ semanal</div><div class="card-sub">Barras = merma · línea = ventas</div></div></div>
+              <div style="position:relative;height:210px"><canvas id="ch-merma-vtas"></canvas></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">Tabla completa — Margen & Utilidad</div></div></div>
+            <div style="overflow-x:auto"><table class="tbl" id="tbl-margen"></table></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">Resumen mensual</div><div class="card-sub">Ene–Abr 2026</div></div></div>
+            <div style="position:relative;height:190px"><canvas id="ch-meses"></canvas></div>
+          </div>
+        </div>
+
+        <!-- ALERTAS -->
+        <div class="page" id="page-alertas">
+          <div class="card">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gris);margin-bottom:10px;">🔴 Críticas — Acción inmediata</div>
+            <div class="alert-item alert-crit"><div class="alert-ico">🚨</div><div class="alert-body"><div class="alert-title">S27 — 23.2% Moderada (umbral ≥30%)</div><div class="alert-desc">Insurgentes 41.0% sigue crítica. Condesa 29.5% · Liverpool 20.3% mejora notable. Polanco 25.2% estable.</div></div></div>
+            <div class="alert-item alert-crit"><div class="alert-ico">🚨</div><div class="alert-body"><div class="alert-title">Liverpool — 35.3% promedio histórico crónico</div><div class="alert-desc">S26: 35.9%. Lleva 12 de 18 semanas sobre el 30%. Requiere intervención urgente.</div></div></div>
+            <div class="alert-item alert-crit"><div class="alert-ico">🚨</div><div class="alert-body"><div class="alert-title">Kitchen Lab — 38.6% sin mejoría</div><div class="alert-desc">S26: $367. Alta merma histórica. Confirmar operación y hacer conteo físico.</div></div></div>
+          </div>
+          <div class="card">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gris);margin-bottom:10px;">🟡 Moderadas — Monitorear</div>
+            <div class="alert-item alert-mod"><div class="alert-ico">🟡</div><div class="alert-body"><div class="alert-title">Insurgentes — S26: 40.6% (pico alarmante)</div><div class="alert-desc">Sube de 24% en S25 a 40.6% en S26. Verificar causas — evento especial o error de captura.</div></div></div>
+            <div class="alert-item alert-mod"><div class="alert-ico">🟡</div><div class="alert-body"><div class="alert-title">Condesa — S26: 38.9% (reversión inesperada)</div><div class="alert-desc">Venía en racha positiva (S25: 15.7%). El pico de S26 necesita explicación.</div></div></div>
+            <div class="alert-item alert-mod"><div class="alert-ico">🟡</div><div class="alert-body"><div class="alert-title">Desviación S26 alta: $9,187 (58.4% vs reportado)</div><div class="alert-desc">Merma real $16,873 vs merma reportada $7,166. Gap muy alto — revisar capturas.</div></div></div>
+          </div>
+          <div class="card">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gris);margin-bottom:10px;">✅ Positivas</div>
+            <div class="alert-item alert-ok"><div class="alert-ico">✅</div><div class="alert-body"><div class="alert-title">Roma — mejora sostenida: S26 en 24.6%</div><div class="alert-desc">Bajando de 27% promedio. Tendencia positiva.</div></div></div>
+            <div class="alert-item alert-ok"><div class="alert-ico">✅</div><div class="alert-body"><div class="alert-title">Utilidad S27: 61.3% ✅ — recuperación</div><div class="alert-desc">Sube de 51.5% en S26 a 61.3% en S27. De vuelta al rango normal 57–64%.</div></div></div>
+          </div>
+        </div>
+
+        <!-- POR SUCURSAL -->
+        <div class="page" id="page-sucursales">
+          <div class="status-row" id="suc-status"></div>
+          <div class="suc-filter" id="suc-filter"></div>
+          <div id="suc-detail-view" style="display:none"></div>
+          <div id="suc-grid-view"><div class="branch-grid" id="branch-grid"></div></div>
+        </div>
+
+                <!-- POR CATEGORÍA -->
+        <div class="page" id="page-categorias">
+          <div class="cat-tabs" id="cat-tabs"></div>
+          <div id="cat-content"></div>
+        </div>
+
+        <!-- MERMA GENERAL -->
+        <div class="page" id="page-insumos">
+          <div class="kpi-grid">
+            <div class="kpi red"><div class="kpi-label">Merma General Junio 2026</div><div class="kpi-val">$17,373</div><div class="kpi-sub">Acumulado mes Jun · 9 sucursales</div></div>
+            <div class="kpi purple"><div class="kpi-label">Sucursal con más merma</div><div class="kpi-val">Polanco</div><div class="kpi-sub">$18,828 · azúcar coco, levadura, aguacate</div></div>
+            <div class="kpi amber"><div class="kpi-label">Producto #1 — Polanco</div><div class="kpi-val">Azúcar de coco</div><div class="kpi-sub">$1,508 acum · Polanco</div></div>
+            <div class="kpi blue"><div class="kpi-label">Categorías incluidas</div><div class="kpi-val" style="font-size:14px">Jugos · Bakery · Producción</div><div class="kpi-sub">Reporte por sucursal completo</div></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">Merma General Junio 2026 — Top 10 por Sucursal</div><div class="card-sub">Todas categorías · acumulado junio · selecciona sucursal</div></div></div>
+            <div class="suc-tabs" id="mg-tabs"></div>
+            <div class="g2" id="mg-content"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">Comparativa total por sucursal</div><div class="card-sub">Merma acumulada junio 2026 por sucursal</div></div></div>
+            <div style="position:relative;height:230px"><canvas id="ch-ins-suc"></canvas></div>
+          </div>
+        </div>
+
+        <!-- HISTÓRICO -->
+        <div class="page" id="page-historico">
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">Merma $ y % semanal — S11–S27</div></div></div>
+            <div style="position:relative;height:210px"><canvas id="ch-hist-main"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">% Merma por sucursal — evolución S11–S27</div></div></div>
+            <div style="position:relative;height:230px"><canvas id="ch-hist-suc"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">Tabla histórica completa</div></div></div>
+            <div style="overflow-x:auto"><table class="tbl" id="hist-table"></table></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── AUTH ───
+var CREDS=[{email:'admin@moramora.mx',pass:'moramora2026',rol:'admin',name:'Administrador',av:'AD'},{email:'gerencia@moramora.mx',pass:'gerencia2026',rol:'gerente',name:'Gerencia',av:'GR'}];
+function login(){var e=document.getElementById('inp-email').value.trim().toLowerCase(),p=document.getElementById('inp-pass').value,u=null;for(var i=0;i<CREDS.length;i++)if(CREDS[i].email===e&&CREDS[i].pass===p){u=CREDS[i];break;}if(u){document.getElementById('err-msg').style.display='none';startApp(u);}else{document.getElementById('err-msg').style.display='block';}}
+
+function startApp(u){document.getElementById('login-screen').style.display='none';document.getElementById('app').style.display='block';document.getElementById('u-avatar').textContent=u.av;document.getElementById('u-name').textContent=u.name;document.getElementById('u-role').textContent=u.rol==='admin'?'Administrador':'Gerente';buildAll();startClock();}
+function logout(){document.getElementById('app').style.display='none';document.getElementById('login-screen').style.display='flex';document.getElementById('inp-email').value='';document.getElementById('inp-pass').value='';}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
+var PAGE_META={dashboard:{title:'Dashboard — Jugos Cold Pressed',sub:'S11–S27 · 2026'},margen:{title:'Margen & Utilidad',sub:'Análisis financiero semanal'},alertas:{title:'Alertas',sub:'Notificaciones activas'},sucursales:{title:'Por Sucursal',sub:'Reporte completo · 11 sucursales'},top10:{title:'Top 10 por Sucursal',sub:'Jugos CP — semana actual y acumulado'},categorias:{title:'Por Categoría',sub:'Jugos · Bakery · Suplementos · Insumos'},insumos:{title:'Merma General',sub:'Top 10 semana y acumulado · Jun 2026'},historico:{title:'Histórico',sub:'S11–S27 · Jugos Cold Pressed'}};
+function showPage(id){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.querySelectorAll('.sb-item').forEach(function(b){b.classList.remove('active');});var pg=document.getElementById('page-'+id);if(pg)pg.classList.add('active');var m=PAGE_META[id]||{title:id,sub:''};document.getElementById('page-title').textContent=m.title;document.getElementById('page-sub').textContent=m.sub;document.querySelectorAll('.sb-item').forEach(function(b){if(b.getAttribute('onclick')&&b.getAttribute('onclick').indexOf("'"+id+"'")>=0)b.classList.add('active');});closeSidebar();}
+
+// ─── DATA ───
+var SEMS=['S11','S12','S13','S14','S15','S16','S17','S18','S19','S20','S21','S22','S23','S24','S25','S26','S27'];
+var VTAS=[174936, 155029, 137978, 138413, 132693, 154214, 149782, 143000, 138510, 144120, 149601, 138958, 142886, 127826, 135866, 136035, 133441];
+var MRMA=[17749, 13053, 13940, 16906, 17779, 16562, 18621, 14027, 19889, 17881, 17567, 17984, 18681, 13951, 11107, 17304, 14818];
+var PCT=[26.6, 24.5, 22.7, 26.5, 27.2, 24.5, 28.1, 22.1, 29.5, 28.3, 26.5, 28.9, 29.8, 25.2, 22.8, 30.7, 23.2];
+var COSTO=[50989,65497,52726,46919,41502,40134,46259,45390,41122,42164,43090,42572,42052,35813,37657,21884];
+var MARGEN=[129674,146394,122210,108110,96476,92559,107956,104392,97388,101956,106511,96387,100834,92013,98209,98297,81772];
+var UTILIDAD_P=[60.02,59.42,59.71,61.32,59.82,57.10,56.36,59.26,57.26,59.98,55.95,58.34,59.45,61.07,64.11,51.45];
+var DESV=MRMA.map(function(v,i){return i===0?0:v-MRMA[i-1];});
+var MESES=[{m:'Enero',v:654125,mr:89186},{m:'Febrero',v:730659,mr:81956},{m:'Marzo',v:522721,mr:61648},{m:'Abril',v:579689,mr:66990}];
+
+// Sucursales con datos S11-S26 completos
+var BRANCHES=[
+  {n:'Condesa',    pct:20.9, s:{11:2776,12:3001,13:2011,14:3095,15:2011,16:2112,17:3470,18:2540,19:3655,20:3480,21:2690,22:3109,23:2942,24:0,25:1277,26:4189,27:4506.3}, pct_s:{11:.189,12:.238,13:.158,14:.178,15:.158,16:.152,17:.266,18:.164,19:.258,20:.227,21:.205,22:.249,23:null,24:null,25:.157,26:.389}, st:'ok',  ins:[958.93,1751.34,822.14]},
+  {n:'Colima',     pct:28.2, s:{11:5237,12:2589,13:3545,14:2799,15:3545,16:2579,17:2485,18:3884,19:4240,20:3069,21:3870,22:3286,23:2519,24:1651,25:1990,26:1913,27:1693.37}, pct_s:{11:.375,12:.323,13:.266,14:.323,15:.275,16:.266,17:.262,18:.23,19:.361,20:.202,21:.296,22:.284,23:null,24:.187,25:.189,26:.194}, st:'mod', ins:[1874.53,1009.80,4939.49]},
+  {n:'Santa Fe',   pct:23.1, s:{11:1467,12:1823,13:1835,14:994,15:1546,16:2185,17:1693,18:1442,19:879,20:1378,21:1060,22:1895,23:1051,24:1812,25:2113,26:2423,27:1773.21}, pct_s:{11:.215,12:.228,13:.21,14:.218,15:.222,16:.21,17:.226,18:.176,19:.174,20:.173,21:.221,22:.274,23:null,24:.258,25:.301,26:.299}, st:'mod', ins:[709.30,833.75,526.72]},
+  {n:'Liverpool',  pct:35.0, s:{11:1127,12:1216,13:1773,14:1043,15:1773,16:2177,17:1936,18:1361,19:2597,20:1841,21:2998,22:1897,23:761,24:2411,25:897,26:1905,27:961.61}, pct_s:{11:.281,12:.274,13:.353,14:.328,15:.356,16:.353,17:.37,18:.305,19:.385,20:.398,21:.404,22:.345,23:null,24:.421,25:.231,26:.359}, st:'crit',ins:[362.23,1189.82,1175.06]},
+  {n:'Polanco',    pct:19.9, s:{11:1463,12:880,13:2165,14:2453,15:2291,16:1724,17:2614,18:3116,19:1868,20:1356,21:2058,22:1481,23:1140,24:726,25:1361,26:1740,27:1682.94}, pct_s:{11:.185,12:.191,13:.125,14:.196,15:.124,16:.256,17:.236,18:.268,19:.175,20:.158,21:.19,22:.182,23:null,24:.127,25:.211,26:.238}, st:'ok',  ins:[6408.65,3917.41,4939.49]},
+  {n:'Coapa',      pct:29.9, s:{11:1496,12:782,13:232,14:652,15:578,16:950,17:493,18:830,19:956,20:659,21:560,22:574,23:815,24:919,25:381,26:738}, pct_s:{11:.284,12:.185,13:.165,14:.33,15:.333,16:.333,17:.408,18:.537,19:.39,20:.131,21:.24,22:.267,23:null,24:.198,25:.24,26:.24}, st:'mod', ins:[32.52,397.87,213.75]},
+  {n:'Insurgentes',pct:29.8, s:{11:3044,12:1082,13:60,14:3075,15:2770,16:2465,17:2151,18:259,19:2131,20:2198,21:1701,22:1358,23:2716,24:3609,25:1471,26:1740,27:1858.44}, pct_s:{11:.367,12:.273,13:.127,14:.319,15:.273,16:.287,17:.26,18:.261,19:.387,20:.388,21:.297,22:.314,23:null,24:.529,25:.24,26:.406}, st:'mod', ins:[968.27,2232.44,2321.67]},
+  {n:'Roma',       pct:27.2, s:{11:946,12:902,13:1579,14:2064,15:1818,16:1306,17:1677,18:1272,19:2373,20:2485,21:1765,22:2195,23:2136,24:1806,25:739,26:1337,27:769.0}, pct_s:{11:.2,12:.217,13:.265,14:.223,15:.265,16:.265,17:.165,18:.19,19:.452,20:.382,21:.328,22:.335,23:null,24:.323,25:.201,26:.246}, st:'mod', ins:[1240.57,850.15,526.72]},
+  {n:'Kitchen Lab',pct:36.1, s:{11:927,12:707,13:739,14:731,15:1140,16:505,17:2103,18:772,19:0,20:0,21:0,22:528,23:472,24:209,25:666,26:368,27:924.71}, pct_s:{11:.308,12:.277,13:.308,14:.384,15:.22,16:.273,17:.573,18:.464,19:null,20:null,21:null,22:null,23:null,24:null,25:null,26:null}, st:'crit',ins:[22.00,1114.59,1108.93]},
+  {n:'Duraznos',   pct:0, s:{}, pct_s:{}, stat:'na', ins:[0,0,0]},
+  {n:'CDI',        pct:0, s:{}, pct_s:{}, stat:'na', ins:[0,0,0]}
+];
+
+// Top 10 productos por sucursal — S26 y acumulado mes Jun
+var TOP10_SUC = {
+  'Condesa': {s26:[{"n": "Fire Shot", "v": 1152}, {"n": "Don Pastito", "v": 448}, {"n": "El Místico", "v": 486}, {"n": "Verde AF", "v": 468}, {"n": "Guerrero", "v": 800}, {"n": "Xolo Verde", "v": 484}, {"n": "Super C+", "v": 754}, {"n": "Betabella", "v": 132}, {"n": "Limón Partido", "v": 151}, {"n": "Shot Jengibre", "v": 184}],acum:[{"n": "Fire Shot", "v": 1152}, {"n": "Guerrero", "v": 800}, {"n": "Super C+", "v": 754}, {"n": "El Místico", "v": 486}, {"n": "Xolo Verde", "v": 484}, {"n": "Verde AF", "v": 468}, {"n": "Don Pastito", "v": 448}, {"n": "Shot Jengibre", "v": 184}, {"n": "Limón Partido", "v": 151}, {"n": "Betabella", "v": 132}]},
+  'Colima': {s26:[{"n": "Fire Shot", "v": 55}, {"n": "Verde AF", "v": 255}, {"n": "Xolo Verde", "v": 308}, {"n": "Don Pastito", "v": 37}, {"n": "El Místico", "v": 86}, {"n": "Super C+", "v": 40}, {"n": "Betabella", "v": 0}, {"n": "Limón Partido", "v": 25}, {"n": "Shot Jengibre", "v": 0}, {"n": "Golden Elixir", "v": 0}],acum:[{"n": "Xolo Verde", "v": 308}, {"n": "Verde AF", "v": 255}, {"n": "El Místico", "v": 86}, {"n": "Fire Shot", "v": 55}, {"n": "Super C+", "v": 40}, {"n": "Don Pastito", "v": 37}, {"n": "Limón Partido", "v": 25}, {"n": "Betabella", "v": 0}, {"n": "Shot Jengibre", "v": 0}, {"n": "Golden Elixir", "v": 0}]},
+  'Santa Fe': {s26:[{"n": "Fire Shot", "v": 68}, {"n": "Don Pastito", "v": 0}, {"n": "El Místico", "v": 29}, {"n": "Verde AF", "v": 170}, {"n": "Guerrero", "v": 0}, {"n": "Xolo Verde", "v": 0}, {"n": "Super C+", "v": 0}, {"n": "Betabella", "v": 79}, {"n": "Limón Partido", "v": 25}, {"n": "Shot Jengibre", "v": 0}],acum:[{"n": "Verde AF", "v": 170}, {"n": "Betabella", "v": 79}, {"n": "Fire Shot", "v": 68}, {"n": "El Místico", "v": 29}, {"n": "Limón Partido", "v": 25}, {"n": "Don Pastito", "v": 0}, {"n": "Guerrero", "v": 0}, {"n": "Xolo Verde", "v": 0}, {"n": "Super C+", "v": 0}, {"n": "Shot Jengibre", "v": 0}]},
+  'Liverpool': {s26:[{"n": "Fire Shot", "v": 81}, {"n": "Don Pastito", "v": 149}, {"n": "El Místico", "v": 96}, {"n": "Verde AF", "v": 39}, {"n": "Betabella", "v": 146}, {"n": "Limón Partido", "v": 100}, {"n": "Shot Jengibre", "v": 23}, {"n": "Super C+", "v": 0}, {"n": "Xolo Verde", "v": 0}, {"n": "Golden Elixir", "v": 45}],acum:[{"n": "Don Pastito", "v": 149}, {"n": "Betabella", "v": 146}, {"n": "Limón Partido", "v": 100}, {"n": "El Místico", "v": 96}, {"n": "Fire Shot", "v": 81}, {"n": "Golden Elixir", "v": 45}, {"n": "Verde AF", "v": 39}, {"n": "Shot Jengibre", "v": 23}, {"n": "Super C+", "v": 0}, {"n": "Xolo Verde", "v": 0}]},
+  'Polanco': {s26:[{"n": "Fire Shot", "v": 41}, {"n": "Don Pastito", "v": 112}, {"n": "El Místico", "v": 86}, {"n": "Verde AF", "v": 128}, {"n": "Guerrero", "v": 96}, {"n": "Xolo Verde", "v": 168}, {"n": "Super C+", "v": 159}, {"n": "Betabella", "v": 0}, {"n": "Limón Partido", "v": 0}, {"n": "Shot Jengibre", "v": 0}],acum:[{"n": "Xolo Verde", "v": 168}, {"n": "Super C+", "v": 159}, {"n": "Verde AF", "v": 128}, {"n": "Don Pastito", "v": 112}, {"n": "Guerrero", "v": 96}, {"n": "El Místico", "v": 86}, {"n": "Fire Shot", "v": 41}, {"n": "Betabella", "v": 0}, {"n": "Limón Partido", "v": 0}, {"n": "Shot Jengibre", "v": 0}]},
+  'Coapa': {s26:[{"n": "Xolo Verde", "v": 252}, {"n": "Super C+", "v": 28}, {"n": "Guerrero", "v": 65}, {"n": "Fire Shot", "v": 0}, {"n": "El Místico", "v": 127}, {"n": "Betabella", "v": 0}, {"n": "Shot Jengibre", "v": 0}, {"n": "Verde AF", "v": 0}, {"n": "Don Pastito", "v": 0}, {"n": "Limón Partido", "v": 0}],acum:[{"n": "Xolo Verde", "v": 252}, {"n": "El Místico", "v": 127}, {"n": "Guerrero", "v": 65}, {"n": "Super C+", "v": 28}, {"n": "Fire Shot", "v": 0}, {"n": "Betabella", "v": 0}, {"n": "Shot Jengibre", "v": 0}, {"n": "Verde AF", "v": 0}, {"n": "Don Pastito", "v": 0}, {"n": "Limón Partido", "v": 0}]},
+  'Insurgentes': {s26:[{"n": "Fire Shot", "v": 14}, {"n": "Don Pastito", "v": 252}, {"n": "El Místico", "v": 29}, {"n": "Verde AF", "v": 128}, {"n": "Guerrero", "v": 64}, {"n": "Xolo Verde", "v": 0}, {"n": "Super C+", "v": 79}, {"n": "Betabella", "v": 79}, {"n": "Limón Partido", "v": 85}, {"n": "Shot Jengibre", "v": 0}],acum:[{"n": "Don Pastito", "v": 252}, {"n": "Verde AF", "v": 128}, {"n": "Limón Partido", "v": 85}, {"n": "Super C+", "v": 79}, {"n": "Betabella", "v": 79}, {"n": "Guerrero", "v": 64}, {"n": "El Místico", "v": 29}, {"n": "Fire Shot", "v": 14}, {"n": "Xolo Verde", "v": 0}, {"n": "Shot Jengibre", "v": 0}]},
+  'Roma': {s26:[{"n": "Don Pastito", "v": 36}, {"n": "El Místico", "v": 127}, {"n": "Jugo Apio", "v": 45}, {"n": "Guerrero", "v": 43}, {"n": "Betabella", "v": 58}, {"n": "Limón Partido", "v": 57}, {"n": "Shot Jengibre", "v": 23}, {"n": "Verde AF", "v": 43}, {"n": "Xolo Verde", "v": 84}, {"n": "Fire Shot", "v": 27}],acum:[{"n": "El Místico", "v": 127}, {"n": "Xolo Verde", "v": 84}, {"n": "Betabella", "v": 58}, {"n": "Limón Partido", "v": 57}, {"n": "Jugo Apio", "v": 45}, {"n": "Guerrero", "v": 43}, {"n": "Verde AF", "v": 43}, {"n": "Don Pastito", "v": 36}, {"n": "Fire Shot", "v": 27}, {"n": "Shot Jengibre", "v": 23}]},
+  'Kitchen Lab': {s26:[{"n": "El Místico", "v": 127}, {"n": "Verde AF", "v": 128}, {"n": "Betabella", "v": 58}, {"n": "Xolo Verde", "v": 84}, {"n": "Green Warrior", "v": 73}, {"n": "Fire Shot", "v": 41}, {"n": "Don Pastito", "v": 36}, {"n": "Shot Jengibre", "v": 23}, {"n": "Super C+", "v": 40}, {"n": "Limón Partido", "v": 28}],acum:[{"n": "Verde AF", "v": 128}, {"n": "El Místico", "v": 127}, {"n": "Xolo Verde", "v": 84}, {"n": "Green Warrior", "v": 73}, {"n": "Betabella", "v": 58}, {"n": "Fire Shot", "v": 41}, {"n": "Super C+", "v": 40}, {"n": "Don Pastito", "v": 36}, {"n": "Limón Partido", "v": 28}, {"n": "Shot Jengibre", "v": 23}]}
+};
+
+
+
+// ─── PROTEÍNA INSUMO ───
+var PROT_SUC=[{"suc": "Condesa", "choco_g": 8631.4, "vaini_g": 10922.6, "total_g": 19554.0}, {"suc": "Colima", "choco_g": 6705.0, "vaini_g": 10790.6, "total_g": 17495.6}, {"suc": "Santa Fe", "choco_g": 5282.1, "vaini_g": 8882.0, "total_g": 14164.1}, {"suc": "Liverpool", "choco_g": 2145.0, "vaini_g": 4008.0, "total_g": 6153.0}, {"suc": "Polanco", "choco_g": 8082.9, "vaini_g": 9695.0, "total_g": 17777.9}, {"suc": "Coapa", "choco_g": 1287.9, "vaini_g": 2297.3, "total_g": 3585.2}, {"suc": "Insurgentes", "choco_g": 2738.6, "vaini_g": 5835.2, "total_g": 8573.8}, {"suc": "Roma", "choco_g": 4472.1, "vaini_g": 4555.8, "total_g": 9027.9}, {"suc": "Lomas", "choco_g": 75.0, "vaini_g": 1519.3, "total_g": 1594.3}, {"suc": "CDI", "choco_g": 880.7, "vaini_g": 1598.9, "total_g": 2479.6}];
+var PROT_PROD_CHOCO=[{"n": "Chocohongo", "g": 16140.0, "pz": 1076}, {"n": "The Protein Macchiato", "g": 11640.0, "pz": 776}, {"n": "Chocolate Shake", "g": 7590.0, "pz": 506}, {"n": "Smoothie del Día (Choco)", "g": 4930.7, "pz": 329}];
+var PROT_PROD_VAINI=[{"n": "The Cherry Blossom", "g": 13125.0, "pz": 875}, {"n": "El Azul", "g": 11985.0, "pz": 799}, {"n": "Matchacate", "g": 7185.0, "pz": 479}, {"n": "Vainilla Shake", "g": 6240.0, "pz": 416}, {"n": "Cold Brew Shake", "g": 5535.0, "pz": 369}, {"n": "Smoothie del Día (Azul)", "g": 4930.7, "pz": 329}, {"n": "El Azul Bowl", "g": 4470.0, "pz": 298}, {"n": "Perfect Match-A", "g": 2775.0, "pz": 185}, {"n": "Matchacate Bowl", "g": 2520.0, "pz": 168}, {"n": "Matcha Latte", "g": 1191.1, "pz": 277}, {"n": "Berry Glow", "g": 90.0, "pz": 6}, {"n": "Blue Protein (mediano)", "g": 25.0, "pz": 5}, {"n": "Blue Protein", "g": 20.0, "pz": 4}, {"n": "Protein Coffee Frappé", "g": 12.9, "pz": 3}];
+var PROT_KPIS={choco_g:40300.7,vaini_g:60104.7,total_g:100405.4,choco_kg:40.3,vaini_kg:60.1,total_kg:100.41};
+
+// ─── SUPLEMENTOS DATA ───
+var SUP_SUCS=["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "Roma", "CDI"];
+var SUP_RESUMEN_1_5JUL=[{"suc": "Condesa", "diff_pz": 23.2, "faltantes": 19, "sobrantes": 8}, {"suc": "Colima", "diff_pz": 38.4, "faltantes": 12, "sobrantes": 5}, {"suc": "Santa Fe", "diff_pz": 8.2, "faltantes": 14, "sobrantes": 7}, {"suc": "Liverpool", "diff_pz": 73.7, "faltantes": 14, "sobrantes": 2}, {"suc": "Polanco", "diff_pz": 42.8, "faltantes": 9, "sobrantes": 2}, {"suc": "Roma", "diff_pz": 17.2, "faltantes": 5, "sobrantes": 3}, {"suc": "CDI", "diff_pz": 3.2, "faltantes": 4, "sobrantes": 0}];
+var SUP_TOP_DIFFS=[{"prod": "Creatina Optimum Nutrition 300g", "dpz": 97.0, "sucs": ["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "Roma"]}, {"prod": "Creatina ON 300g", "dpz": -78, "sucs": ["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "Roma"]}, {"prod": "Proteina vainilla Isopure 558gr", "dpz": 38.0, "sucs": ["Condesa", "Liverpool"]}, {"prod": "Sachet cacao Habits 30g", "dpz": 34, "sucs": ["Santa Fe", "Polanco"]}, {"prod": "Proteína vainilla Isopure 558g", "dpz": -31, "sucs": ["Condesa", "Liverpool"]}, {"prod": "Sachet vainilla Habits 30g", "dpz": 31.0, "sucs": ["Condesa", "Santa Fe", "Liverpool", "Roma"]}, {"prod": "Proteína vainilla Birdman 1.8kg", "dpz": 19, "sucs": ["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "Roma"]}, {"prod": "Superfoods Greens Mango Bloom 145g", "dpz": 17.0, "sucs": ["Liverpool"]}, {"prod": "Caja berries True For You 7pzas", "dpz": -14, "sucs": ["Condesa", "Colima", "Santa Fe"]}, {"prod": "Proteína vainilla ON 740g", "dpz": 14.0, "sucs": ["Condesa", "Colima", "Santa Fe"]}, {"prod": "Proteína chocolate Birdman 480g", "dpz": -13, "sucs": ["Condesa", "Colima", "Santa Fe"]}, {"prod": "Proteína chocolate Birdman 510g", "dpz": 13, "sucs": ["Condesa", "Colima", "Santa Fe"]}, {"prod": "Proteína vainilla Birdman 480g", "dpz": -13, "sucs": ["Condesa", "Colima", "Santa Fe"]}, {"prod": "Proteína vainilla Birdman 510g", "dpz": 13, "sucs": ["Condesa", "Colima", "Santa Fe"]}, {"prod": "Sachet Macchiato Habits 30g", "dpz": 12, "sucs": ["Liverpool"]}];
+var SUP_DETALLE=[{"prod": "Ashwagandha", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0.1, "comp": 0, "vta": 0, "teo": 0.1, "fin": 0, "diff": 0.1}, "Polanco": {"ini": 1.0, "comp": 0, "vta": 0, "teo": 1.0, "fin": 0, "diff": 1.0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Caja berries True For You 7pzas", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 1, "teo": -1, "fin": 5, "diff": -6}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 7, "diff": -7}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 1, "diff": -1}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Caja citrus True For You 7pzas", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 1, "teo": -1, "fin": 2, "diff": -3}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 3, "diff": -3}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 1, "diff": -1}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Caja tangerine True For You 7pzas", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 1, "teo": -1, "fin": 3, "diff": -4}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 2, "diff": -2}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 3, "diff": -3}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 2, "diff": -2}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Citra Pure Birdman 240 cápsulas", "sucs": {"Condesa": {"ini": 6.0, "comp": 0, "vta": 0, "teo": 6.0, "fin": 0, "diff": 6.0}, "Colima": {"ini": 2.0, "comp": 0, "vta": 0, "teo": 2.0, "fin": 0, "diff": 2.0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Creatina Birdman 450g", "sucs": {"Condesa": {"ini": 0, "comp": 10, "vta": 0, "teo": 10, "fin": 10, "diff": 0}, "Colima": {"ini": 0, "comp": 5, "vta": 0, "teo": 5, "fin": 0, "diff": 5}, "Santa Fe": {"ini": 0, "comp": 5, "vta": 0, "teo": 5, "fin": 5, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Creatina Habits 300g", "sucs": {"Condesa": {"ini": 10.0, "comp": 5, "vta": 4, "teo": 11.0, "fin": 11, "diff": 0.0}, "Colima": {"ini": 8.0, "comp": 3, "vta": 2, "teo": 9.0, "fin": 9, "diff": 0.0}, "Santa Fe": {"ini": 5.0, "comp": 2, "vta": 0, "teo": 7.0, "fin": 7, "diff": 0.0}, "Liverpool": {"ini": 4.0, "comp": 0, "vta": 0, "teo": 4.0, "fin": 4, "diff": 0.0}, "Polanco": {"ini": 2.0, "comp": 0, "vta": 1, "teo": 1.0, "fin": 1, "diff": 0.0}, "Roma": {"ini": 2.0, "comp": 0, "vta": 0, "teo": 2.0, "fin": 1, "diff": 1.0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Creatina ON 300g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 2, "teo": -2, "fin": 22, "diff": -24}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 27, "diff": -27}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 12, "diff": -12}, "Liverpool": {"ini": 0, "comp": 0, "vta": 1, "teo": -1, "fin": 8, "diff": -9}, "Polanco": {"ini": 0, "comp": 0, "vta": 1, "teo": -1, "fin": 1, "diff": -2}, "Roma": {"ini": 0, "comp": 0, "vta": 1, "teo": -1, "fin": 3, "diff": -4}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Creatina Optimum Nutrition 300g", "sucs": {"Condesa": {"ini": 25.0, "comp": 0, "vta": 0, "teo": 25.0, "fin": 0, "diff": 25.0}, "Colima": {"ini": 43.0, "comp": 0, "vta": 0, "teo": 43.0, "fin": 0, "diff": 43.0}, "Santa Fe": {"ini": 13.0, "comp": 0, "vta": 0, "teo": 13.0, "fin": 0, "diff": 13.0}, "Liverpool": {"ini": 9.0, "comp": 0, "vta": 0, "teo": 9.0, "fin": 0, "diff": 9.0}, "Polanco": {"ini": 2.0, "comp": 0, "vta": 0, "teo": 2.0, "fin": 0, "diff": 2.0}, "Roma": {"ini": 5.0, "comp": 0, "vta": 0, "teo": 5.0, "fin": 0, "diff": 5.0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Creatina Pink Lemon Birdman 300g", "sucs": {"Condesa": {"ini": 0, "comp": 5, "vta": 0, "teo": 5, "fin": 5, "diff": 0}, "Colima": {"ini": 0, "comp": 3, "vta": 0, "teo": 3, "fin": 3, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 2, "vta": 0, "teo": 2, "fin": 2, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Creatina Watermelon Birdman 300g", "sucs": {"Condesa": {"ini": 0, "comp": 5, "vta": 0, "teo": 5, "fin": 5, "diff": 0}, "Colima": {"ini": 0, "comp": 3, "vta": 0, "teo": 3, "fin": 3, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 2, "vta": 0, "teo": 2, "fin": 2, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "MYO Inositol Birdman 180 cápsulas", "sucs": {"Condesa": {"ini": 2.0, "comp": 0, "vta": 0, "teo": 2.0, "fin": 0, "diff": 2.0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Pre workout Limonada Rosa Bloom 175g", "sucs": {"Condesa": {"ini": 2.0, "comp": 0, "vta": 1, "teo": 1.0, "fin": 1, "diff": 0.0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 1.0, "comp": 0, "vta": 0, "teo": 1.0, "fin": 0, "diff": 1.0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteina vainilla Isopure 558gr", "sucs": {"Condesa": {"ini": 13.0, "comp": 0, "vta": 0, "teo": 13.0, "fin": 0, "diff": 13.0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 25.0, "comp": 0, "vta": 0, "teo": 25.0, "fin": 0, "diff": 25.0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína Macchiato Habits 488g", "sucs": {"Condesa": {"ini": 0, "comp": 18, "vta": 0, "teo": 18, "fin": 18, "diff": 0}, "Colima": {"ini": 0, "comp": 12, "vta": 0, "teo": 12, "fin": 12, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 12, "vta": 0, "teo": 12, "fin": 12, "diff": 0}, "Liverpool": {"ini": 0, "comp": 6, "vta": 1, "teo": 5, "fin": 5, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína blueberry Fitmingo Birdman 1.7kg", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Colima": {"ini": 1.0, "comp": 0, "vta": 0, "teo": 1.0, "fin": 0, "diff": 1.0}, "Santa Fe": {"ini": 1.0, "comp": 0, "vta": 0, "teo": 1.0, "fin": 0, "diff": 1.0}, "Liverpool": {"ini": 1.0, "comp": 0, "vta": 0, "teo": 1.0, "fin": 0, "diff": 1.0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína cacao Habits 488g", "sucs": {"Condesa": {"ini": 12.0, "comp": 24, "vta": 4, "teo": 32.0, "fin": 29, "diff": 3.0}, "Colima": {"ini": 10.0, "comp": 12, "vta": 2, "teo": 20.0, "fin": 20, "diff": 0.0}, "Santa Fe": {"ini": 5.0, "comp": 12, "vta": 1, "teo": 16.0, "fin": 16, "diff": 0.0}, "Liverpool": {"ini": 4.0, "comp": 12, "vta": 2, "teo": 14.0, "fin": 13, "diff": 1.0}, "Polanco": {"ini": 1.0, "comp": 4, "vta": 0, "teo": 5.0, "fin": 4, "diff": 1.0}, "Roma": {"ini": 1.0, "comp": 1, "vta": 0, "teo": 2.0, "fin": 2, "diff": 0.0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína cacao Performance Habits 578g", "sucs": {"Condesa": {"ini": 0, "comp": 6, "vta": 2, "teo": 4, "fin": 5, "diff": -1}, "Colima": {"ini": 0, "comp": 6, "vta": 0, "teo": 6, "fin": 6, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 6, "vta": 0, "teo": 6, "fin": 6, "diff": 0}, "Liverpool": {"ini": 0, "comp": 6, "vta": 0, "teo": 6, "fin": 6, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína chocolate Birdman 480g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 4, "diff": -4}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 4, "diff": -4}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 5, "diff": -5}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína chocolate Birdman 510g", "sucs": {"Condesa": {"ini": 0, "comp": 4, "vta": 0, "teo": 4, "fin": 0, "diff": 4}, "Colima": {"ini": 0, "comp": 4, "vta": 0, "teo": 4, "fin": 0, "diff": 4}, "Santa Fe": {"ini": 0, "comp": 5, "vta": 0, "teo": 5, "fin": 0, "diff": 5}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína chocolate Birdman Falcon 1.8kg", "sucs": {"Condesa": {"ini": 0.98, "comp": 0, "vta": 0, "teo": 0.98, "fin": 0, "diff": 0.98}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 1.0, "comp": 0, "vta": 0, "teo": 1.0, "fin": 0, "diff": 1.0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0.477, "comp": 0, "vta": 0, "teo": 0.48, "fin": 0, "diff": 0.48}}}, {"prod": "Proteína chocolate Falcon Performance Birdman 1.9kg", "sucs": {"Condesa": {"ini": 0, "comp": 1, "vta": 0, "teo": 1, "fin": 0, "diff": 1}, "Colima": {"ini": 1.0, "comp": 1, "vta": 0, "teo": 2.0, "fin": 0, "diff": 2.0}, "Santa Fe": {"ini": 0, "comp": 1, "vta": 0, "teo": 1, "fin": 0, "diff": 1}, "Liverpool": {"ini": 0, "comp": 1, "vta": 0, "teo": 1, "fin": 0, "diff": 1}, "Polanco": {"ini": 0, "comp": 1, "vta": 0, "teo": 1, "fin": 0, "diff": 1}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína chocolate ON 800g", "sucs": {"Condesa": {"ini": 14.0, "comp": 0, "vta": 1, "teo": 13.0, "fin": 9, "diff": 4.0}, "Colima": {"ini": 21.0, "comp": 0, "vta": 2, "teo": 19.0, "fin": 16, "diff": 3.0}, "Santa Fe": {"ini": 8.0, "comp": 0, "vta": 0, "teo": 8.0, "fin": 8, "diff": 0.0}, "Liverpool": {"ini": 9.0, "comp": 0, "vta": 0, "teo": 9.0, "fin": 9, "diff": 0.0}, "Polanco": {"ini": 3.0, "comp": 0, "vta": 0, "teo": 3.0, "fin": 3, "diff": 0.0}, "Roma": {"ini": 3.0, "comp": 0, "vta": 0, "teo": 3.0, "fin": 3, "diff": 0.0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína chocolate Origen 480g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 1.0, "comp": 0, "vta": 0, "teo": 1.0, "fin": 0, "diff": 1.0}}}, {"prod": "Proteína maca-cacao Habits 488g", "sucs": {"Condesa": {"ini": 6.0, "comp": 0, "vta": 2, "teo": 4.0, "fin": 4, "diff": 0.0}, "Colima": {"ini": 2.0, "comp": 0, "vta": 1, "teo": 1.0, "fin": 1, "diff": 0.0}, "Santa Fe": {"ini": 2.0, "comp": 0, "vta": 0, "teo": 2.0, "fin": 2, "diff": 0.0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína matcha-vainilla Habits 488g", "sucs": {"Condesa": {"ini": 4.0, "comp": 0, "vta": 3, "teo": 1.0, "fin": 1, "diff": 0.0}, "Colima": {"ini": 3.0, "comp": 0, "vta": 0, "teo": 3.0, "fin": 3, "diff": 0.0}, "Santa Fe": {"ini": 3.0, "comp": 0, "vta": 0, "teo": 3.0, "fin": 3, "diff": 0.0}, "Liverpool": {"ini": 2.0, "comp": 0, "vta": 1, "teo": 1.0, "fin": 1, "diff": 0.0}, "Polanco": {"ini": 3.0, "comp": 0, "vta": 0, "teo": 3.0, "fin": 3, "diff": 0.0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína moka Fitmingo Birdman 510g", "sucs": {"Condesa": {"ini": 0, "comp": 4, "vta": 0, "teo": 4, "fin": 4, "diff": 0}, "Colima": {"ini": 0, "comp": 2, "vta": 1, "teo": 1, "fin": 1, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 2, "vta": 1, "teo": 1, "fin": 1, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína vainilla Birdman 1.8Kg", "sucs": {"Condesa": {"ini": 1.225, "comp": 0, "vta": 0, "teo": 1.23, "fin": 0, "diff": 1.23}, "Colima": {"ini": 1.37, "comp": 0, "vta": 0, "teo": 1.37, "fin": 0, "diff": 1.37}, "Santa Fe": {"ini": 0.244, "comp": 0, "vta": 0, "teo": 0.24, "fin": 0, "diff": 0.24}, "Liverpool": {"ini": 1.6, "comp": 0, "vta": 0, "teo": 1.6, "fin": 0, "diff": 1.6}, "Polanco": {"ini": 2.84, "comp": 0, "vta": 0, "teo": 2.84, "fin": 0, "diff": 2.84}, "Roma": {"ini": 1.21, "comp": 0, "vta": 0, "teo": 1.21, "fin": 0, "diff": 1.21}, "CDI": {"ini": 0.879, "comp": 0, "vta": 0, "teo": 0.88, "fin": 0, "diff": 0.88}}}, {"prod": "Proteína vainilla Birdman 1.8kg", "sucs": {"Condesa": {"ini": 0, "comp": 4, "vta": 0, "teo": 4, "fin": 0, "diff": 4}, "Colima": {"ini": 0, "comp": 6, "vta": 0, "teo": 6, "fin": 0, "diff": 6}, "Santa Fe": {"ini": 0, "comp": 2, "vta": 0, "teo": 2, "fin": 0, "diff": 2}, "Liverpool": {"ini": 0, "comp": 2, "vta": 0, "teo": 2, "fin": 0, "diff": 2}, "Polanco": {"ini": 0, "comp": 4, "vta": 0, "teo": 4, "fin": 0, "diff": 4}, "Roma": {"ini": 0, "comp": 1, "vta": 0, "teo": 1, "fin": 0, "diff": 1}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína vainilla Birdman 480g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 5, "diff": -5}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 4, "diff": -4}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 4, "diff": -4}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína vainilla Birdman 510g", "sucs": {"Condesa": {"ini": 0, "comp": 5, "vta": 0, "teo": 5, "fin": 0, "diff": 5}, "Colima": {"ini": 0, "comp": 4, "vta": 0, "teo": 4, "fin": 0, "diff": 4}, "Santa Fe": {"ini": 0, "comp": 4, "vta": 0, "teo": 4, "fin": 0, "diff": 4}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína vainilla Fitmingo Birdman 510g", "sucs": {"Condesa": {"ini": 0, "comp": 5, "vta": 0, "teo": 5, "fin": 5, "diff": 0}, "Colima": {"ini": 0, "comp": 4, "vta": 0, "teo": 4, "fin": 4, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 4, "vta": 0, "teo": 4, "fin": 4, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína vainilla Habits 488g", "sucs": {"Condesa": {"ini": 16.0, "comp": 24, "vta": 2, "teo": 38.0, "fin": 38, "diff": 0.0}, "Colima": {"ini": 10.0, "comp": 12, "vta": 1, "teo": 21.0, "fin": 19, "diff": 2.0}, "Santa Fe": {"ini": 6.0, "comp": 12, "vta": 3, "teo": 15.0, "fin": 15, "diff": 0.0}, "Liverpool": {"ini": 4.0, "comp": 12, "vta": 2, "teo": 14.0, "fin": 12, "diff": 2.0}, "Polanco": {"ini": 1.0, "comp": 4, "vta": 0, "teo": 5.0, "fin": 4, "diff": 1.0}, "Roma": {"ini": 1.0, "comp": 1, "vta": 0, "teo": 2.0, "fin": 2, "diff": 0.0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína vainilla Isopure 558g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 1, "teo": -1, "fin": 12, "diff": -13}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 18, "diff": -18}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína vainilla ON 740g", "sucs": {"Condesa": {"ini": 23.0, "comp": 0, "vta": 0, "teo": 23.0, "fin": 19, "diff": 4.0}, "Colima": {"ini": 25.0, "comp": 0, "vta": 0, "teo": 25.0, "fin": 16, "diff": 9.0}, "Santa Fe": {"ini": 9.0, "comp": 0, "vta": 0, "teo": 9.0, "fin": 8, "diff": 1.0}, "Liverpool": {"ini": 9.0, "comp": 0, "vta": 0, "teo": 9.0, "fin": 9, "diff": 0.0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 3.0, "comp": 0, "vta": 0, "teo": 3.0, "fin": 3, "diff": 0.0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína vainilla Origen 480g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0.816, "comp": 0, "vta": 0, "teo": 0.82, "fin": 0, "diff": 0.82}}}, {"prod": "Proteína vainilla Performance Habits 578g", "sucs": {"Condesa": {"ini": 0, "comp": 6, "vta": 0, "teo": 6, "fin": 6, "diff": 0}, "Colima": {"ini": 0, "comp": 6, "vta": 0, "teo": 6, "fin": 6, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 6, "vta": 0, "teo": 6, "fin": 6, "diff": 0}, "Liverpool": {"ini": 0, "comp": 6, "vta": 0, "teo": 6, "fin": 6, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet Berries True For You 6g", "sucs": {"Condesa": {"ini": 5.0, "comp": 0, "vta": 0, "teo": 5.0, "fin": 0, "diff": 5.0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet Citrus True For You 6g", "sucs": {"Condesa": {"ini": 1.0, "comp": 0, "vta": 0, "teo": 1.0, "fin": 0, "diff": 1.0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet Daily Berries Trulife 10g", "sucs": {"Condesa": {"ini": 103.0, "comp": 0, "vta": 6, "teo": 97.0, "fin": 96, "diff": 1.0}, "Colima": {"ini": 33.0, "comp": 0, "vta": 6, "teo": 27.0, "fin": 27, "diff": 0.0}, "Santa Fe": {"ini": 22.0, "comp": 0, "vta": 6, "teo": 16.0, "fin": 15, "diff": 1.0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 16.0, "comp": 0, "vta": 0, "teo": 16.0, "fin": 17, "diff": -1.0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet Daily Greens Trulife 10g", "sucs": {"Condesa": {"ini": 22.0, "comp": 0, "vta": 1, "teo": 21.0, "fin": 21, "diff": 0.0}, "Colima": {"ini": 13.0, "comp": 0, "vta": 8, "teo": 5.0, "fin": 5, "diff": 0.0}, "Santa Fe": {"ini": 4.0, "comp": 0, "vta": 0, "teo": 4.0, "fin": 4, "diff": 0.0}, "Liverpool": {"ini": 14.0, "comp": 0, "vta": 0, "teo": 14.0, "fin": 14, "diff": 0.0}, "Polanco": {"ini": 4.0, "comp": 0, "vta": 0, "teo": 4.0, "fin": 3, "diff": 1.0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet Macchiato Habits 30g", "sucs": {"Condesa": {"ini": 0, "comp": 32, "vta": 0, "teo": 32, "fin": 32, "diff": 0}, "Colima": {"ini": 0, "comp": 32, "vta": 1, "teo": 31, "fin": 31, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 16, "vta": 0, "teo": 16, "fin": 16, "diff": 0}, "Liverpool": {"ini": 0, "comp": 32, "vta": 0, "teo": 32, "fin": 20, "diff": 12}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet Tangerine True For You 6g", "sucs": {"Condesa": {"ini": 1.0, "comp": 0, "vta": 0, "teo": 1.0, "fin": 0, "diff": 1.0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet cacao Habits 30g", "sucs": {"Condesa": {"ini": 0, "comp": 128, "vta": 3, "teo": 125, "fin": 125, "diff": 0}, "Colima": {"ini": 0, "comp": 64, "vta": 3, "teo": 61, "fin": 61, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 64, "vta": 0, "teo": 64, "fin": 62, "diff": 2}, "Liverpool": {"ini": 0, "comp": 64, "vta": 0, "teo": 64, "fin": 64, "diff": 0}, "Polanco": {"ini": 0, "comp": 32, "vta": 0, "teo": 32, "fin": 0, "diff": 32}, "Roma": {"ini": 0, "comp": 32, "vta": 0, "teo": 32, "fin": 32, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet chocolate Birdman 30g", "sucs": {"Condesa": {"ini": 0, "comp": 24, "vta": 1, "teo": 23, "fin": 23, "diff": 0}, "Colima": {"ini": 0, "comp": 12, "vta": 2, "teo": 10, "fin": 10, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 12, "vta": 0, "teo": 12, "fin": 12, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 12, "vta": 0, "teo": 12, "fin": 12, "diff": 0}, "Roma": {"ini": 0, "comp": 12, "vta": 0, "teo": 12, "fin": 12, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet maca-cacao Habits 30g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 10.0, "comp": 0, "vta": 0, "teo": 10.0, "fin": 10, "diff": 0.0}}}, {"prod": "Sachet moka Fitmingo Birdman 30g", "sucs": {"Condesa": {"ini": 0, "comp": 20, "vta": 1, "teo": 19, "fin": 18, "diff": 1}, "Colima": {"ini": 0, "comp": 10, "vta": 0, "teo": 10, "fin": 10, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 10, "vta": 2, "teo": 8, "fin": 9, "diff": -1}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 10, "vta": 0, "teo": 10, "fin": 10, "diff": 0}, "Roma": {"ini": 0, "comp": 10, "vta": 0, "teo": 10, "fin": 10, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet vainilla Birdman 30g", "sucs": {"Condesa": {"ini": 0, "comp": 24, "vta": 0, "teo": 24, "fin": 24, "diff": 0}, "Colima": {"ini": 0, "comp": 12, "vta": 2, "teo": 10, "fin": 10, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 12, "vta": 0, "teo": 12, "fin": 9, "diff": 3}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 12, "vta": 0, "teo": 12, "fin": 12, "diff": 0}, "Roma": {"ini": 0, "comp": 12, "vta": 4, "teo": 8, "fin": 8, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet vainilla Fitmingo Birdman 30g", "sucs": {"Condesa": {"ini": 0, "comp": 20, "vta": 0, "teo": 20, "fin": 20, "diff": 0}, "Colima": {"ini": 0, "comp": 10, "vta": 0, "teo": 10, "fin": 10, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 10, "vta": 0, "teo": 10, "fin": 9, "diff": 1}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 10, "vta": 0, "teo": 10, "fin": 10, "diff": 0}, "Roma": {"ini": 0, "comp": 10, "vta": 0, "teo": 10, "fin": 10, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet vainilla Habits 30g", "sucs": {"Condesa": {"ini": 0, "comp": 128, "vta": 3, "teo": 125, "fin": 124, "diff": 1}, "Colima": {"ini": 0, "comp": 64, "vta": 2, "teo": 62, "fin": 62, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 64, "vta": 0, "teo": 64, "fin": 62, "diff": 2}, "Liverpool": {"ini": 0, "comp": 64, "vta": 0, "teo": 64, "fin": 52, "diff": 12}, "Polanco": {"ini": 0, "comp": 32, "vta": 0, "teo": 32, "fin": 32, "diff": 0}, "Roma": {"ini": 0, "comp": 32, "vta": 0, "teo": 32, "fin": 16, "diff": 16}, "CDI": {"ini": 7.0, "comp": 0, "vta": 0, "teo": 7.0, "fin": 7, "diff": 0.0}}}, {"prod": "Sachet vainilla Performance Habits 38.5g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 2.0, "comp": 0, "vta": 0, "teo": 2.0, "fin": 2, "diff": 0.0}}}, {"prod": "Sachet vainilla Trulife 31g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 9.0, "comp": 0, "vta": 1, "teo": 8.0, "fin": 8, "diff": 0.0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Superfoods Frutos Rojos Bloom 145g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 4.0, "comp": 0, "vta": 0, "teo": 4.0, "fin": 0, "diff": 4.0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Superfoods Greens Fresa Kiwi Bloom 145g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 12.0, "comp": 0, "vta": 0, "teo": 12.0, "fin": 0, "diff": 12.0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Superfoods Greens Mango Bloom 145g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 17.0, "comp": 0, "vta": 0, "teo": 17.0, "fin": 0, "diff": 17.0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}];
+// ─── VASOS PLA 16oz ───
+var VP_TABLA=[{"suc": "Condesa", "inv_ini": 848.0, "compras": 2200.0, "ventas": 2711.0, "inv_fin": 300.0, "merma_pz": 37.0, "merma_pesos": 133.2, "pct": 1.3, "vtas_sku": 2911}, {"suc": "Colima", "inv_ini": 698.0, "compras": 2300.0, "ventas": 2212.0, "inv_fin": 734.0, "merma_pz": 52.0, "merma_pesos": 187.2, "pct": 2.3, "vtas_sku": 2528}, {"suc": "Santa Fe", "inv_ini": 1013.0, "compras": 1200.0, "ventas": 1689.0, "inv_fin": 491.0, "merma_pz": 33.0, "merma_pesos": 118.8, "pct": 1.9, "vtas_sku": 1850}, {"suc": "Liverpool", "inv_ini": 350.0, "compras": 1100.0, "ventas": 997.0, "inv_fin": 370.0, "merma_pz": 83.0, "merma_pesos": 298.8, "pct": 7.7, "vtas_sku": 997}, {"suc": "Polanco", "inv_ini": 650.0, "compras": 1900.0, "ventas": 2402.0, "inv_fin": 95.0, "merma_pz": 53.0, "merma_pesos": 190.8, "pct": 2.2, "vtas_sku": 2402}, {"suc": "CDI", "inv_ini": 295.0, "compras": 100.0, "ventas": 340.0, "inv_fin": 0.0, "merma_pz": 55.0, "merma_pesos": 198.0, "pct": 13.9, "vtas_sku": 340}, {"suc": "Coapa", "inv_ini": 210.0, "compras": 450.0, "ventas": 459.0, "inv_fin": 200, "merma_pz": 1, "merma_pesos": 3.6, "pct": 0.2, "vtas_sku": 459}, {"suc": "Insurgentes", "inv_ini": 610.0, "compras": 1250.0, "ventas": 1243.0, "inv_fin": 551.0, "merma_pz": 66.0, "merma_pesos": 237.6, "pct": 5.0, "vtas_sku": 1243}, {"suc": "Roma", "inv_ini": 435.0, "compras": 1100.0, "ventas": 1047.0, "inv_fin": 477.0, "merma_pz": 11.0, "merma_pesos": 39.6, "pct": 1.0, "vtas_sku": 1347}, {"suc": "Kitchen Lab", "inv_ini": 115.0, "compras": 200.0, "ventas": 255.0, "inv_fin": 74.0, "merma_pz": -14.0, "merma_pesos": -50.4, "pct": -5.8, "vtas_sku": 255}];
+var VP_VENTAS_SUC=[{"suc": "Condesa", "v": 2911}, {"suc": "Colima", "v": 2528}, {"suc": "Santa Fe", "v": 1850}, {"suc": "Liverpool", "v": 997}, {"suc": "Polanco", "v": 2402}, {"suc": "CDI", "v": 340}, {"suc": "Coapa", "v": 459}, {"suc": "Insurgentes", "v": 1243}, {"suc": "Roma", "v": 1347}, {"suc": "Kitchen Lab", "v": 255}];
+var TOP_VASOS_SKU=[{"n": "Smoothie del Día", "v": 2301}, {"n": "Chocohongo", "v": 1076}, {"n": "El San-O Smoothie", "v": 917}, {"n": "The Cherry Blossom", "v": 875}, {"n": "El Azul", "v": 799}, {"n": "The Protein Macchiato", "v": 776}, {"n": "Fuaa!", "v": 773}, {"n": "El Capi Smoothie", "v": 610}, {"n": "Chocolate Shake", "v": 506}, {"n": "Matchacate", "v": 479}, {"n": "Clean & Green", "v": 437}, {"n": "Mora Mora", "v": 423}];
+var VP_KPIS={compras:11800,ventas:13355,merma_pz:377,merma_ps:1357.2,pct:2.3};
+
+// ─── COLD BREW CONCENTRADO ───
+var CBC_TABLA=[{"suc": "Condesa", "inv_ini": 0.0, "compras": 75.0, "ventas": 73.0, "inv_fin": 0.0, "merma_l": 2.0, "merma_ps": 73.6, "pct": 2.7, "ml_vtas": 59040, "litros_vtas": 59.0}, {"suc": "Colima", "inv_ini": 3.5, "compras": 75.0, "ventas": 62.3, "inv_fin": 4.0, "merma_l": 12.2, "merma_ps": 448.96, "pct": 16.4, "ml_vtas": 46440, "litros_vtas": 46.4}, {"suc": "Santa Fe", "inv_ini": 0.0, "compras": 45.0, "ventas": 39.2, "inv_fin": 0.0, "merma_l": 5.8, "merma_ps": 213.44, "pct": 12.9, "ml_vtas": 32100, "litros_vtas": 32.1}, {"suc": "Liverpool", "inv_ini": 0.3, "compras": 25.0, "ventas": 20.2, "inv_fin": 0.0, "merma_l": 5.1, "merma_ps": 187.68, "pct": 20.2, "ml_vtas": 16020, "litros_vtas": 16.0}, {"suc": "Polanco", "inv_ini": 0.0, "compras": 65.0, "ventas": 56.4, "inv_fin": 4.0, "merma_l": 4.6, "merma_ps": 169.28, "pct": 7.5, "ml_vtas": 46440, "litros_vtas": 46.4}, {"suc": "CDI", "inv_ini": 0.0, "compras": 10.0, "ventas": 7.2, "inv_fin": 0, "merma_l": 2.8, "merma_ps": 103.04, "pct": 28.0, "ml_vtas": 3480, "litros_vtas": 3.5}, {"suc": "Coapa", "inv_ini": 0.0, "compras": 15.0, "ventas": 9.2, "inv_fin": 0.0, "merma_l": 0.0, "merma_ps": 0.0, "pct": 0.0, "ml_vtas": 14640, "litros_vtas": 14.6}, {"suc": "Insurgentes", "inv_ini": 0.0, "compras": 25.0, "ventas": 18.23, "inv_fin": 2.23, "merma_l": 4.54, "merma_ps": 167.07, "pct": 19.9, "ml_vtas": 19440, "litros_vtas": 19.4}, {"suc": "Roma", "inv_ini": 0.0, "compras": 15.0, "ventas": 10.12, "inv_fin": 2.6, "merma_l": 2.28, "merma_ps": 83.9, "pct": 18.4, "ml_vtas": 19500, "litros_vtas": 19.5}, {"suc": "Kitchen Lab", "inv_ini": 0.0, "compras": 5.0, "ventas": 3.6, "inv_fin": 0.8, "merma_l": 0.6, "merma_ps": 22.08, "pct": 14.3, "ml_vtas": 9000, "litros_vtas": 9.0}];
+var CBC_ML_SUC=[{"suc": "Condesa", "ml": 59.0}, {"suc": "Colima", "ml": 46.4}, {"suc": "Santa Fe", "ml": 32.1}, {"suc": "Liverpool", "ml": 16.0}, {"suc": "Polanco", "ml": 46.4}, {"suc": "CDI", "ml": 3.5}, {"suc": "Coapa", "ml": 14.6}, {"suc": "Insurgentes", "ml": 19.4}, {"suc": "Roma", "ml": 19.5}, {"suc": "Kitchen Lab", "ml": 9.0}];
+var TOP_CB_SKU=[{"n": "Fuaa!", "ml": 120.0, "total": 92760}, {"n": "Cold Brew on the Rocks", "ml": 360.0, "total": 77040}, {"n": "The Protein Macchiato", "ml": 60.0, "total": 46560}, {"n": "Vegan Latte", "ml": 180.0, "total": 25920}, {"n": "Fuaa! Bowl", "ml": 120.0, "total": 13800}, {"n": "Ginger Coffee Latte", "ml": 120.0, "total": 6960}, {"n": "Mora Mora Vegan Latte", "ml": 180.0, "total": 3060}];
+var CBC_KPIS={compras_l:355,ventas_l:264.1,merma_l:39.92,merma_ps:1469.06,ml_total:266100};
+// ─── VITCH BAKERY DATA ───
+var VB_PRODS_DATA=[
+  {n:'Blondie GF',costo:22,suc:{Condesa:{pz:52,pesos:1144,pct_m:13.6},Colima:{pz:8,pesos:176,pct_m:2.9},'Santa Fe':{pz:41,pesos:902,pct_m:14.6},Liverpool:{pz:1,pesos:22,pct_m:1.0},Polanco:{pz:9,pesos:198,pct_m:3.0},Insurgentes:{pz:12,pesos:264,pct_m:6.4},Roma:{pz:13,pesos:286,pct_m:14.4},'Kitchen Lab':{pz:14,pesos:308,pct_m:53.8}}},
+  {n:'Rollo de Canela',costo:35,suc:{Condesa:{pz:25,pesos:875,pct_m:15.2},Colima:{pz:13,pesos:455,pct_m:9.5},'Santa Fe':{pz:11,pesos:385,pct_m:5.2},Liverpool:{pz:4,pesos:140,pct_m:7.7},Polanco:{pz:7,pesos:245,pct_m:4.9},Insurgentes:{pz:15,pesos:525,pct_m:33.3},Roma:{pz:13,pesos:455,pct_m:36.1},'Kitchen Lab':{pz:7,pesos:245,pct_m:50.0}}},
+  {n:'Maple Choco Chip',costo:30,suc:{Condesa:{pz:62,pesos:1860,pct_m:17.3},Colima:{pz:19,pesos:570,pct_m:8.1},'Santa Fe':{pz:14,pesos:420,pct_m:5.4},Liverpool:{pz:5,pesos:150,pct_m:4.9},Polanco:{pz:22,pesos:660,pct_m:7.6},Insurgentes:{pz:19,pesos:570,pct_m:11.4},Roma:{pz:2,pesos:60,pct_m:3.0},'Kitchen Lab':{pz:6,pesos:180,pct_m:33.3}}},
+  {n:'Panqué de Plátano',costo:45,suc:{Condesa:{pz:17,pesos:765,pct_m:18.3},Colima:{pz:8,pesos:360,pct_m:14.0},'Santa Fe':{pz:3,pesos:135,pct_m:6.7},Liverpool:{pz:11,pesos:495,pct_m:25.6},Polanco:{pz:14,pesos:630,pct_m:23.3},'Kitchen Lab':{pz:1,pesos:45,pct_m:11.1}}}
+];
+var VB_SUC_TOTALS={Condesa:{pz:156,pesos:4644},Colima:{pz:48,pesos:1561},'Santa Fe':{pz:69,pesos:1842},Liverpool:{pz:21,pesos:807},Polanco:{pz:52,pesos:1733},Insurgentes:{pz:46,pesos:1359},Roma:{pz:28,pesos:801},'Kitchen Lab':{pz:28,pesos:778}};
+var VB_PROD_TOTALS=[{n:'Maple Choco Chip',pesos:4470,pz:149},{n:'Rollo de Canela',pesos:3325,pz:95},{n:'Blondie GF',pesos:3300,pz:150},{n:'Panqué de Plátano',pesos:2430,pz:54}];
+
+var VB_CAPTURA=[{"n":"Blondie GF","costo":22,"suc":{"Condesa":{"inv_ini":32,"compras":392,"ventas":329,"inv_fin":43,"merma_pz":52,"merma_pesos":1144,"pct_merma":13.6},"Colima":{"inv_ini":18,"compras":255,"ventas":246,"inv_fin":19,"merma_pz":8,"merma_pesos":176,"pct_merma":3.1},"Santa Fe":{"inv_ini":30,"compras":251,"ventas":224,"inv_fin":16,"merma_pz":41,"merma_pesos":902,"pct_merma":15.5},"Liverpool":{"inv_ini":5,"compras":96,"ventas":97,"inv_fin":3,"merma_pz":1,"merma_pesos":22,"pct_merma":1.0},"Polanco":{"inv_ini":23,"compras":276,"ventas":279,"inv_fin":11,"merma_pz":9,"merma_pesos":198,"pct_merma":3.1},"Insurgentes":{"inv_ini":19,"compras":168,"ventas":160,"inv_fin":15,"merma_pz":12,"merma_pesos":264,"pct_merma":7.0},"Roma":{"inv_ini":16,"compras":74,"ventas":71,"inv_fin":6,"merma_pz":13,"merma_pesos":286,"pct_merma":15.5},"Kitchen Lab":{"inv_ini":4,"compras":22,"ventas":12,"inv_fin":0,"merma_pz":14,"merma_pesos":308,"pct_merma":53.8}}},{"n":"Rollo de Canela","costo":35,"suc":{"Condesa":{"inv_ini":12,"compras":164,"ventas":139,"inv_fin":12,"merma_pz":25,"merma_pesos":875,"pct_merma":15.2},"Colima":{"inv_ini":19,"compras":118,"ventas":124,"inv_fin":0,"merma_pz":13,"merma_pesos":455,"pct_merma":9.5},"Santa Fe":{"inv_ini":36,"compras":177,"ventas":188,"inv_fin":14,"merma_pz":11,"merma_pesos":385,"pct_merma":5.5},"Liverpool":{"inv_ini":7,"compras":45,"ventas":47,"inv_fin":1,"merma_pz":4,"merma_pesos":140,"pct_merma":7.8},"Polanco":{"inv_ini":19,"compras":123,"ventas":135,"inv_fin":0,"merma_pz":7,"merma_pesos":245,"pct_merma":4.9},"Insurgentes":{"inv_ini":11,"compras":34,"ventas":30,"inv_fin":0,"merma_pz":15,"merma_pesos":525,"pct_merma":33.3},"Roma":{"inv_ini":6,"compras":30,"ventas":22,"inv_fin":1,"merma_pz":13,"merma_pesos":455,"pct_merma":37.1},"Kitchen Lab":{"inv_ini":4,"compras":10,"ventas":7,"inv_fin":0,"merma_pz":7,"merma_pesos":245,"pct_merma":50.0}}},{"n":"Maple Choco Chip","costo":30,"suc":{"Condesa":{"inv_ini":24,"compras":375,"ventas":297,"inv_fin":40,"merma_pz":62,"merma_pesos":1860,"pct_merma":17.3},"Colima":{"inv_ini":38,"compras":197,"ventas":191,"inv_fin":25,"merma_pz":19,"merma_pesos":570,"pct_merma":9.0},"Santa Fe":{"inv_ini":20,"compras":238,"ventas":230,"inv_fin":14,"merma_pz":14,"merma_pesos":420,"pct_merma":5.7},"Liverpool":{"inv_ini":4,"compras":98,"ventas":85,"inv_fin":12,"merma_pz":5,"merma_pesos":150,"pct_merma":5.6},"Polanco":{"inv_ini":27,"compras":263,"ventas":253,"inv_fin":15,"merma_pz":22,"merma_pesos":660,"pct_merma":8.0},"Insurgentes":{"inv_ini":28,"compras":138,"ventas":117,"inv_fin":30,"merma_pz":19,"merma_pesos":570,"pct_merma":14.0},"Roma":{"inv_ini":5,"compras":62,"ventas":56,"inv_fin":9,"merma_pz":2,"merma_pesos":60,"pct_merma":3.4},"Kitchen Lab":{"inv_ini":2,"compras":16,"ventas":10,"inv_fin":2,"merma_pz":6,"merma_pesos":180,"pct_merma":37.5}}},{"n":"Panqué de Plátano","costo":45,"suc":{"Condesa":{"inv_ini":2,"compras":95,"ventas":76,"inv_fin":4,"merma_pz":17,"merma_pesos":765,"pct_merma":18.3},"Colima":{"inv_ini":4,"compras":53,"ventas":43,"inv_fin":6,"merma_pz":8,"merma_pesos":360,"pct_merma":15.7},"Santa Fe":{"inv_ini":6,"compras":39,"ventas":39,"inv_fin":3,"merma_pz":3,"merma_pesos":135,"pct_merma":7.1},"Liverpool":{"inv_ini":6,"compras":37,"ventas":32,"inv_fin":0,"merma_pz":11,"merma_pesos":495,"pct_merma":25.6},"Polanco":{"inv_ini":2,"compras":58,"ventas":45,"inv_fin":1,"merma_pz":14,"merma_pesos":630,"pct_merma":23.7},"Insurgentes":{"inv_ini":0,"compras":0,"ventas":0,"inv_fin":0,"merma_pz":0,"merma_pesos":0,"pct_merma":0},"Roma":{"inv_ini":0,"compras":0,"ventas":0,"inv_fin":0,"merma_pz":0,"merma_pesos":0,"pct_merma":0},"Kitchen Lab":{"inv_ini":1,"compras":8,"ventas":8,"inv_fin":0,"merma_pz":1,"merma_pesos":45,"pct_merma":11.1}}}];
+var VB_ALERTAS=[{suc:'Kitchen Lab',prod:'Blondie GF',pct:53.8},{suc:'Kitchen Lab',prod:'Rollo de Canela',pct:50.0},{suc:'Roma',prod:'Rollo de Canela',pct:36.1},{suc:'Insurgentes',prod:'Rollo de Canela',pct:33.3},{suc:'Kitchen Lab',prod:'Maple Choco Chip',pct:33.3},{suc:'Liverpool',prod:'Panqué de Plátano',pct:25.6}];
+var CATS=[
+  {id:'CP',n:'Jugos Cold Pressed',ic:'🥤',pol:22,merma:187234,ventas:1658434,pct:26.1,color:'#2a78d6',sems:['Prom.Ene','Prom.Feb','S11','S12','S13','S14','S15','S16','S17','S18','S19','S20','S21','S22','S23','S24','S25','S26'],vals:[21235,20489,17749,13053,13940,16906,17779,16562,18621,14027,19889,17881,17567,17984,18681,13951,11107,16873]},
+  {id:'VB',n:'Vitch Bakery',ic:'🥐',pol:7,merma:13525,ventas:81917,pct:16.5,color:'#1baf7a',sems:['Blondie GF','Rollo Canela','Maple CC','Panqué Plát.'],vals:[3300,3325,4470,2430]},
+  {id:'SUP',n:'Suplementos',ic:'💊',pol:5,merma:0,ventas:0,pct:0,color:'#eda100',sems:['Condesa','Colima','S.Fe','Liverpool','Polanco','Roma','CDI'],vals:[23.2,38.4,8.2,73.7,42.8,17.2,3.2]},
+  {id:'INS',n:'Insumos',ic:'📦',pol:3,merma:42448,ventas:0,pct:0,color:'#7F77DD',sems:['Jun S1','Jun S2','Jun S3'],vals:[12577,13297,16574]},
+  {id:'CB',n:'Cold Brew Concentrado',ic:'☕',pol:5,merma:140,ventas:0,pct:1.5,color:'#4E342E',sems:['Condesa','Colima','Santa Fe','Liverpool','Polanco','Coapa','Insurgentes','Roma','KL'],vals:[129,0,11,0,0,0,0,0,0]},
+  {id:'PI',n:'Proteína Insumo',ic:'💪',pol:5,merma:100405.4,ventas:0,pct:0,color:'#1565C0',sems:['Chocolate','Vainilla'],vals:[40300.7,60104.7]},
+  {id:'VP',n:'Vasos PLA 16oz',ic:'🥤',pol:2,merma:14998,ventas:0,pct:35.6,color:'#2E7D32',sems:['Condesa','Colima','Santa Fe','Liverpool','Polanco','Coapa','Insurgentes','Roma','KL'],vals:[2513,3647,1260,2340,1062,2196,1566,414,0]}
+];
+
+// Merma GENERAL por sucursal (jugos+bakery+insumos+producción) — Semana 3 Jun real + acumulado mes
+var MERMA_GENERAL = {
+  'Condesa': {s26:[{"n": "crotones tempeh", "v": 743.41}, {"n": "Frambuesa domo 170g", "v": 637.5}, {"n": "Don Pastito", "v": 397.1}, {"n": "Tempeh Gyro wrap", "v": 381.92}, {"n": "Zana Zana", "v": 327.0}, {"n": "Xolo Verde", "v": 293.79}, {"n": "El Místico", "v": 285.75}, {"n": "Rollo de canela Vitch Bakery 1", "v": 245.0}, {"n": "Betabella", "v": 233.68}, {"n": "Manzana verde", "v": 221.94}],acum:[{"n": "Frambuesa domo 170g", "v": 825.0}, {"n": "Xolo Verde", "v": 797.43}, {"n": "Don Pastito", "v": 794.2}, {"n": "Verde AF", "v": 765.72}, {"n": "Arroz con leche by MM 158g", "v": 764.4}, {"n": "Tempeh Gyro wrap", "v": 763.84}, {"n": "crotones tempeh", "v": 743.41}, {"n": "Betabella", "v": 671.83}, {"n": "Zana Zana", "v": 517.75}, {"n": "Habibi Protein", "v": 513.74}]},
+  'Colima': {s26:[{"n": "Verde AF", "v": 595.56}, {"n": "Xolo Verde", "v": 587.58}, {"n": "Pasta", "v": 186.59}, {"n": "El Místico", "v": 158.75}, {"n": "Don Pastito", "v": 144.4}, {"n": "Raw oats by MM 280g", "v": 137.4}, {"n": "Frambuesa domo 170g", "v": 112.5}, {"n": "Hummus de betabel by MM 300g", "v": 107.68}, {"n": "Banana muffin", "v": 100.4}, {"n": "Green Warrior", "v": 97.68}],acum:[{"n": "Verde AF", "v": 1531.44}, {"n": "Xolo Verde", "v": 1301.07}, {"n": "Don Pastito", "v": 722.0}, {"n": "Pasta", "v": 704.24}, {"n": "Limón Partido", "v": 453.6}, {"n": "Rollo de canela Vitch Bakery 1", "v": 385.0}, {"n": "Betabella", "v": 350.52}, {"n": "Raw oats by MM 280g", "v": 343.5}, {"n": "Champiñones blancos", "v": 326.09}, {"n": "El Místico", "v": 317.5}]},
+  'Santa Fe': {s26:[{"n": "chile de arbol", "v": 413.7}, {"n": "Verde AF", "v": 297.78}, {"n": "Betabella", "v": 116.84}, {"n": "Arroz con leche by MM 158g", "v": 109.2}, {"n": "aderezo cashew", "v": 105.42}, {"n": "Rollo de canela Vitch Bakery 1", "v": 105.0}, {"n": "Tahini Waffle", "v": 103.78}, {"n": "chile ancho", "v": 89.95}, {"n": "Tomate verde", "v": 72.81}, {"n": "Plátano Tabasco", "v": 68.39}],acum:[{"n": "Verde AF", "v": 680.64}, {"n": "Tahini Waffle", "v": 504.89}, {"n": "Rollo de canela Vitch Bakery 1", "v": 490.0}, {"n": "leche almendra by mm lt", "v": 483.0}, {"n": "setas cocidas", "v": 441.26}, {"n": "chile de arbol", "v": 413.7}, {"n": "Zana Zana", "v": 381.5}, {"n": "Raw oats by MM 280g", "v": 377.85}, {"n": "Fire Shot", "v": 312.11}, {"n": "Arroz con leche by MM 158g", "v": 254.8}]},
+  'Liverpool': {s26:[{"n": "Raw oats by MM 280g", "v": 171.75}, {"n": "Limón Partido", "v": 170.1}, {"n": "Betabella", "v": 146.05}, {"n": "Arroz con leche by MM 158g", "v": 145.6}, {"n": "Don Pastito", "v": 144.4}, {"n": "El Místico", "v": 127.0}, {"n": "Fire Shot", "v": 108.56}, {"n": "Tempeh Gyro wrap", "v": 95.48}, {"n": "Green Warrior", "v": 73.26}, {"n": "Rawmesan by MM 180g", "v": 56.76}],acum:[{"n": "Don Pastito", "v": 433.2}, {"n": "Betabella", "v": 321.31}, {"n": "El Místico", "v": 317.5}, {"n": "Fire Shot", "v": 298.54}, {"n": "Xolo Verde", "v": 293.79}, {"n": "Verde AF", "v": 255.24}, {"n": "Tempeh Gyro wrap", "v": 238.7}, {"n": "Shot de Jengibre", "v": 237.82}, {"n": "Limón Partido", "v": 226.8}, {"n": "Arroz con leche by MM 158g", "v": 218.4}]},
+  'Polanco': {s26:[{"n": "Espinaca baby 250gr Insumo", "v": 225.0}, {"n": "Xolo Verde", "v": 209.85}, {"n": "Aguacate Hass", "v": 200.0}, {"n": "Tempeh Gyro wrap", "v": 190.96}, {"n": "Verde AF", "v": 170.16}, {"n": "Champiñones blancos", "v": 168.0}, {"n": "Espárrago", "v": 164.5}, {"n": "Arúgula baby", "v": 160.0}, {"n": "Pera anjou", "v": 160.0}, {"n": "Blueberry domo 170g", "v": 150.0}],acum:[{"n": "Azúcar de coco ", "v": 1508.22}, {"n": "Levadura nutricional", "v": 875.74}, {"n": "Aguacate Hass", "v": 720.0}, {"n": "Proteina Insumo Habits vainill", "v": 685.63}, {"n": "Espinaca baby 250gr Insumo", "v": 675.0}, {"n": "Arúgula baby", "v": 640.0}, {"n": "Almendra fileteada ", "v": 606.48}, {"n": "Cebollín", "v": 560.0}, {"n": "Tempeh Gyro wrap", "v": 525.14}, {"n": "Fresa domo 450g", "v": 437.5}]},
+  'Coapa': {s26:[{"n": "Xolo Verde", "v": 251.82}, {"n": "Fresa domo 450g", "v": 99.75}, {"n": "Guerrero", "v": 64.89}, {"n": "Espinaca baby 250gr Insumo", "v": 45.0}, {"n": "El Místico", "v": 31.75}, {"n": "Limón Partido", "v": 28.35}, {"n": "Super C+", "v": 27.93}, {"n": "Cebollín", "v": 20.0}, {"n": "Blueberry domo 170g", "v": 8.55}, {"n": "Jitomate Cherry CA", "v": 3.6}],acum:[{"n": "Xolo Verde", "v": 293.79}, {"n": "Super C+", "v": 223.44}, {"n": "Fresa domo 450g", "v": 159.07}, {"n": "Guerrero", "v": 151.41}, {"n": "El Místico", "v": 127.0}, {"n": "Plátano Tabasco", "v": 105.26}, {"n": "Fire Shot", "v": 54.28}, {"n": "Shot de Jengibre", "v": 54.05}, {"n": "Espinaca baby 250gr Insumo", "v": 45.0}, {"n": "Ajo criollo", "v": 29.7}]},
+  'Insurgentes': {s26:[{"n": "Don Pastito", "v": 252.7}, {"n": "Verde AF", "v": 127.62}, {"n": "Tempeh Gyro wrap", "v": 95.48}, {"n": "Habibi Protein", "v": 90.66}, {"n": "Betabella", "v": 87.63}, {"n": "Golden Elixir Shot", "v": 85.76}, {"n": "Limón Partido", "v": 85.05}, {"n": "Xolo Verde", "v": 83.94}, {"n": "Zana Zana", "v": 81.75}, {"n": "Super C+", "v": 55.86}],acum:[{"n": "Don Pastito", "v": 794.2}, {"n": "Rollo de canela Vitch Bakery 1", "v": 420.0}, {"n": "Limón Partido", "v": 311.85}, {"n": "Verde AF", "v": 297.78}, {"n": "Xolo Verde", "v": 293.79}, {"n": "Golden Elixir Shot", "v": 289.44}, {"n": "El Místico", "v": 285.75}, {"n": "Jugo de Apio", "v": 267.6}, {"n": "Tempeh Gyro wrap", "v": 238.7}, {"n": "Kale", "v": 220.62}]},
+  'Roma': {s26:[{"n": "Banana muffin ", "v": 160.0}, {"n": "Raw oats by MM 280g", "v": 137.4}, {"n": "El Místico", "v": 127.0}, {"n": "Limón Partido", "v": 113.4}, {"n": "Blondie gluten free Vitch Bake", "v": 110.0}, {"n": "Leche de almendra ", "v": 101.7}, {"n": "Xolo Verde", "v": 83.94}, {"n": "Jugo de Apio", "v": 66.9}, {"n": "Mora azul Campo Vivo 170g", "v": 59.0}, {"n": "Zana Zana", "v": 54.5}],acum:[{"n": "Raw oats by MM 280g", "v": 343.5}, {"n": "Don Pastito", "v": 288.8}, {"n": "Jugo de Apio", "v": 267.6}, {"n": "Guerrero", "v": 237.93}, {"n": "Limón Partido", "v": 198.45}, {"n": "Green Warrior", "v": 195.36}, {"n": "Zana Zana", "v": 190.75}, {"n": "El Místico", "v": 190.5}, {"n": "Leche de almendra ", "v": 186.45}, {"n": "Banana muffin ", "v": 160.0}]},
+  'Kitchen Lab': {s26:[{"n": "Verde AF", "v": 170.16}, {"n": "El Místico", "v": 158.75}, {"n": "Don Pastito", "v": 108.3}, {"n": "Green Warrior", "v": 97.68}, {"n": "Jugo de Apio", "v": 89.2}, {"n": "zanahoria encurtida", "v": 88.79}, {"n": "Guerrero", "v": 86.52}, {"n": "Limón Partido", "v": 85.05}, {"n": "Xolo Verde", "v": 83.94}, {"n": "Super C+", "v": 83.79}],acum:[{"n": "El Místico", "v": 571.5}, {"n": "Verde AF", "v": 467.94}, {"n": "Betabella", "v": 379.73}, {"n": "Xolo Verde", "v": 377.73}, {"n": "Green Warrior", "v": 341.88}, {"n": "Don Pastito", "v": 324.9}, {"n": "Limón Partido", "v": 311.85}, {"n": "leche de almendra by mm Lt", "v": 278.56}, {"n": "Zana Zana", "v": 218.0}, {"n": "Jugo de Apio", "v": 200.7}]}
+};
+var MG_TOTALS = {"Condesa": 18490.9, "Colima": 12343.64, "Santa Fe": 10366.69, "Liverpool": 4327.8, "Polanco": 18828.18, "Coapa": 1349.82, "Insurgentes": 6048.2, "Roma": 3828.21, "Kitchen Lab": 5053.39};
+
+
+var SUC_HIST_PCT={
+  'Condesa':    [18.9,23.8,15.8,17.8,15.8,15.2,26.6,16.4,25.8,22.7,20.5,24.9,null,null,15.7,38.9,0.295],
+  'Colima':     [37.5,32.3,26.6,32.3,27.5,26.6,26.2,23.0,36.1,20.2,29.6,28.4,null,18.7,18.9,19.4,0.138],
+  'Santa Fe':   [21.5,22.8,21.0,21.8,22.2,21.0,22.6,17.6,17.4,17.3,22.1,27.4,null,25.8,30.1,29.9,0.32],
+  'Liverpool':  [28.1,27.4,35.3,32.8,35.6,35.3,37.0,30.5,38.5,39.8,40.4,34.5,null,42.1,23.1,35.9,0.203],
+  'Polanco':    [18.5,19.1,12.5,19.6,12.4,25.6,23.6,26.8,17.5,15.8,19.0,18.2,null,12.7,21.1,23.8,0.252],
+  'Insurgentes':[36.7,27.3,12.7,31.9,27.3,28.7,26.0,26.1,38.7,38.8,29.7,31.4,null,52.9,24.0,40.6,0.41],
+  'Roma':       [20.0,21.7,26.5,22.3,26.5,26.5,16.5,19.0,45.2,38.2,32.8,33.5,null,32.3,20.1,24.6,0.176]
+};
+
+// ─── HELPERS ───
+var CHT={};
+function f$(v){return'$'+Math.abs(Math.round(v)).toLocaleString('es-MX');}
+function fp(v){return(v*1).toFixed(1)+'%';}
+function sc(p){return p>=30?'#B22222':p>=22?'#E67E22':'#27AE60';}
+function pillHtml(p){if(!p)return'<span class="pill pill-na">Sin datos</span>';var c=p>=30?'pill-crit':p>=22?'pill-mod':'pill-ok',l=p>=30?'Crítica':p>=22?'Moderada':'OK';return'<span class="pill '+c+'">'+l+'</span>';}
+function mkChart(id,cfg){var el=document.getElementById(id);if(!el)return;if(CHT[id])CHT[id].destroy();CHT[id]=new Chart(el,cfg);}
+var GC='rgba(0,0,0,.04)',TC='#718096';
+
+// ─── DASHBOARD ───
+function buildDashboard(){
+  mkChart('ch-trend',{type:'line',data:{labels:SEMS,datasets:[{label:'% Merma',data:PCT,borderColor:'#B22222',borderWidth:2.5,pointBackgroundColor:PCT.map(function(v){return v>=30?'#B22222':v>=22?'#E67E22':'#27AE60';}),pointRadius:5,fill:{target:'origin',above:'rgba(178,34,34,.05)'},tension:.3},{label:'Política 22%',data:SEMS.map(function(){return 22;}),borderColor:'#E67E22',borderDash:[5,3],borderWidth:1.5,pointRadius:0},{label:'Crítica 30%',data:SEMS.map(function(){return 30;}),borderColor:'#B22222',borderDash:[3,3],borderWidth:1,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10},boxWidth:9}}},scales:{x:{grid:{color:GC},ticks:{font:{size:9},color:TC}},y:{min:10,max:45,grid:{color:GC},ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
+  mkChart('ch-desv',{type:'bar',data:{labels:SEMS,datasets:[{label:'Var. Merma $',data:DESV,backgroundColor:DESV.map(function(v){return v>0?'rgba(178,34,34,.7)':'rgba(39,174,96,.7)';}),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});
+  var al=[{cls:'mod',ico:'🟡',t:'S27 — 23.2% Moderada (mejora 7.5pp)',d:'Insurgentes 41.0% crítica · Condesa 29.5% · Liverpool 20.3%'},{cls:'crit',ico:'🚨',t:'Insurgentes 41.0% S27 — crítica',d:'Liverpool 20.3% mejora · Insurgentes persiste sobre 30%'},{cls:'mod',ico:'🟡',t:'Desviación S26: $9,187 (58.4%)',d:'Merma real vs reportada — revisar capturas'}];
+  document.getElementById('dash-alerts').innerHTML=al.map(function(a){return'<div class="alert-item alert-'+a.cls+'"><div class="alert-ico">'+a.ico+'</div><div class="alert-body"><div class="alert-title">'+a.t+'</div><div class="alert-desc">'+a.d+'</div></div></div>';}).join('');
+  var ranked=BRANCHES.filter(function(b){return b.pct>0;}).sort(function(a,b){return a.pct-b.pct;});
+  var maxP=ranked[ranked.length-1].pct;
+  document.getElementById('dash-rank').innerHTML=ranked.map(function(b,i){var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name">'+b.n+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(b.pct/maxP*100)+'%;background:'+sc(b.pct)+'"></div></div><div class="rank-val" style="color:'+sc(b.pct)+'">'+fp(b.pct)+'</div></div>';}).join('');
+}
+
+// ─── MARGEN ───
+function buildMargen(){
+  setTimeout(function(){
+    mkChart('ch-util',{type:'line',data:{labels:SEMS,datasets:[{label:'Utilidad %',data:UTILIDAD_P,borderColor:'#00897B',borderWidth:2.5,pointRadius:4,fill:{target:'origin',above:'rgba(0,137,123,.07)'},tension:.3},{label:'% Merma',data:PCT,borderColor:'#B22222',borderWidth:1.5,pointRadius:3,borderDash:[4,3],tension:.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10},boxWidth:9}}},scales:{x:{grid:{color:GC},ticks:{font:{size:9},color:TC}},y:{min:20,max:70,grid:{color:GC},ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
+    mkChart('ch-merma-vtas',{data:{labels:SEMS,datasets:[{type:'bar',label:'Merma $',data:MRMA,backgroundColor:'rgba(178,34,34,.65)',borderRadius:3,yAxisID:'y'},{type:'line',label:'Ventas $',data:VTAS,borderColor:'#2a78d6',borderWidth:2,pointRadius:3,yAxisID:'y2',tension:.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10},boxWidth:9}}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}},y2:{position:'right',grid:{display:false},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});
+    mkChart('ch-meses',{type:'bar',data:{labels:MESES.map(function(m){return m.m;}),datasets:[{label:'Ventas $',data:MESES.map(function(m){return m.v;}),backgroundColor:'rgba(42,120,214,.7)',borderRadius:4},{label:'Merma $',data:MESES.map(function(m){return m.mr;}),backgroundColor:'rgba(178,34,34,.7)',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10},boxWidth:9}}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});
+  },80);
+  var t=document.getElementById('tbl-margen');
+  t.innerHTML='<thead><tr><th>Sem</th><th>Ventas $</th><th>Costo $</th><th>Margen $</th><th>Merma $</th><th>% Merma</th><th>Var. $</th><th>Utilidad %</th></tr></thead><tbody>'+SEMS.map(function(s,i){var dv=i>0?MRMA[i]-MRMA[i-1]:0;var last=i===SEMS.length-1;return'<tr style="'+(last?'background:#FFF8F0;font-weight:600':'')+'"><td class="mono">'+s+(last?' 🆕':'')+'</td><td class="mono">'+f$(VTAS[i])+'</td><td class="mono">'+f$(COSTO[i])+'</td><td class="mono" style="color:var(--verde2)">'+f$(MARGEN[i])+'</td><td class="mono" style="color:var(--rojo)">'+f$(MRMA[i])+'</td><td class="mono" style="font-weight:700;color:'+sc(PCT[i])+'">'+fp(PCT[i])+'</td><td class="mono" style="color:'+(i>0?(dv>0?'var(--rojo)':'var(--verde2)'):'var(--gris)')+'">'+( i>0?(dv>0?'+':'')+f$(dv):'—')+'</td><td class="mono" style="color:#00897B;font-weight:700">'+fp(UTILIDAD_P[i])+'</td></tr>';}).join('')+'</tbody>';
+}
+
+// ─── SUCURSALES ───
+function buildSucursales(){
+  var cr=BRANCHES.filter(function(b){return b.st==='crit';}).length;
+  var ok=BRANCHES.filter(function(b){return b.st==='ok';}).length;
+  var mo=BRANCHES.filter(function(b){return b.st==='mod';}).length;
+  document.getElementById('suc-status').innerHTML='<div class="status-chip">🏪 '+BRANCHES.length+' Sucursales</div><div class="status-chip" style="background:var(--verde3);color:var(--verde)">✅ '+ok+' OK</div><div class="status-chip" style="background:var(--ambar2);color:var(--ambar)">🟡 '+mo+' Mod.</div><div class="status-chip" style="background:var(--rojo2);color:var(--rojo)">🔴 '+cr+' Críticas</div>';
+  var chips='<button class="suc-chip active" onclick="filterSuc(null,this)">Todas</button>';
+  chips+=BRANCHES.filter(function(b){return b.pct>0;}).map(function(b){return'<button class="suc-chip" onclick="filterSuc(\''+b.n+'\',this)">'+b.n+'</button>';}).join('');
+  document.getElementById('suc-filter').innerHTML=chips;
+  renderBranchGrid();
+}
+function filterSuc(name,el){
+  document.querySelectorAll('.suc-chip').forEach(function(c){c.classList.remove('active');});
+  el.classList.add('active');
+  if(!name){document.getElementById('suc-detail-view').style.display='none';document.getElementById('suc-grid-view').style.display='';renderBranchGrid();}
+  else{var b=BRANCHES.find(function(x){return x.n===name;});if(b)showBranchFull(b);}
+}
+function renderBranchGrid(){
+  document.getElementById('branch-grid').innerHTML=BRANCHES.map(function(b,i){
+    var s26=b.s[26]||0,s25=b.s[25]||0,trend=s26>0&&s25>0?(s26>s25?'<span style="color:var(--rojo)">↑</span>':'<span style="color:var(--verde2)">↓</span>'):'—';
+    var pCls=b.pct>=30?'bc-pct-crit':b.pct>=22?'bc-pct-mod':'bc-pct-ok';
+    var insT=(b.ins[0]||0)+(b.ins[1]||0)+(b.ins[2]||0);
+    var p26=b.pct_s&&b.pct_s[26]?Math.round(b.pct_s[26]*1000)/10:null;
+    return'<div class="branch-card bc-'+b.s+'" onclick="showBranchFull(BRANCHES['+i+'])">'+'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="bc-name">'+b.n+'</div>'+pillHtml(b.pct)+'</div>'+'<div class="bc-pct '+pCls+'">'+(b.pct?fp(b.pct):'—')+'</div>'+'<div class="bc-meta">S26 Jugos: '+(s26?f$(s26):'—')+' '+trend+(p26?' · '+p26+'%':'')+'</div>'+'<div class="bc-meta" style="margin-top:2px">Insumos Jun acum: '+(insT?f$(insT):'—')+'</div>'+'<div class="bc-bar"><div class="bc-fill" style="width:'+Math.min(b.pct/50*100,100)+'%;background:'+sc(b.pct)+'"></div></div></div>';
+  }).join('');
+}
+function showBranchFull(b){
+  document.getElementById('suc-grid-view').style.display='none';
+  var dv=document.getElementById('suc-detail-view');dv.style.display='';
+  var hist=SUC_HIST_PCT[b.n]||[];
+  var insAcum=(b.ins[0]||0)+(b.ins[1]||0)+(b.ins[2]||0);
+  var s26=b.s[26]||0,s25=b.s[25]||0;
+  var p26=b.pct_s&&b.pct_s[26]?Math.round(b.pct_s[26]*1000)/10:null;
+
+  // Get top10 data for this branch
+  var top10d = TOP10_SUC[b.n] || null;
+
+  dv.innerHTML='<button onclick="resetSucView()" style="margin-bottom:13px;padding:7px 14px;border:1.5px solid var(--brd);border-radius:8px;background:#fff;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit">← Volver</button>'
+  +'<div class="kpi-grid" style="margin-bottom:13px">'
+  +'<div class="kpi blue"><div class="kpi-label">% Merma prom.</div><div class="kpi-val" style="color:'+sc(b.pct)+'">'+( b.pct?fp(b.pct):'—')+'</div><div class="kpi-sub">'+pillHtml(b.pct)+'</div></div>'
+  +'<div class="kpi red"><div class="kpi-label">S26 Merma $</div><div class="kpi-val">'+(s26?f$(s26):'—')+'</div><div class="kpi-sub">'+(p26?p26+'% merma':'')+'</div></div>'
+  +'<div class="kpi amber"><div class="kpi-label">S25 Merma $</div><div class="kpi-val">'+(s25?f$(s25):'—')+'</div><div class="kpi-sub">'+(s26&&s25?(s26>s25?'↑ Subió':'↓ Bajó'):'')+'</div></div>'
+  +'<div class="kpi purple"><div class="kpi-label">Insumos Jun acum.</div><div class="kpi-val">'+(insAcum?f$(insAcum):'—')+'</div><div class="kpi-sub">S1 → S2 → S3</div></div>'
+  +'</div>'
+  +'<div class="g2">'
+  +(hist.length>0?'<div class="card"><div class="card-head"><div><div class="card-title">🥤 Jugos — % Merma histórico</div><div class="card-sub">S11–S26 · línea roja = 22%</div></div></div><div style="position:relative;height:180px"><canvas id="ch-suc-det"></canvas></div></div>':'<div class="card" style="text-align:center;padding:24px;color:var(--gris)">Sin datos históricos por semana para esta sucursal.</div>')
+  +'<div class="card"><div class="card-head"><div><div class="card-title">📦 Insumos Jun 2026</div></div></div>'
+  +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">'+['Jun S1','Jun S2','Jun S3'].map(function(s,i){var v=b.ins[i]||0;var prev=i>0?(b.ins[i-1]||0):null;var trend=prev!==null?(v>prev?'<span style="color:var(--rojo)">↑</span>':'<span style="color:var(--verde2)">↓</span>'):'';return'<div style="background:var(--bg);border-radius:8px;padding:12px;text-align:center"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--gris);margin-bottom:4px">'+s+'</div><div style="font-size:16px;font-weight:700">'+(v?f$(v):'—')+' '+trend+'</div></div>';}).join('')+'</div>'
+  +'<div style="margin-top:12px">'+buildSucAnalysis(b)+'</div></div>'
+  +'</div>';
+
+  // Top 10 section
+  if(top10d){
+    var top10section = document.createElement('div');
+    top10section.className = 'g2';
+    top10section.style.marginTop = '13px';
+    function rankRowsSuc(data, colorHex){
+      var max = data[0].v;
+      return data.map(function(p,i){var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name" style="font-size:11px">'+p.n+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.v/max*100)+'%;background:'+colorHex+'"></div></div><div class="rank-val">'+f$(p.v)+'</div></div>';}).join('');
+    }
+    top10section.innerHTML =
+      '<div class="card" style="margin-bottom:0"><div class="card-head"><div><div class="card-title">📊 Top 10 — Semana 26</div><div class="card-sub">Mayor merma $ en la semana</div></div></div>'+rankRowsSuc(top10d.s26,'#B22222')+'</div>'
+      +'<div class="card" style="margin-bottom:0"><div class="card-head"><div><div class="card-title">📅 Top 10 — Acumulado Jun</div><div class="card-sub">Mayor merma $ acumulada en el mes</div></div></div>'+rankRowsSuc(top10d.acum,'#7F77DD')+'</div>';
+    document.getElementById('suc-detail-view').appendChild(top10section);
+  }
+
+  if(hist.length>0){
+    setTimeout(function(){
+      mkChart('ch-suc-det',{type:'line',data:{labels:SEMS,datasets:[{label:'% Merma',data:hist,borderColor:sc(b.pct),borderWidth:2,pointRadius:4,tension:.3,spanGaps:true},{label:'22%',data:SEMS.map(function(){return 22;}),borderColor:'#E67E22',borderDash:[4,3],borderWidth:1.5,pointRadius:0},{label:'30%',data:SEMS.map(function(){return 30;}),borderColor:'#B22222',borderDash:[3,3],borderWidth:1,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:9},boxWidth:8}}},scales:{x:{ticks:{font:{size:9},color:TC}},y:{min:0,max:60,ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
+    },80);
+  }
+}
+function buildSucAnalysis(b){
+  var hist=SUC_HIST_PCT[b.n]||[];
+  var items=[];
+  if(hist.length>0){
+    var vals=hist.filter(function(v){return v!==null&&v>0;});
+    var min=Math.min.apply(null,vals),max=Math.max.apply(null,vals);
+    var minIdx=hist.indexOf(min),maxIdx=hist.indexOf(max);
+    items.push('<div style="background:var(--verde3);border-radius:8px;padding:9px 11px;margin-bottom:6px"><div style="font-size:10px;font-weight:700;color:var(--verde)">✅ Mejor semana</div><div style="font-size:13px;font-weight:600">'+SEMS[minIdx]+' — '+fp(min)+'</div></div>');
+    items.push('<div style="background:var(--rojo2);border-radius:8px;padding:9px 11px"><div style="font-size:10px;font-weight:700;color:var(--rojo)">🔴 Peor semana</div><div style="font-size:13px;font-weight:600">'+SEMS[maxIdx]+' — '+fp(max)+'</div></div>');
+  }
+  return items.join('');
+}
+function resetSucView(){
+  document.getElementById('suc-detail-view').style.display='none';
+  document.getElementById('suc-grid-view').style.display='';
+  document.querySelectorAll('.suc-chip').forEach(function(c,i){c.classList.toggle('active',i===0);});
+}
+
+// ─── TOP 10 POR SUCURSAL ───
+var activeSucTop='Condesa';
+function buildTop10(){
+  var sucs=Object.keys(TOP10_SUC);
+  document.getElementById('top10-tabs').innerHTML=sucs.map(function(s){return'<button class="suc-tab'+(s===activeSucTop?' active':'')+'" onclick="setTop10(\''+s+'\')">'+s+'</button>';}).join('');
+  renderTop10(activeSucTop);
+}
+function setTop10(name){
+  activeSucTop=name;
+  document.querySelectorAll('.suc-tab').forEach(function(t){t.classList.toggle('active',t.textContent===name);});
+  renderTop10(name);
+}
+function renderTop10(name){
+  var d=TOP10_SUC[name];
+  if(!d){document.getElementById('top10-content').innerHTML='<div style="color:var(--gris);padding:20px">Sin datos para esta sucursal.</div>';return;}
+  function rankRows(data,colorHex){
+    var max=data[0].v;
+    return data.map(function(p,i){var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name">'+p.n+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.v/max*100)+'%;background:'+colorHex+'"></div></div><div class="rank-val">'+f$(p.v)+'</div></div>';}).join('');
+  }
+  var b=BRANCHES.find(function(x){return x.n===name;})||{};
+  var s26=b.s&&b.s[26]?f$(b.s[26]):'—';
+  var p26=b.pct_s&&b.pct_s[26]?Math.round(b.pct_s[26]*1000)/10+'%':'—';
+  document.getElementById('top10-content').innerHTML=
+    '<div class="card" style="margin-bottom:0">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="card-title">🗓 Semana 26 — Top 10</div><div style="font-size:11px;color:var(--gris)">Total merma: '+f$(d.s26.reduce(function(a,p){return a+p.v;},0))+' · % merma: '+p26+'</div></div>'
+    +'<div class="card-sub" style="margin-bottom:12px">Merma $ S26 · '+name+'</div>'
+    +rankRows(d.s26,'#B22222')
+    +'</div>'
+    +'<div class="card" style="margin-bottom:0">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="card-title">📅 Acumulado Jun 2026 — Top 10</div><div style="font-size:11px;color:var(--gris)">Total: '+f$(d.acum.reduce(function(a,p){return a+p.v;},0))+'</div></div>'
+    +'<div class="card-sub" style="margin-bottom:12px">Merma $ acumulada · '+name+'</div>'
+    +rankRows(d.acum,'#7F77DD')
+    +'</div>';
+}
+
+// ─── CATEGORÍAS ───
+var activeCat=0;
+
+
+// ─── PROTEÍNA INSUMO ───
+var PROT_SUC=[{"suc": "Condesa", "choco_g": 8631.4, "vaini_g": 10922.6, "total_g": 19554.0}, {"suc": "Colima", "choco_g": 6705.0, "vaini_g": 10790.6, "total_g": 17495.6}, {"suc": "Santa Fe", "choco_g": 5282.1, "vaini_g": 8882.0, "total_g": 14164.1}, {"suc": "Liverpool", "choco_g": 2145.0, "vaini_g": 4008.0, "total_g": 6153.0}, {"suc": "Polanco", "choco_g": 8082.9, "vaini_g": 9695.0, "total_g": 17777.9}, {"suc": "Coapa", "choco_g": 1287.9, "vaini_g": 2297.3, "total_g": 3585.2}, {"suc": "Insurgentes", "choco_g": 2738.6, "vaini_g": 5835.2, "total_g": 8573.8}, {"suc": "Roma", "choco_g": 4472.1, "vaini_g": 4555.8, "total_g": 9027.9}, {"suc": "Lomas", "choco_g": 75.0, "vaini_g": 1519.3, "total_g": 1594.3}, {"suc": "CDI", "choco_g": 880.7, "vaini_g": 1598.9, "total_g": 2479.6}];
+var PROT_PROD_CHOCO=[{"n": "Chocohongo", "g": 16140.0, "pz": 1076}, {"n": "The Protein Macchiato", "g": 11640.0, "pz": 776}, {"n": "Chocolate Shake", "g": 7590.0, "pz": 506}, {"n": "Smoothie del Día (Choco)", "g": 4930.7, "pz": 329}];
+var PROT_PROD_VAINI=[{"n": "The Cherry Blossom", "g": 13125.0, "pz": 875}, {"n": "El Azul", "g": 11985.0, "pz": 799}, {"n": "Matchacate", "g": 7185.0, "pz": 479}, {"n": "Vainilla Shake", "g": 6240.0, "pz": 416}, {"n": "Cold Brew Shake", "g": 5535.0, "pz": 369}, {"n": "Smoothie del Día (Azul)", "g": 4930.7, "pz": 329}, {"n": "El Azul Bowl", "g": 4470.0, "pz": 298}, {"n": "Perfect Match-A", "g": 2775.0, "pz": 185}, {"n": "Matchacate Bowl", "g": 2520.0, "pz": 168}, {"n": "Matcha Latte", "g": 1191.1, "pz": 277}, {"n": "Berry Glow", "g": 90.0, "pz": 6}, {"n": "Blue Protein (mediano)", "g": 25.0, "pz": 5}, {"n": "Blue Protein", "g": 20.0, "pz": 4}, {"n": "Protein Coffee Frappé", "g": 12.9, "pz": 3}];
+var PROT_KPIS={choco_g:40300.7,vaini_g:60104.7,total_g:100405.4,choco_kg:40.3,vaini_kg:60.1,total_kg:100.41};
+
+// ─── SUPLEMENTOS DATA ───
+var SUP_SUCS=["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "Roma", "CDI"];
+var SUP_RESUMEN_1_5JUL=[{"suc": "Condesa", "diff_pz": 23.2, "faltantes": 19, "sobrantes": 8}, {"suc": "Colima", "diff_pz": 38.4, "faltantes": 12, "sobrantes": 5}, {"suc": "Santa Fe", "diff_pz": 8.2, "faltantes": 14, "sobrantes": 7}, {"suc": "Liverpool", "diff_pz": 73.7, "faltantes": 14, "sobrantes": 2}, {"suc": "Polanco", "diff_pz": 42.8, "faltantes": 9, "sobrantes": 2}, {"suc": "Roma", "diff_pz": 17.2, "faltantes": 5, "sobrantes": 3}, {"suc": "CDI", "diff_pz": 3.2, "faltantes": 4, "sobrantes": 0}];
+var SUP_TOP_DIFFS=[{"prod": "Creatina Optimum Nutrition 300g", "dpz": 97.0, "sucs": ["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "Roma"]}, {"prod": "Creatina ON 300g", "dpz": -78, "sucs": ["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "Roma"]}, {"prod": "Proteina vainilla Isopure 558gr", "dpz": 38.0, "sucs": ["Condesa", "Liverpool"]}, {"prod": "Sachet cacao Habits 30g", "dpz": 34, "sucs": ["Santa Fe", "Polanco"]}, {"prod": "Proteína vainilla Isopure 558g", "dpz": -31, "sucs": ["Condesa", "Liverpool"]}, {"prod": "Sachet vainilla Habits 30g", "dpz": 31.0, "sucs": ["Condesa", "Santa Fe", "Liverpool", "Roma"]}, {"prod": "Proteína vainilla Birdman 1.8kg", "dpz": 19, "sucs": ["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "Roma"]}, {"prod": "Superfoods Greens Mango Bloom 145g", "dpz": 17.0, "sucs": ["Liverpool"]}, {"prod": "Caja berries True For You 7pzas", "dpz": -14, "sucs": ["Condesa", "Colima", "Santa Fe"]}, {"prod": "Proteína vainilla ON 740g", "dpz": 14.0, "sucs": ["Condesa", "Colima", "Santa Fe"]}, {"prod": "Proteína chocolate Birdman 480g", "dpz": -13, "sucs": ["Condesa", "Colima", "Santa Fe"]}, {"prod": "Proteína chocolate Birdman 510g", "dpz": 13, "sucs": ["Condesa", "Colima", "Santa Fe"]}, {"prod": "Proteína vainilla Birdman 480g", "dpz": -13, "sucs": ["Condesa", "Colima", "Santa Fe"]}, {"prod": "Proteína vainilla Birdman 510g", "dpz": 13, "sucs": ["Condesa", "Colima", "Santa Fe"]}, {"prod": "Sachet Macchiato Habits 30g", "dpz": 12, "sucs": ["Liverpool"]}];
+var SUP_DETALLE=[{"prod": "Ashwagandha", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0.1, "comp": 0, "vta": 0, "teo": 0.1, "fin": 0, "diff": 0.1}, "Polanco": {"ini": 1.0, "comp": 0, "vta": 0, "teo": 1.0, "fin": 0, "diff": 1.0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Caja berries True For You 7pzas", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 1, "teo": -1, "fin": 5, "diff": -6}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 7, "diff": -7}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 1, "diff": -1}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Caja citrus True For You 7pzas", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 1, "teo": -1, "fin": 2, "diff": -3}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 3, "diff": -3}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 1, "diff": -1}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Caja tangerine True For You 7pzas", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 1, "teo": -1, "fin": 3, "diff": -4}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 2, "diff": -2}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 3, "diff": -3}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 2, "diff": -2}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Citra Pure Birdman 240 cápsulas", "sucs": {"Condesa": {"ini": 6.0, "comp": 0, "vta": 0, "teo": 6.0, "fin": 0, "diff": 6.0}, "Colima": {"ini": 2.0, "comp": 0, "vta": 0, "teo": 2.0, "fin": 0, "diff": 2.0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Creatina Birdman 450g", "sucs": {"Condesa": {"ini": 0, "comp": 10, "vta": 0, "teo": 10, "fin": 10, "diff": 0}, "Colima": {"ini": 0, "comp": 5, "vta": 0, "teo": 5, "fin": 0, "diff": 5}, "Santa Fe": {"ini": 0, "comp": 5, "vta": 0, "teo": 5, "fin": 5, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Creatina Habits 300g", "sucs": {"Condesa": {"ini": 10.0, "comp": 5, "vta": 4, "teo": 11.0, "fin": 11, "diff": 0.0}, "Colima": {"ini": 8.0, "comp": 3, "vta": 2, "teo": 9.0, "fin": 9, "diff": 0.0}, "Santa Fe": {"ini": 5.0, "comp": 2, "vta": 0, "teo": 7.0, "fin": 7, "diff": 0.0}, "Liverpool": {"ini": 4.0, "comp": 0, "vta": 0, "teo": 4.0, "fin": 4, "diff": 0.0}, "Polanco": {"ini": 2.0, "comp": 0, "vta": 1, "teo": 1.0, "fin": 1, "diff": 0.0}, "Roma": {"ini": 2.0, "comp": 0, "vta": 0, "teo": 2.0, "fin": 1, "diff": 1.0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Creatina ON 300g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 2, "teo": -2, "fin": 22, "diff": -24}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 27, "diff": -27}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 12, "diff": -12}, "Liverpool": {"ini": 0, "comp": 0, "vta": 1, "teo": -1, "fin": 8, "diff": -9}, "Polanco": {"ini": 0, "comp": 0, "vta": 1, "teo": -1, "fin": 1, "diff": -2}, "Roma": {"ini": 0, "comp": 0, "vta": 1, "teo": -1, "fin": 3, "diff": -4}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Creatina Optimum Nutrition 300g", "sucs": {"Condesa": {"ini": 25.0, "comp": 0, "vta": 0, "teo": 25.0, "fin": 0, "diff": 25.0}, "Colima": {"ini": 43.0, "comp": 0, "vta": 0, "teo": 43.0, "fin": 0, "diff": 43.0}, "Santa Fe": {"ini": 13.0, "comp": 0, "vta": 0, "teo": 13.0, "fin": 0, "diff": 13.0}, "Liverpool": {"ini": 9.0, "comp": 0, "vta": 0, "teo": 9.0, "fin": 0, "diff": 9.0}, "Polanco": {"ini": 2.0, "comp": 0, "vta": 0, "teo": 2.0, "fin": 0, "diff": 2.0}, "Roma": {"ini": 5.0, "comp": 0, "vta": 0, "teo": 5.0, "fin": 0, "diff": 5.0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Creatina Pink Lemon Birdman 300g", "sucs": {"Condesa": {"ini": 0, "comp": 5, "vta": 0, "teo": 5, "fin": 5, "diff": 0}, "Colima": {"ini": 0, "comp": 3, "vta": 0, "teo": 3, "fin": 3, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 2, "vta": 0, "teo": 2, "fin": 2, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Creatina Watermelon Birdman 300g", "sucs": {"Condesa": {"ini": 0, "comp": 5, "vta": 0, "teo": 5, "fin": 5, "diff": 0}, "Colima": {"ini": 0, "comp": 3, "vta": 0, "teo": 3, "fin": 3, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 2, "vta": 0, "teo": 2, "fin": 2, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "MYO Inositol Birdman 180 cápsulas", "sucs": {"Condesa": {"ini": 2.0, "comp": 0, "vta": 0, "teo": 2.0, "fin": 0, "diff": 2.0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Pre workout Limonada Rosa Bloom 175g", "sucs": {"Condesa": {"ini": 2.0, "comp": 0, "vta": 1, "teo": 1.0, "fin": 1, "diff": 0.0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 1.0, "comp": 0, "vta": 0, "teo": 1.0, "fin": 0, "diff": 1.0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteina vainilla Isopure 558gr", "sucs": {"Condesa": {"ini": 13.0, "comp": 0, "vta": 0, "teo": 13.0, "fin": 0, "diff": 13.0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 25.0, "comp": 0, "vta": 0, "teo": 25.0, "fin": 0, "diff": 25.0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína Macchiato Habits 488g", "sucs": {"Condesa": {"ini": 0, "comp": 18, "vta": 0, "teo": 18, "fin": 18, "diff": 0}, "Colima": {"ini": 0, "comp": 12, "vta": 0, "teo": 12, "fin": 12, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 12, "vta": 0, "teo": 12, "fin": 12, "diff": 0}, "Liverpool": {"ini": 0, "comp": 6, "vta": 1, "teo": 5, "fin": 5, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína blueberry Fitmingo Birdman 1.7kg", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Colima": {"ini": 1.0, "comp": 0, "vta": 0, "teo": 1.0, "fin": 0, "diff": 1.0}, "Santa Fe": {"ini": 1.0, "comp": 0, "vta": 0, "teo": 1.0, "fin": 0, "diff": 1.0}, "Liverpool": {"ini": 1.0, "comp": 0, "vta": 0, "teo": 1.0, "fin": 0, "diff": 1.0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína cacao Habits 488g", "sucs": {"Condesa": {"ini": 12.0, "comp": 24, "vta": 4, "teo": 32.0, "fin": 29, "diff": 3.0}, "Colima": {"ini": 10.0, "comp": 12, "vta": 2, "teo": 20.0, "fin": 20, "diff": 0.0}, "Santa Fe": {"ini": 5.0, "comp": 12, "vta": 1, "teo": 16.0, "fin": 16, "diff": 0.0}, "Liverpool": {"ini": 4.0, "comp": 12, "vta": 2, "teo": 14.0, "fin": 13, "diff": 1.0}, "Polanco": {"ini": 1.0, "comp": 4, "vta": 0, "teo": 5.0, "fin": 4, "diff": 1.0}, "Roma": {"ini": 1.0, "comp": 1, "vta": 0, "teo": 2.0, "fin": 2, "diff": 0.0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína cacao Performance Habits 578g", "sucs": {"Condesa": {"ini": 0, "comp": 6, "vta": 2, "teo": 4, "fin": 5, "diff": -1}, "Colima": {"ini": 0, "comp": 6, "vta": 0, "teo": 6, "fin": 6, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 6, "vta": 0, "teo": 6, "fin": 6, "diff": 0}, "Liverpool": {"ini": 0, "comp": 6, "vta": 0, "teo": 6, "fin": 6, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína chocolate Birdman 480g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 4, "diff": -4}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 4, "diff": -4}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 5, "diff": -5}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína chocolate Birdman 510g", "sucs": {"Condesa": {"ini": 0, "comp": 4, "vta": 0, "teo": 4, "fin": 0, "diff": 4}, "Colima": {"ini": 0, "comp": 4, "vta": 0, "teo": 4, "fin": 0, "diff": 4}, "Santa Fe": {"ini": 0, "comp": 5, "vta": 0, "teo": 5, "fin": 0, "diff": 5}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína chocolate Birdman Falcon 1.8kg", "sucs": {"Condesa": {"ini": 0.98, "comp": 0, "vta": 0, "teo": 0.98, "fin": 0, "diff": 0.98}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 1.0, "comp": 0, "vta": 0, "teo": 1.0, "fin": 0, "diff": 1.0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0.477, "comp": 0, "vta": 0, "teo": 0.48, "fin": 0, "diff": 0.48}}}, {"prod": "Proteína chocolate Falcon Performance Birdman 1.9kg", "sucs": {"Condesa": {"ini": 0, "comp": 1, "vta": 0, "teo": 1, "fin": 0, "diff": 1}, "Colima": {"ini": 1.0, "comp": 1, "vta": 0, "teo": 2.0, "fin": 0, "diff": 2.0}, "Santa Fe": {"ini": 0, "comp": 1, "vta": 0, "teo": 1, "fin": 0, "diff": 1}, "Liverpool": {"ini": 0, "comp": 1, "vta": 0, "teo": 1, "fin": 0, "diff": 1}, "Polanco": {"ini": 0, "comp": 1, "vta": 0, "teo": 1, "fin": 0, "diff": 1}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína chocolate ON 800g", "sucs": {"Condesa": {"ini": 14.0, "comp": 0, "vta": 1, "teo": 13.0, "fin": 9, "diff": 4.0}, "Colima": {"ini": 21.0, "comp": 0, "vta": 2, "teo": 19.0, "fin": 16, "diff": 3.0}, "Santa Fe": {"ini": 8.0, "comp": 0, "vta": 0, "teo": 8.0, "fin": 8, "diff": 0.0}, "Liverpool": {"ini": 9.0, "comp": 0, "vta": 0, "teo": 9.0, "fin": 9, "diff": 0.0}, "Polanco": {"ini": 3.0, "comp": 0, "vta": 0, "teo": 3.0, "fin": 3, "diff": 0.0}, "Roma": {"ini": 3.0, "comp": 0, "vta": 0, "teo": 3.0, "fin": 3, "diff": 0.0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína chocolate Origen 480g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 1.0, "comp": 0, "vta": 0, "teo": 1.0, "fin": 0, "diff": 1.0}}}, {"prod": "Proteína maca-cacao Habits 488g", "sucs": {"Condesa": {"ini": 6.0, "comp": 0, "vta": 2, "teo": 4.0, "fin": 4, "diff": 0.0}, "Colima": {"ini": 2.0, "comp": 0, "vta": 1, "teo": 1.0, "fin": 1, "diff": 0.0}, "Santa Fe": {"ini": 2.0, "comp": 0, "vta": 0, "teo": 2.0, "fin": 2, "diff": 0.0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína matcha-vainilla Habits 488g", "sucs": {"Condesa": {"ini": 4.0, "comp": 0, "vta": 3, "teo": 1.0, "fin": 1, "diff": 0.0}, "Colima": {"ini": 3.0, "comp": 0, "vta": 0, "teo": 3.0, "fin": 3, "diff": 0.0}, "Santa Fe": {"ini": 3.0, "comp": 0, "vta": 0, "teo": 3.0, "fin": 3, "diff": 0.0}, "Liverpool": {"ini": 2.0, "comp": 0, "vta": 1, "teo": 1.0, "fin": 1, "diff": 0.0}, "Polanco": {"ini": 3.0, "comp": 0, "vta": 0, "teo": 3.0, "fin": 3, "diff": 0.0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína moka Fitmingo Birdman 510g", "sucs": {"Condesa": {"ini": 0, "comp": 4, "vta": 0, "teo": 4, "fin": 4, "diff": 0}, "Colima": {"ini": 0, "comp": 2, "vta": 1, "teo": 1, "fin": 1, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 2, "vta": 1, "teo": 1, "fin": 1, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína vainilla Birdman 1.8Kg", "sucs": {"Condesa": {"ini": 1.225, "comp": 0, "vta": 0, "teo": 1.23, "fin": 0, "diff": 1.23}, "Colima": {"ini": 1.37, "comp": 0, "vta": 0, "teo": 1.37, "fin": 0, "diff": 1.37}, "Santa Fe": {"ini": 0.244, "comp": 0, "vta": 0, "teo": 0.24, "fin": 0, "diff": 0.24}, "Liverpool": {"ini": 1.6, "comp": 0, "vta": 0, "teo": 1.6, "fin": 0, "diff": 1.6}, "Polanco": {"ini": 2.84, "comp": 0, "vta": 0, "teo": 2.84, "fin": 0, "diff": 2.84}, "Roma": {"ini": 1.21, "comp": 0, "vta": 0, "teo": 1.21, "fin": 0, "diff": 1.21}, "CDI": {"ini": 0.879, "comp": 0, "vta": 0, "teo": 0.88, "fin": 0, "diff": 0.88}}}, {"prod": "Proteína vainilla Birdman 1.8kg", "sucs": {"Condesa": {"ini": 0, "comp": 4, "vta": 0, "teo": 4, "fin": 0, "diff": 4}, "Colima": {"ini": 0, "comp": 6, "vta": 0, "teo": 6, "fin": 0, "diff": 6}, "Santa Fe": {"ini": 0, "comp": 2, "vta": 0, "teo": 2, "fin": 0, "diff": 2}, "Liverpool": {"ini": 0, "comp": 2, "vta": 0, "teo": 2, "fin": 0, "diff": 2}, "Polanco": {"ini": 0, "comp": 4, "vta": 0, "teo": 4, "fin": 0, "diff": 4}, "Roma": {"ini": 0, "comp": 1, "vta": 0, "teo": 1, "fin": 0, "diff": 1}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína vainilla Birdman 480g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 5, "diff": -5}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 4, "diff": -4}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 4, "diff": -4}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína vainilla Birdman 510g", "sucs": {"Condesa": {"ini": 0, "comp": 5, "vta": 0, "teo": 5, "fin": 0, "diff": 5}, "Colima": {"ini": 0, "comp": 4, "vta": 0, "teo": 4, "fin": 0, "diff": 4}, "Santa Fe": {"ini": 0, "comp": 4, "vta": 0, "teo": 4, "fin": 0, "diff": 4}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína vainilla Fitmingo Birdman 510g", "sucs": {"Condesa": {"ini": 0, "comp": 5, "vta": 0, "teo": 5, "fin": 5, "diff": 0}, "Colima": {"ini": 0, "comp": 4, "vta": 0, "teo": 4, "fin": 4, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 4, "vta": 0, "teo": 4, "fin": 4, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína vainilla Habits 488g", "sucs": {"Condesa": {"ini": 16.0, "comp": 24, "vta": 2, "teo": 38.0, "fin": 38, "diff": 0.0}, "Colima": {"ini": 10.0, "comp": 12, "vta": 1, "teo": 21.0, "fin": 19, "diff": 2.0}, "Santa Fe": {"ini": 6.0, "comp": 12, "vta": 3, "teo": 15.0, "fin": 15, "diff": 0.0}, "Liverpool": {"ini": 4.0, "comp": 12, "vta": 2, "teo": 14.0, "fin": 12, "diff": 2.0}, "Polanco": {"ini": 1.0, "comp": 4, "vta": 0, "teo": 5.0, "fin": 4, "diff": 1.0}, "Roma": {"ini": 1.0, "comp": 1, "vta": 0, "teo": 2.0, "fin": 2, "diff": 0.0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína vainilla Isopure 558g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 1, "teo": -1, "fin": 12, "diff": -13}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 18, "diff": -18}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína vainilla ON 740g", "sucs": {"Condesa": {"ini": 23.0, "comp": 0, "vta": 0, "teo": 23.0, "fin": 19, "diff": 4.0}, "Colima": {"ini": 25.0, "comp": 0, "vta": 0, "teo": 25.0, "fin": 16, "diff": 9.0}, "Santa Fe": {"ini": 9.0, "comp": 0, "vta": 0, "teo": 9.0, "fin": 8, "diff": 1.0}, "Liverpool": {"ini": 9.0, "comp": 0, "vta": 0, "teo": 9.0, "fin": 9, "diff": 0.0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 3.0, "comp": 0, "vta": 0, "teo": 3.0, "fin": 3, "diff": 0.0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Proteína vainilla Origen 480g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0.816, "comp": 0, "vta": 0, "teo": 0.82, "fin": 0, "diff": 0.82}}}, {"prod": "Proteína vainilla Performance Habits 578g", "sucs": {"Condesa": {"ini": 0, "comp": 6, "vta": 0, "teo": 6, "fin": 6, "diff": 0}, "Colima": {"ini": 0, "comp": 6, "vta": 0, "teo": 6, "fin": 6, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 6, "vta": 0, "teo": 6, "fin": 6, "diff": 0}, "Liverpool": {"ini": 0, "comp": 6, "vta": 0, "teo": 6, "fin": 6, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet Berries True For You 6g", "sucs": {"Condesa": {"ini": 5.0, "comp": 0, "vta": 0, "teo": 5.0, "fin": 0, "diff": 5.0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet Citrus True For You 6g", "sucs": {"Condesa": {"ini": 1.0, "comp": 0, "vta": 0, "teo": 1.0, "fin": 0, "diff": 1.0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet Daily Berries Trulife 10g", "sucs": {"Condesa": {"ini": 103.0, "comp": 0, "vta": 6, "teo": 97.0, "fin": 96, "diff": 1.0}, "Colima": {"ini": 33.0, "comp": 0, "vta": 6, "teo": 27.0, "fin": 27, "diff": 0.0}, "Santa Fe": {"ini": 22.0, "comp": 0, "vta": 6, "teo": 16.0, "fin": 15, "diff": 1.0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 16.0, "comp": 0, "vta": 0, "teo": 16.0, "fin": 17, "diff": -1.0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet Daily Greens Trulife 10g", "sucs": {"Condesa": {"ini": 22.0, "comp": 0, "vta": 1, "teo": 21.0, "fin": 21, "diff": 0.0}, "Colima": {"ini": 13.0, "comp": 0, "vta": 8, "teo": 5.0, "fin": 5, "diff": 0.0}, "Santa Fe": {"ini": 4.0, "comp": 0, "vta": 0, "teo": 4.0, "fin": 4, "diff": 0.0}, "Liverpool": {"ini": 14.0, "comp": 0, "vta": 0, "teo": 14.0, "fin": 14, "diff": 0.0}, "Polanco": {"ini": 4.0, "comp": 0, "vta": 0, "teo": 4.0, "fin": 3, "diff": 1.0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet Macchiato Habits 30g", "sucs": {"Condesa": {"ini": 0, "comp": 32, "vta": 0, "teo": 32, "fin": 32, "diff": 0}, "Colima": {"ini": 0, "comp": 32, "vta": 1, "teo": 31, "fin": 31, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 16, "vta": 0, "teo": 16, "fin": 16, "diff": 0}, "Liverpool": {"ini": 0, "comp": 32, "vta": 0, "teo": 32, "fin": 20, "diff": 12}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet Tangerine True For You 6g", "sucs": {"Condesa": {"ini": 1.0, "comp": 0, "vta": 0, "teo": 1.0, "fin": 0, "diff": 1.0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet cacao Habits 30g", "sucs": {"Condesa": {"ini": 0, "comp": 128, "vta": 3, "teo": 125, "fin": 125, "diff": 0}, "Colima": {"ini": 0, "comp": 64, "vta": 3, "teo": 61, "fin": 61, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 64, "vta": 0, "teo": 64, "fin": 62, "diff": 2}, "Liverpool": {"ini": 0, "comp": 64, "vta": 0, "teo": 64, "fin": 64, "diff": 0}, "Polanco": {"ini": 0, "comp": 32, "vta": 0, "teo": 32, "fin": 0, "diff": 32}, "Roma": {"ini": 0, "comp": 32, "vta": 0, "teo": 32, "fin": 32, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet chocolate Birdman 30g", "sucs": {"Condesa": {"ini": 0, "comp": 24, "vta": 1, "teo": 23, "fin": 23, "diff": 0}, "Colima": {"ini": 0, "comp": 12, "vta": 2, "teo": 10, "fin": 10, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 12, "vta": 0, "teo": 12, "fin": 12, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 12, "vta": 0, "teo": 12, "fin": 12, "diff": 0}, "Roma": {"ini": 0, "comp": 12, "vta": 0, "teo": 12, "fin": 12, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet maca-cacao Habits 30g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 10.0, "comp": 0, "vta": 0, "teo": 10.0, "fin": 10, "diff": 0.0}}}, {"prod": "Sachet moka Fitmingo Birdman 30g", "sucs": {"Condesa": {"ini": 0, "comp": 20, "vta": 1, "teo": 19, "fin": 18, "diff": 1}, "Colima": {"ini": 0, "comp": 10, "vta": 0, "teo": 10, "fin": 10, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 10, "vta": 2, "teo": 8, "fin": 9, "diff": -1}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 10, "vta": 0, "teo": 10, "fin": 10, "diff": 0}, "Roma": {"ini": 0, "comp": 10, "vta": 0, "teo": 10, "fin": 10, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet vainilla Birdman 30g", "sucs": {"Condesa": {"ini": 0, "comp": 24, "vta": 0, "teo": 24, "fin": 24, "diff": 0}, "Colima": {"ini": 0, "comp": 12, "vta": 2, "teo": 10, "fin": 10, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 12, "vta": 0, "teo": 12, "fin": 9, "diff": 3}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 12, "vta": 0, "teo": 12, "fin": 12, "diff": 0}, "Roma": {"ini": 0, "comp": 12, "vta": 4, "teo": 8, "fin": 8, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet vainilla Fitmingo Birdman 30g", "sucs": {"Condesa": {"ini": 0, "comp": 20, "vta": 0, "teo": 20, "fin": 20, "diff": 0}, "Colima": {"ini": 0, "comp": 10, "vta": 0, "teo": 10, "fin": 10, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 10, "vta": 0, "teo": 10, "fin": 9, "diff": 1}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 10, "vta": 0, "teo": 10, "fin": 10, "diff": 0}, "Roma": {"ini": 0, "comp": 10, "vta": 0, "teo": 10, "fin": 10, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Sachet vainilla Habits 30g", "sucs": {"Condesa": {"ini": 0, "comp": 128, "vta": 3, "teo": 125, "fin": 124, "diff": 1}, "Colima": {"ini": 0, "comp": 64, "vta": 2, "teo": 62, "fin": 62, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 64, "vta": 0, "teo": 64, "fin": 62, "diff": 2}, "Liverpool": {"ini": 0, "comp": 64, "vta": 0, "teo": 64, "fin": 52, "diff": 12}, "Polanco": {"ini": 0, "comp": 32, "vta": 0, "teo": 32, "fin": 32, "diff": 0}, "Roma": {"ini": 0, "comp": 32, "vta": 0, "teo": 32, "fin": 16, "diff": 16}, "CDI": {"ini": 7.0, "comp": 0, "vta": 0, "teo": 7.0, "fin": 7, "diff": 0.0}}}, {"prod": "Sachet vainilla Performance Habits 38.5g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 2.0, "comp": 0, "vta": 0, "teo": 2.0, "fin": 2, "diff": 0.0}}}, {"prod": "Sachet vainilla Trulife 31g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 9.0, "comp": 0, "vta": 1, "teo": 8.0, "fin": 8, "diff": 0.0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Superfoods Frutos Rojos Bloom 145g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 4.0, "comp": 0, "vta": 0, "teo": 4.0, "fin": 0, "diff": 4.0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Superfoods Greens Fresa Kiwi Bloom 145g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 12.0, "comp": 0, "vta": 0, "teo": 12.0, "fin": 0, "diff": 12.0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}, {"prod": "Superfoods Greens Mango Bloom 145g", "sucs": {"Condesa": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Colima": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Santa Fe": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Liverpool": {"ini": 17.0, "comp": 0, "vta": 0, "teo": 17.0, "fin": 0, "diff": 17.0}, "Polanco": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "Roma": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}, "CDI": {"ini": 0, "comp": 0, "vta": 0, "teo": 0, "fin": 0, "diff": 0}}}];
+// ─── VASOS PLA 16oz ───
+function renderVP(el){
+  var total_vtas=VP_VENTAS_SUC.reduce(function(a,d){return a+d.v;},0);
+  var html='';
+  // KPIs
+  html+='<div class="kpi-grid">'
+    +'<div class="kpi blue"><div class="kpi-label">Vasos comprados Jun</div><div class="kpi-val">'+VP_KPIS.compras.toLocaleString()+'</div><div class="kpi-sub">piezas · todas las sucursales</div></div>'
+    +'<div class="kpi green"><div class="kpi-label">Vasos vendidos (SKUs)</div><div class="kpi-val">'+total_vtas.toLocaleString()+'</div><div class="kpi-sub">según ventas Looker</div></div>'
+    +'<div class="kpi red"><div class="kpi-label">Merma total Jun</div><div class="kpi-val">'+VP_KPIS.merma_pz.toLocaleString()+'</div><div class="kpi-sub">'+f$(VP_KPIS.merma_ps)+' · <span class="badge badge-crit">'+VP_KPIS.pct+'%</span></div></div>'
+    +'<div class="kpi amber"><div class="kpi-label">Sucursal con más merma %</div><div class="kpi-val">CDI</div><div class="kpi-sub">13.9% · Liverpool 7.7%</div></div>'
+    +'</div>';
+
+  // Tabla detalle por sucursal
+  html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Reporte por sucursal — Vasos PLA 16oz</div><div class="card-sub">Inv. Inicial + Compras − Ventas − Inv. Final = Merma Real · Jun 2026</div></div></div>'
+    +'<div style="overflow-x:auto"><table class="tbl"><thead><tr>'
+    +'<th>Sucursal</th><th>Inv. Ini</th><th>Compras (+)</th><th>Ventas (−)</th><th>Inv. Final</th><th>Merma pz</th><th>Merma $</th><th>% Merma</th><th>Vtas Looker</th>'
+    +'</tr></thead><tbody>'
+    +VP_TABLA.map(function(d){
+      var col=d.pct>=50?'var(--rojo)':d.pct>=30?'var(--ambar)':d.pct>=15?'#E67E22':'var(--verde2)';
+      return'<tr><td style="font-weight:700">'+d.suc+'</td>'
+        +'<td class="mono">'+d.inv_ini+'</td>'
+        +'<td class="mono" style="color:var(--verde2)">+'+d.compras+'</td>'
+        +'<td class="mono" style="color:#2a78d6">'+d.ventas+'</td>'
+        +'<td class="mono">'+d.inv_fin+'</td>'
+        +'<td class="mono" style="font-weight:700;color:var(--rojo)">'+d.merma_pz+'</td>'
+        +'<td class="mono" style="font-weight:700;color:var(--rojo)">'+f$(d.merma_pesos)+'</td>'
+        +'<td class="mono" style="font-weight:700;color:'+col+'">'+d.pct+'%</td>'
+        +'<td class="mono" style="color:var(--gris)">'+d.vtas_sku.toLocaleString()+'</td>'
+        +'</tr>';
+    }).join('')
+    +'<tr style="background:var(--rojo2);font-weight:700"><td>TOTAL</td><td class="mono">'+VP_TABLA.reduce(function(a,d){return a+d.inv_ini;},0)+'</td>'
+    +'<td class="mono" style="color:var(--verde2)">+'+VP_KPIS.compras+'</td>'
+    +'<td class="mono" style="color:#2a78d6">'+VP_KPIS.ventas+'</td>'
+    +'<td class="mono">'+VP_TABLA.reduce(function(a,d){return a+d.inv_fin;},0)+'</td>'
+    +'<td class="mono" style="color:var(--rojo)">'+VP_KPIS.merma_pz+'</td>'
+    +'<td class="mono" style="color:var(--rojo)">'+f$(VP_KPIS.merma_ps)+'</td>'
+    +'<td class="mono" style="color:var(--rojo)">'+VP_KPIS.pct+'%</td>'
+    +'<td class="mono">'+total_vtas.toLocaleString()+'</td></tr>'
+    +'</tbody></table></div></div>';
+
+  // Gráficas
+  html+='<div class="g2">'
+    +'<div class="card"><div class="card-head"><div class="card-title">Merma % por sucursal</div></div><div style="position:relative;height:200px"><canvas id="ch-vp-pct"></canvas></div></div>'
+    +'<div class="card"><div class="card-head"><div class="card-title">Vasos vendidos por sucursal (Looker)</div></div><div style="position:relative;height:200px"><canvas id="ch-vp-suc"></canvas></div></div>'
+    +'</div>';
+
+  // Top SKUs
+  html+='<div class="card"><div class="card-head"><div><div class="card-title">Top SKUs que más vasos consumen</div><div class="card-sub">Junio 2026 · todas las sucursales</div></div></div>'
+    +TOP_VASOS_SKU.map(function(p,i){var max=TOP_VASOS_SKU[0].v,rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+( i+1)+'</div><div class="rank-name">'+p.n+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.v/max*100)+'%;background:#2a78d6"></div></div><div class="rank-val">'+p.v.toLocaleString()+' pz</div></div>';}).join('')
+    +'</div>';
+
+  el.innerHTML=html;
+  setTimeout(function(){
+    var labels=VP_TABLA.map(function(d){return d.suc;});
+    var pcts=VP_TABLA.map(function(d){return d.pct;});
+    var pcolors=pcts.map(function(v){return v>=50?'rgba(178,34,34,.8)':v>=30?'rgba(230,126,34,.8)':'rgba(27,175,122,.7)';});
+    mkChart('ch-vp-pct',{type:'bar',data:{labels:labels,datasets:[{label:'% Merma',data:pcts,backgroundColor:pcolors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
+    var svtas=VP_VENTAS_SUC.map(function(d){return d.v;});
+    var scolors=VP_VENTAS_SUC.map(function(d,i){return i===0?'rgba(178,34,34,.8)':'rgba(42,120,214,.7)';});
+    mkChart('ch-vp-suc',{type:'bar',data:{labels:labels,datasets:[{label:'Vasos vendidos',data:svtas,backgroundColor:scolors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{font:{size:9},color:TC}}}}});
+  },80);
+}
+
+// ─── COLD BREW CONCENTRADO ───
+function renderCBC(el){
+  var html='';
+  var total_ml=CBC_KPIS.ml_total;
+  // KPIs
+  html+='<div class="kpi-grid">'
+    +'<div class="kpi blue"><div class="kpi-label">Compras Jun (litros)</div><div class="kpi-val">'+CBC_KPIS.compras_l+'L</div><div class="kpi-sub">concentrado cold brew</div></div>'
+    +'<div class="kpi green"><div class="kpi-label">Ventas estimadas</div><div class="kpi-val">'+CBC_KPIS.ventas_l+'L</div><div class="kpi-sub">según capturas por sucursal</div></div>'
+    +'<div class="kpi purple"><div class="kpi-label">Consumo calculado (SKUs)</div><div class="kpi-val">'+(total_ml/1000).toFixed(1)+'L</div><div class="kpi-sub">'+Math.round(total_ml/1000/5)+' bidones 5L aprox</div></div>'
+    +'<div class="kpi amber"><div class="kpi-label">Merma reportada</div><div class="kpi-val">'+CBC_KPIS.merma_l+'L</div><div class="kpi-sub">'+f$(CBC_KPIS.merma_ps)+' · bajo control</div></div>'
+    +'</div>';
+
+  // Tabla merma por sucursal
+  html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Reporte por sucursal — Concentrado Cold Brew</div><div class="card-sub">Inv. Inicial + Compras − Ventas − Inv. Final = Merma Real · Jun 2026 · en litros</div></div></div>'
+    +'<div style="overflow-x:auto"><table class="tbl"><thead><tr>'
+    +'<th>Sucursal</th><th>Inv. Ini (L)</th><th>Compras (+)</th><th>Ventas cap. (−)</th><th>Inv. Final</th><th>Merma L</th><th>Merma $</th><th>% Merma</th><th>Consumo SKUs (L)</th>'
+    +'</tr></thead><tbody>'
+    +CBC_TABLA.map(function(d){
+      var col=d.pct>=10?'var(--rojo)':d.pct>=5?'var(--ambar)':'var(--verde2)';
+      return'<tr><td style="font-weight:700">'+d.suc+'</td>'
+        +'<td class="mono">'+d.inv_ini+'</td>'
+        +'<td class="mono" style="color:var(--verde2)">+'+d.compras+'</td>'
+        +'<td class="mono" style="color:#2a78d6">'+d.ventas+'</td>'
+        +'<td class="mono">'+d.inv_fin+'</td>'
+        +'<td class="mono" style="font-weight:700;color:var(--rojo)">'+d.merma_l+'</td>'
+        +'<td class="mono" style="font-weight:700;color:var(--rojo)">'+f$(d.merma_ps)+'</td>'
+        +'<td class="mono" style="font-weight:700;color:'+col+'">'+d.pct+'%</td>'
+        +'<td class="mono" style="color:#7F77DD">'+d.litros_vtas+'L</td>'
+        +'</tr>';
+    }).join('')
+    +'</tbody></table></div></div>';
+
+  // Gráfica consumo por sucursal
+  html+='<div class="g2">'
+    +'<div class="card"><div class="card-head"><div class="card-title">Consumo Cold Brew por sucursal (SKUs)</div><div class="card-sub">Litros calculados según recetas · Jun 2026</div></div><div style="position:relative;height:200px"><canvas id="ch-cbc-suc"></canvas></div></div>'
+    +'<div class="card"><div class="card-head"><div><div class="card-title">Top SKUs — consumo Cold Brew</div><div class="card-sub">ml totales por bebida</div></div></div>'
+    +TOP_CB_SKU.map(function(d,i){var max=TOP_CB_SKU[0].total,rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+( i+1)+'</div><div class="rank-name">'+d.n+' <span style="color:var(--gris);font-size:10px">('+d.ml+'ml)</span></div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(d.total/max*100)+'%;background:#4E342E"></div></div><div class="rank-val">'+Math.round(d.total/1000)+'L</div></div>';}).join('')
+    +'</div></div>';
+
+  el.innerHTML=html;
+  setTimeout(function(){
+    var labels=CBC_ML_SUC.map(function(d){return d.suc;});
+    var vals=CBC_ML_SUC.map(function(d){return d.ml;});
+    var cols=vals.map(function(v,i){return i===0?'rgba(178,34,34,.8)':'rgba(78,52,46,.7)';});
+    mkChart('ch-cbc-suc',{type:'bar',data:{labels:labels,datasets:[{label:'Litros Cold Brew',data:vals,backgroundColor:cols,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return v+'L';},font:{size:9},color:TC}}}}});
+  },80);
+}
+
+// ─── PROTEÍNA INSUMO ─── 
+function renderPI(el){
+  var html='';
+  // KPIs
+  html+='<div class="kpi-grid">'
+    +'<div class="kpi" style="border-top:3px solid #6D4C41"><div class="kpi-label">Proteína Chocolate Jun</div><div class="kpi-val">'+PROT_KPIS.choco_kg+'kg</div><div class="kpi-sub">'+PROT_KPIS.choco_g.toLocaleString()+'g · '+PROT_PROD_CHOCO.length+' SKUs</div></div>'
+    +'<div class="kpi" style="border-top:3px solid #7F77DD"><div class="kpi-label">Proteína Vainilla Jun</div><div class="kpi-val">'+PROT_KPIS.vaini_kg+'kg</div><div class="kpi-sub">'+PROT_KPIS.vaini_g.toLocaleString()+'g · '+PROT_PROD_VAINI.length+' SKUs</div></div>'
+    +'<div class="kpi blue"><div class="kpi-label">Total Proteína consumida</div><div class="kpi-val">'+PROT_KPIS.total_kg+'kg</div><div class="kpi-sub">'+PROT_KPIS.total_g.toLocaleString()+'g combinado</div></div>'
+    +'<div class="kpi green"><div class="kpi-label">Sucursal mayor consumo</div><div class="kpi-val">Condesa</div><div class="kpi-sub">'+(PROT_SUC.find(function(d){return d.suc==='Condesa';}).total_g/1000).toFixed(2)+'kg total</div></div>'
+    +'</div>';
+
+  // Tabla por sucursal
+  html+='<div class="card"><div class="card-head"><div><div class="card-title">📊 Consumo por sucursal — Junio 2026</div><div class="card-sub">Gramos calculados según recetas · Chocolate + Vainilla</div></div></div>'
+    +'<div style="overflow-x:auto"><table class="tbl"><thead><tr>'
+    +'<th>Sucursal</th><th>Chocolate (g)</th><th>Chocolate (kg)</th><th>Vainilla (g)</th><th>Vainilla (kg)</th><th>Total (g)</th><th>Total (kg)</th>'
+    +'</tr></thead><tbody>'
+    +PROT_SUC.filter(function(d){return d.total_g>0;}).map(function(d){
+      return'<tr><td style="font-weight:700">'+d.suc+'</td>'
+        +'<td class="mono">'+d.choco_g.toLocaleString()+'</td>'
+        +'<td class="mono" style="color:#6D4C41;font-weight:700">'+( d.choco_g/1000).toFixed(3)+'kg</td>'
+        +'<td class="mono">'+d.vaini_g.toLocaleString()+'</td>'
+        +'<td class="mono" style="color:#7F77DD;font-weight:700">'+( d.vaini_g/1000).toFixed(3)+'kg</td>'
+        +'<td class="mono" style="font-weight:700">'+d.total_g.toLocaleString()+'</td>'
+        +'<td class="mono" style="font-weight:700;color:#2a78d6">'+( d.total_g/1000).toFixed(3)+'kg</td>'
+        +'</tr>';
+    }).join('')
+    +'<tr style="background:var(--verde3);font-weight:700">'
+    +'<td>TOTAL</td>'
+    +'<td class="mono">'+PROT_KPIS.choco_g.toLocaleString()+'</td><td class="mono" style="color:#6D4C41">'+PROT_KPIS.choco_kg+'kg</td>'
+    +'<td class="mono">'+PROT_KPIS.vaini_g.toLocaleString()+'</td><td class="mono" style="color:#7F77DD">'+PROT_KPIS.vaini_kg+'kg</td>'
+    +'<td class="mono">'+PROT_KPIS.total_g.toLocaleString()+'</td><td class="mono" style="color:#2a78d6">'+PROT_KPIS.total_kg+'kg</td>'
+    +'</tr></tbody></table></div></div>';
+
+  // Gráficas lado a lado
+  html+='<div class="g2">'
+    +'<div class="card"><div class="card-head"><div class="card-title">Consumo por sucursal (g)</div></div><div style="position:relative;height:220px"><canvas id="ch-pi-suc"></canvas></div></div>'
+    +'<div class="card"><div class="card-head"><div class="card-title">Chocolate vs Vainilla global</div></div><div style="position:relative;height:220px"><canvas id="ch-pi-sabor"></canvas></div></div>'
+    +'</div>';
+
+  // Rankings por producto
+  html+='<div class="g2">'
+    +'<div class="card"><div class="card-head"><div><div class="card-title">🍫 Top productos — Chocolate</div><div class="card-sub">g consumidos Jun 2026</div></div></div>'
+    +PROT_PROD_CHOCO.map(function(p,i){var max=PROT_PROD_CHOCO[0].g,rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+( i+1)+'</div><div class="rank-name">'+p.n+' <span style="color:var(--gris);font-size:10px">('+p.pz+'pz)</span></div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.g/max*100)+'%;background:#6D4C41"></div></div><div class="rank-val">'+p.g.toLocaleString()+'g</div></div>';}).join('')
+    +'</div>'
+    +'<div class="card"><div class="card-head"><div><div class="card-title">🍦 Top productos — Vainilla</div><div class="card-sub">g consumidos Jun 2026</div></div></div>'
+    +PROT_PROD_VAINI.map(function(p,i){var max=PROT_PROD_VAINI[0].g,rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+( i+1)+'</div><div class="rank-name">'+p.n+' <span style="color:var(--gris);font-size:10px">('+p.pz+'pz)</span></div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.g/max*100)+'%;background:#7F77DD"></div></div><div class="rank-val">'+p.g.toLocaleString()+'g</div></div>';}).join('')
+    +'</div></div>';
+
+  el.innerHTML=html;
+
+  setTimeout(function(){
+    var labels=PROT_SUC.filter(function(d){return d.total_g>0;}).map(function(d){return d.suc;});
+    var chocos=PROT_SUC.filter(function(d){return d.total_g>0;}).map(function(d){return d.choco_g;});
+    var vainis=PROT_SUC.filter(function(d){return d.total_g>0;}).map(function(d){return d.vaini_g;});
+    mkChart('ch-pi-suc',{type:'bar',data:{labels:labels,datasets:[
+      {label:'Chocolate',data:chocos,backgroundColor:'rgba(109,76,65,.8)',borderRadius:3},
+      {label:'Vainilla', data:vainis,backgroundColor:'rgba(127,119,221,.8)',borderRadius:3}
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:9},boxWidth:8}}},scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:9},color:TC}},y:{stacked:true,grid:{color:GC},ticks:{callback:function(v){return Math.round(v/1000)+'kg';},font:{size:9},color:TC}}}}});
+    mkChart('ch-pi-sabor',{type:'doughnut',data:{labels:['Chocolate '+PROT_KPIS.choco_kg+'kg','Vainilla '+PROT_KPIS.vaini_kg+'kg'],datasets:[{data:[PROT_KPIS.choco_g,PROT_KPIS.vaini_g],backgroundColor:['rgba(109,76,65,.8)','rgba(127,119,221,.8)'],borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10}}}}});
+  },80);
+}
+
+// ─── SUPLEMENTOS ───
+var activeSupTab='1-5jul';
+function renderSUP(el){
+  var tabs=[
+    {id:'1-5jul', label:'📊 1–5 Jul'},
+    {id:'diario',  label:'📅 Diario'},
+    {id:'semanal', label:'📋 Semanal'}
+  ];
+  var tabsHtml='<div class="suc-tabs" style="margin-bottom:16px">'
+    +tabs.map(function(t){
+      return'<button class="suc-tab'+(t.id===activeSupTab?' active':'')+('" onclick="setSupTab(&apos;'+t.id+'&apos;,this)">')+t.label+'</button>';
+    }).join('')+'</div>';
+  el.innerHTML=tabsHtml+'<div id="sup-tab-content"></div>';
+  renderSupTab(activeSupTab);
+}
+function setSupTab(id, btn){
+  activeSupTab=id;
+  document.querySelectorAll('.suc-tab').forEach(function(t){t.classList.remove('active');});
+  if(btn) btn.classList.add('active');
+  renderSupTab(id);
+}
+function renderSupTab(id){
+  var el=document.getElementById('sup-tab-content');
+  if(!el) return;
+  if(id==='1-5jul') renderSup1_5Jul(el);
+  else if(id==='diario') renderSupDiario(el);
+  else if(id==='semanal') renderSupSemanal(el);
+}
+
+function renderSup1_5Jul(el){
+  var html='';
+  // KPIs
+  var tot_fal=SUP_RESUMEN_1_5JUL.reduce(function(a,d){return a+d.faltantes;},0);
+  var tot_sob=SUP_RESUMEN_1_5JUL.reduce(function(a,d){return a+d.sobrantes;},0);
+  var max_diff=SUP_RESUMEN_1_5JUL.reduce(function(a,d){return d.diff_pz>a.diff_pz?d:a;},{suc:'—',diff_pz:0});
+  html+='<div class="kpi-grid">'
+    +'<div class="kpi" style="border-top:3px solid #1565C0"><div class="kpi-label">Período</div><div class="kpi-val" style="font-size:15px">1–5 Jul 2026</div><div class="kpi-sub">'+SUP_SUCS.length+' sucursales · '+SUP_DETALLE.length+' productos</div></div>'
+    +'<div class="kpi red"><div class="kpi-label">Productos faltantes</div><div class="kpi-val">'+tot_fal+'</div><div class="kpi-sub">Inv. Teórico > Inv. Real</div></div>'
+    +'<div class="kpi amber"><div class="kpi-label">Productos sobrantes</div><div class="kpi-val">'+tot_sob+'</div><div class="kpi-sub">Inv. Real > Inv. Teórico</div></div>'
+    +'<div class="kpi purple"><div class="kpi-label">Mayor diferencia</div><div class="kpi-val">'+max_diff.suc+'</div><div class="kpi-sub">'+max_diff.diff_pz+' pz neto</div></div>'
+    +'</div>';
+
+  // Tabla resumen por sucursal
+  html+='<div class="card"><div class="card-head"><div><div class="card-title">📍 Diferencia por sucursal</div><div class="card-sub">Fórmula: Inv.Ini + Compras − Ventas = Teórico  |  Diff = Teórico − Inv.Final</div></div></div>'
+    +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Diff neta (pz)</th><th>Faltantes</th><th>Sobrantes</th><th>Estado</th></tr></thead><tbody>'
+    +SUP_RESUMEN_1_5JUL.map(function(r){
+      var col=r.diff_pz>5?'var(--rojo)':r.diff_pz<-5?'#1B5E20':'var(--ambar)';
+      var bg=r.diff_pz>5?'#FFEBEE':r.diff_pz<-5?'#E8F5E9':'#FFFDE7';
+      var est=r.diff_pz>5?'🔴 Faltante':r.diff_pz<-5?'🟢 Sobrante':'🟡 Estable';
+      return'<tr><td style="font-weight:700">'+r.suc+'</td>'
+        +'<td class="mono" style="font-weight:700;color:'+col+';background:'+bg+'">'+( r.diff_pz>0?'+':'')+r.diff_pz+'</td>'
+        +'<td class="mono" style="color:var(--rojo)">'+r.faltantes+'</td>'
+        +'<td class="mono" style="color:#1B5E20">'+r.sobrantes+'</td>'
+        +'<td><span style="font-size:12px">'+est+'</span></td>'
+        +'</tr>';
+    }).join('')
+    +'</tbody></table></div></div>';
+
+  // Gráfica diferencias
+  html+='<div class="card"><div class="card-head"><div class="card-title">Diferencia neta por sucursal (pz)</div><div class="card-sub">+ faltante · − sobrante</div></div><div style="position:relative;height:180px"><canvas id="ch-sup-diff"></canvas></div></div>';
+
+  // Top diferencias por producto
+  html+='<div class="card"><div class="card-head"><div><div class="card-title">Top diferencias por producto</div><div class="card-sub">Ordenado por magnitud</div></div></div>'
+    +SUP_TOP_DIFFS.map(function(p,i){
+      var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';
+      var col=p.dpz>0?'var(--rojo)':'#1B5E20';
+      var icon=p.dpz>0?'🔴':'🟡';
+      return'<div class="rank-row"><div class="rank-num '+rk+'">'+( i+1)+'</div>'
+        +'<div class="rank-name" style="flex:1">'+icon+' '+p.prod+' <span style="color:var(--gris);font-size:10px">('+p.sucs.join(', ')+')</span></div>'
+        +'<div class="rank-val" style="color:'+col+'">'+( p.dpz>0?'+':'')+p.dpz+' pz</div></div>';
+    }).join('')
+    +'</div>';
+
+  // Tabla detalle completa por sucursal
+  var activeSucSup=SUP_SUCS[0];
+  html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Detalle por sucursal</div><div class="card-sub">Inv.Ini + Compras − Ventas = Teórico vs Inv.Final</div></div></div>'
+    +'<div class="suc-tabs" id="sup-suc-tabs" style="margin-bottom:12px">'
+    +SUP_SUCS.map(function(s){
+      var r=SUP_RESUMEN_1_5JUL.find(function(x){return x.suc===s;});
+      var cls=r&&r.diff_pz>5?' suc-tab-crit':r&&r.diff_pz<-5?' suc-tab-ok':''
+      return'<button class="suc-tab'+cls+(s===activeSucSup?' active':'')+('" onclick="setSupSuc(&apos;'+s+'&apos;)">')  
+        +s+'</button>';
+    }).join('')
+    +'</div><div id="sup-det-content" style="overflow-x:auto"></div></div>';
+
+  el.innerHTML=html;
+
+  setTimeout(function(){
+    var labels=SUP_RESUMEN_1_5JUL.map(function(r){return r.suc;});
+    var vals=SUP_RESUMEN_1_5JUL.map(function(r){return r.diff_pz;});
+    var colors=vals.map(function(v){return v>5?'rgba(178,34,34,.8)':v<-5?'rgba(27,94,32,.8)':'rgba(230,126,34,.8)';});
+    mkChart('ch-sup-diff',{type:'bar',data:{labels:labels,datasets:[{label:'Diff pz',data:vals,backgroundColor:colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{font:{size:9},color:TC}}}}});
+    renderSupSucTable('Condesa');
+  },80);
+}
+
+function setSupSuc(suc){
+  document.querySelectorAll('#sup-suc-tabs .suc-tab').forEach(function(t){t.classList.toggle('active',t.textContent.trim()===suc);});
+  renderSupSucTable(suc);
+}
+
+function renderSupSucTable(suc){
+  var el=document.getElementById('sup-det-content');
+  if(!el) return;
+  var rows=SUP_DETALLE.filter(function(r){
+    var d=r.sucs[suc];
+    return d&&(d.ini||d.comp||d.vta||d.fin||d.diff);
+  });
+  var html='<table class="tbl"><thead><tr><th>Producto</th><th>Inv. Ini</th><th>Compras (+)</th><th>Ventas (−)</th><th>Teórico</th><th>Inv. Final</th><th>Diferencia</th></tr></thead><tbody>';
+  rows.forEach(function(r){
+    var d=r.sucs[suc];
+    var diff=d.diff;
+    var bg=diff>0.1?'#FFEBEE':diff<-0.1?'#E8F5E9':'';
+    var col=diff>0.1?'var(--rojo)':diff<-0.1?'#1B5E20':'var(--gris)';
+    html+='<tr><td style="font-size:11px;font-weight:600">'+ r.prod+'</td>'
+      +'<td class="mono">'+(d.ini||'—')+'</td>'
+      +'<td class="mono" style="color:#1565C0">'+(d.comp?'+'+d.comp:'—')+'</td>'
+      +'<td class="mono" style="color:#6A1B9A">'+(d.vta?'-'+d.vta:'—')+'</td>'
+      +'<td class="mono" style="font-weight:700">'+(d.teo||0)+'</td>'
+      +'<td class="mono" style="background:#E8F5E9;color:#1B5E20;font-weight:700">'+(d.fin||'—')+'</td>'
+      +'<td class="mono" style="background:'+bg+';color:'+col+';font-weight:700">'+(diff>0?'+':'')+diff+'</td>'
+      +'</tr>';
+  });
+  html+='</tbody></table>';
+  el.innerHTML=html;
+}
+
+function renderSupDiario(el){
+  el.innerHTML='<div class="card" style="text-align:center;padding:48px;color:var(--gris)">'
+    +'<div style="font-size:40px;margin-bottom:12px">📅</div>'
+    +'<div style="font-size:15px;font-weight:700;margin-bottom:8px">Reporte Diario</div>'
+    +'<div>Disponible próximamente — se activará cuando compartas el inventario diario de suplementos.</div>'
+    +'</div>';
+}
+
+function renderSupSemanal(el){
+  el.innerHTML='<div class="card" style="text-align:center;padding:48px;color:var(--gris)">'
+    +'<div style="font-size:40px;margin-bottom:12px">📋</div>'
+    +'<div style="font-size:15px;font-weight:700;margin-bottom:8px">Reporte Semanal</div>'
+    +'<div>Disponible próximamente — se activará al cierre de cada semana con la conciliación completa.</div>'
+    +'</div>';
+}
+// ─── VITCH BAKERY SUCURSAL DETALLE (global scope) ───
+var VB_SUCS_ALL=['Condesa','Colima','Santa Fe','Liverpool','Polanco','Insurgentes','Roma','Kitchen Lab'];
+var activeSucVB='Condesa';
+function buildVBSucTabs(){
+  var el=document.getElementById('vb-suc-tabs');
+  if(!el)return;
+  el.innerHTML=VB_SUCS_ALL.map(function(s){
+    var tot=VB_CAPTURA.reduce(function(a,p){return a+(p.suc[s]?p.suc[s].merma_pesos:0);},0);
+    var cls=tot>2000?' suc-tab-crit':tot>1000?' suc-tab-mod':'';
+    var isActive=s===activeSucVB?' active':'';
+    return '<button class="suc-tab'+cls+isActive+'" onclick="setVBSuc(&apos;'+s+'&apos;)">'+s+'</button>';
+  }).join('');
+  renderVBSuc(activeSucVB);
+}
+function setVBSuc(s){
+  activeSucVB=s;
+  document.querySelectorAll('#vb-suc-tabs .suc-tab').forEach(function(t){
+    t.classList.toggle('active',t.textContent.trim()===s);
+  });
+  renderVBSuc(s);
+}
+function renderVBSuc(suc){
+  var prods=VB_CAPTURA.filter(function(p){return p.suc[suc]&&p.suc[suc].compras>0;});
+  var tot_ini=0,tot_comp=0,tot_vta=0,tot_fin=0,tot_mpz=0,tot_mpesos=0;
+  var rows=prods.map(function(p){
+    var d=p.suc[suc];
+    tot_ini+=d.inv_ini; tot_comp+=d.compras; tot_vta+=d.ventas; tot_fin+=d.inv_fin;
+    tot_mpz+=d.merma_pz; tot_mpesos+=d.merma_pesos;
+    var col=d.pct_merma>=30?'var(--rojo)':d.pct_merma>=15?'var(--ambar)':d.pct_merma>=7?'#E67E22':'var(--verde2)';
+    return '<tr>'
+      +'<td style="font-weight:600">'+p.n+'</td>'
+      +'<td class="mono" style="color:var(--text-secondary)">$'+p.costo+'</td>'
+      +'<td class="mono">'+d.inv_ini+'</td>'
+      +'<td class="mono" style="color:var(--verde2)">+'+d.compras+'</td>'
+      +'<td class="mono" style="color:#2a78d6">'+d.ventas+'</td>'
+      +'<td class="mono" style="color:var(--gris)">'+d.inv_fin+'</td>'
+      +'<td class="mono" style="font-weight:700;color:var(--rojo)">'+d.merma_pz+'</td>'
+      +'<td class="mono" style="font-weight:700;color:var(--rojo)">'+f$(d.merma_pesos)+'</td>'
+      +'<td class="mono" style="font-weight:700;color:'+col+'">'+d.pct_merma+'%</td>'
+      +'</tr>';
+  }).join('');
+  var tot_pct=tot_comp>0?Math.round(tot_mpz/(tot_comp+tot_ini-tot_fin)*1000)/10:0;
+  var tot_col=tot_pct>=30?'var(--rojo)':tot_pct>=15?'var(--ambar)':tot_pct>=7?'#E67E22':'var(--verde2)';
+  rows+='<tr style="background:var(--rojo2);font-weight:700">'
+    +'<td>TOTAL '+suc+'</td><td></td>'
+    +'<td class="mono">'+tot_ini+'</td>'
+    +'<td class="mono" style="color:var(--verde2)">+'+tot_comp+'</td>'
+    +'<td class="mono" style="color:#2a78d6">'+tot_vta+'</td>'
+    +'<td class="mono">'+tot_fin+'</td>'
+    +'<td class="mono" style="color:var(--rojo)">'+tot_mpz+'</td>'
+    +'<td class="mono" style="color:var(--rojo)">'+f$(tot_mpesos)+'</td>'
+    +'<td class="mono" style="color:'+tot_col+'">'+tot_pct+'%</td>'
+    +'</tr>';
+  var el=document.getElementById('vb-suc-content');
+  if(!el)return;
+  el.innerHTML=
+    '<table class="tbl" style="margin-bottom:16px"><thead><tr>'
+    +'<th>Producto</th><th>Costo</th><th>Inv. Ini</th><th>Compras (+)</th><th>Ventas (-)</th><th>Inv. Final</th><th>Merma pz</th><th>Merma $</th><th>% Merma</th>'
+    +'</tr></thead><tbody>'+rows+'</tbody></table>'
+    +'<div style="position:relative;height:160px"><canvas id="ch-vb-suc-det"></canvas></div>';
+  setTimeout(function(){
+    var pnames=prods.map(function(p){return p.n;});
+    var mvals=prods.map(function(p){return p.suc[suc].merma_pesos;});
+    var pcts=prods.map(function(p){return p.suc[suc].pct_merma;});
+    var mcolors=mvals.map(function(v){return v>1000?'rgba(178,34,34,.8)':v>500?'rgba(230,126,34,.8)':'rgba(27,175,122,.7)';});
+    mkChart('ch-vb-suc-det',{type:'bar',data:{labels:pnames,datasets:[
+      {label:'Merma $',data:mvals,backgroundColor:mcolors,borderRadius:4,yAxisID:'y'},
+      {type:'line',label:'% Merma',data:pcts,borderColor:'#7F77DD',borderWidth:2,pointRadius:5,yAxisID:'y2'}
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10},boxWidth:9}}},scales:{
+      x:{grid:{display:false},ticks:{font:{size:10},color:TC}},
+      y:{grid:{color:GC},ticks:{callback:function(v){return'$'+v;},font:{size:9},color:TC}},
+      y2:{position:'right',grid:{display:false},ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}
+    }}});
+  },60);
+}
+function buildCategorias(){
+  document.getElementById('cat-tabs').innerHTML=CATS.map(function(c,i){return'<button class="cat-tab'+(i===0?' active':'')+('" onclick="setCat('+i+')">'+c.ic+' '+c.n+'</button>');}).join('');
+  renderCat(0);
+}
+function setCat(i){activeCat=i;document.querySelectorAll('.cat-tab').forEach(function(t,j){t.classList.toggle('active',j===i);});renderCat(i);}
+function renderCat(i){
+  var c=CATS[i],el=document.getElementById('cat-content');
+  if(c.id==='VB'){renderVB(el);return;}
+  if(c.id==='VP'){renderVP(el);return;}
+  if(c.id==='CB'){renderCBC(el);return;}
+  if(c.id==='PI'){renderPI(el);return;}
+  if(c.id==='SUP'){renderSUP(el);return;}
+  var bCls=c.pct>=c.pol*1.5?'badge-crit':c.pct>c.pol?'badge-mod':c.pct>0?'badge-ok':'badge-ok';
+  var bTxt=c.pct>=c.pol*1.5?'Crítica':c.pct>c.pol?'Moderada':c.pct>0?'OK':'Sin datos';
+  var html='<div class="kpi-grid"><div class="kpi red"><div class="kpi-label">Merma total</div><div class="kpi-val">'+(c.merma?f$(c.merma):'—')+'</div></div><div class="kpi blue"><div class="kpi-label">Ventas total</div><div class="kpi-val">'+(c.ventas?f$(c.ventas):'—')+'</div></div><div class="kpi amber"><div class="kpi-label">% Merma prom.</div><div class="kpi-val">'+(c.pct?fp(c.pct):'—')+'</div><div class="kpi-sub">Política ≤'+c.pol+'%</div></div><div class="kpi green"><div class="kpi-label">Status</div><div class="kpi-val" style="font-size:14px"><span class="badge '+bCls+'">'+bTxt+'</span></div></div></div>';
+  if(c.vals.length>0){html+='<div class="card"><div class="card-head"><div class="card-title">'+c.ic+' '+c.n+' — Merma $ por periodo</div></div><div style="position:relative;height:200px"><canvas id="ch-cat-'+i+'"></canvas></div></div>';}
+  else{html+='<div class="card" style="text-align:center;padding:48px;color:var(--gris)"><div style="font-size:40px;margin-bottom:12px">'+c.ic+'</div><div style="font-size:15px;font-weight:700;margin-bottom:8px">'+c.n+'</div><div>Los datos aparecerán cuando proceses la primera semana.</div></div>';}
+  el.innerHTML=html;
+  if(c.vals.length>0)setTimeout(function(){mkChart('ch-cat-'+i,{type:'bar',data:{labels:c.sems,datasets:[{label:'Merma $',data:c.vals,backgroundColor:c.color+'bb',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});},60);
+}
+
+// ─── VITCH BAKERY completo ───
+function renderVB(el){
+  var TOTAL_PESOS=13525,TOTAL_PZ=448,POL=7;
+  var suc_sorted=Object.keys(VB_SUC_TOTALS).sort(function(a,b){return VB_SUC_TOTALS[b].pesos-VB_SUC_TOTALS[a].pesos;});
+  var top_suc_pct=Object.keys(VB_SUC_TOTALS).map(function(s){
+    var tot_pz=VB_PRODS_DATA.reduce(function(a,p){return a+(p.suc[s]?p.suc[s].pz:0);},0);
+    var pct_vals=VB_PRODS_DATA.filter(function(p){return p.suc[s]&&p.suc[s].pct_m>0;}).map(function(p){return p.suc[s].pct_m;});
+    var avg_pct=pct_vals.length?pct_vals.reduce(function(a,b){return a+b;},0)/pct_vals.length:0;
+    return {s:s,pct:Math.round(avg_pct*10)/10};
+  }).sort(function(a,b){return b.pct-a.pct;});
+
+  var html='';
+  // KPIs
+  html+='<div class="kpi-grid">'
+    +'<div class="kpi red"><div class="kpi-label">Merma total Jun</div><div class="kpi-val">'+f$(TOTAL_PESOS)+'</div><div class="kpi-sub">'+TOTAL_PZ+'pz · 8 sucursales</div></div>'
+    +'<div class="kpi amber"><div class="kpi-label">Política VB</div><div class="kpi-val" style="color:var(--rojo)">16.5%</div><div class="kpi-sub">Objetivo ≤'+POL+'% <span class="badge badge-crit">Crítico</span></div></div>'
+    +'<div class="kpi purple"><div class="kpi-label">Sucursal líder</div><div class="kpi-val">Condesa</div><div class="kpi-sub">$4,644 · 156 pz</div></div>'
+    +'<div class="kpi green"><div class="kpi-label">Mayor % merma</div><div class="kpi-val">Kitchen Lab</div><div class="kpi-sub">53.8% en Blondie GF</div></div>'
+    +'</div>';
+
+  // Alertas críticas VB
+  html+='<div class="card"><div class="card-head"><div><div class="card-title">🚨 Alertas por producto y sucursal</div><div class="card-sub">% merma real vs política ≤7%</div></div></div>'
+    +'<div style="display:flex;flex-wrap:wrap;gap:8px;padding:8px 0">'
+    +VB_ALERTAS.map(function(a){
+      var cls=a.pct>=30?'badge-crit':a.pct>=15?'badge-mod':'badge-ok';
+      return '<span class="badge '+cls+'" style="font-size:12px;padding:4px 10px">'+a.suc+' · '+a.prod+' · '+a.pct+'%</span>';
+    }).join('')
+    +'</div></div>';
+
+  // Gráfica merma $ por sucursal + % por producto
+  html+='<div class="g2">'
+    +'<div class="card"><div class="card-head"><div class="card-title">Merma $ por sucursal</div></div><div style="position:relative;height:200px"><canvas id="ch-vb-suc"></canvas></div></div>'
+    +'<div class="card"><div class="card-head"><div class="card-title">Merma $ por producto</div></div><div style="position:relative;height:200px"><canvas id="ch-vb-prod"></canvas></div></div>'
+    +'</div>';
+
+  // Gráfica % merma promedio por sucursal
+  html+='<div class="card"><div class="card-head"><div><div class="card-title">% Merma promedio por sucursal — Jun 2026</div><div class="card-sub">Política ≤7% · línea roja</div></div></div><div style="position:relative;height:200px"><canvas id="ch-vb-pct"></canvas></div></div>';
+
+  // Top por sucursal en $ y en %
+  html+='<div class="g2">'
+    +'<div class="card"><div class="card-head"><div><div class="card-title">Top sucursales — Merma $</div></div></div>'
+    +suc_sorted.map(function(s,i){var d=VB_SUC_TOTALS[s],max=VB_SUC_TOTALS[suc_sorted[0]].pesos,rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name">'+s+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(d.pesos/max*100)+'%;background:#1baf7a"></div></div><div class="rank-val">'+f$(d.pesos)+'</div></div>';}).join('')
+    +'</div>'
+    +'<div class="card"><div class="card-head"><div><div class="card-title">Top sucursales — % Merma</div></div></div>'
+    +top_suc_pct.map(function(d,i){var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn',col=d.pct>=30?'#B22222':d.pct>=15?'#E67E22':'#1baf7a';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name">'+d.s+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.min(d.pct/60*100,100)+'%;background:'+col+'"></div></div><div class="rank-val" style="color:'+col+'">'+d.pct+'%</div></div>';}).join('')
+    +'</div>'
+    +'</div>';
+
+  // Top productos
+  html+='<div class="g2">'
+    +'<div class="card"><div class="card-head"><div class="card-title">Top productos — Merma $</div></div>'
+    +VB_PROD_TOTALS.map(function(p,i){var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name">'+p.n+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.pesos/VB_PROD_TOTALS[0].pesos*100)+'%;background:#1baf7a"></div></div><div class="rank-val">'+f$(p.pesos)+'</div></div>';}).join('')
+    +'</div>'
+    +'<div class="card"><div class="card-head"><div class="card-title">Top productos — piezas</div></div>'
+    +VB_PROD_TOTALS.slice().sort(function(a,b){return b.pz-a.pz;}).map(function(p,i){var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name">'+p.n+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.pz/VB_PROD_TOTALS[0].pz*100)+'%;background:#7F77DD"></div></div><div class="rank-val">'+p.pz+'pz</div></div>';}).join('')
+    +'</div>'
+    +'</div>';
+
+  // Tabla completa producto x sucursal
+  var SUCS_VB=['Condesa','Colima','Santa Fe','Liverpool','Polanco','Insurgentes','Roma','Kitchen Lab'];
+  html+='<div class="card"><div class="card-head"><div><div class="card-title">Tabla completa — producto × sucursal</div><div class="card-sub">Junio 2026 · pz / $ / % merma</div></div></div>'
+    +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Producto</th>'
+    +SUCS_VB.map(function(s){return'<th colspan="2" style="text-align:center">'+s+'</th>';}).join('')
+    +'<th>Total $</th><th>Total pz</th></tr>'
+    +'<tr><th></th>'+SUCS_VB.map(function(){return'<th style="font-size:10px;color:var(--gris)">$</th><th style="font-size:10px;color:var(--gris)">%</th>';}).join('')+'<th></th><th></th></tr></thead><tbody>'
+    +VB_PRODS_DATA.map(function(p){
+      var tot=Object.values(p.suc).reduce(function(a,d){return a+d.pesos;},0);
+      var totpz=Object.values(p.suc).reduce(function(a,d){return a+d.pz;},0);
+      return'<tr><td style="font-weight:600;white-space:nowrap">'+p.n+'</td>'
+        +SUCS_VB.map(function(s){var d=p.suc[s];if(!d)return'<td class="mono" style="color:var(--gris)">—</td><td>—</td>';var pc=d.pct_m,col=pc>=30?'var(--rojo)':pc>=15?'var(--ambar)':'var(--verde2)';return'<td class="mono">'+f$(d.pesos)+'</td><td class="mono" style="font-weight:700;color:'+col+'">'+pc+'%</td>';}).join('')
+        +'<td class="mono" style="font-weight:700">'+f$(tot)+'</td><td class="mono">'+totpz+'pz</td></tr>';
+    }).join('')
+    +'<tr style="background:var(--verde3);font-weight:700"><td>TOTAL</td>'
+    +SUCS_VB.map(function(s){var d=VB_SUC_TOTALS[s]||{pesos:0,pz:0};return'<td class="mono" colspan="2">'+f$(d.pesos)+'<br><span style="font-size:10px;color:var(--gris)">'+d.pz+'pz</span></td>';}).join('')
+    +'<td class="mono">'+f$(TOTAL_PESOS)+'</td><td class="mono">'+TOTAL_PZ+'pz</td></tr>'
+    +'</tbody></table></div></div>';
+
+
+  // === REPORTE POR SUCURSAL ===
+  html+='<div class="card"><div class="card-head"><div><div class="card-title">📍 Reporte por sucursal — detalle completo</div><div class="card-sub">Inv. Inicial + Compras − Ventas − Inv. Final = Merma Real</div></div></div>'
+    +'<div class="suc-tabs" id="vb-suc-tabs" style="margin-bottom:12px"></div>'
+    +'<div style="overflow-x:auto" id="vb-suc-content"></div>'
+    +'</div>';
+
+  el.innerHTML=html;
+
+  setTimeout(function(){buildVBSucTabs();},10);
+
+  setTimeout(function(){
+    var suc_labels=suc_sorted;
+    var suc_vals=suc_labels.map(function(s){return VB_SUC_TOTALS[s].pesos;});
+    var suc_colors=suc_labels.map(function(s,i){return i===0?'rgba(178,34,34,.8)':'rgba(27,175,122,.7)';});
+    mkChart('ch-vb-suc',{type:'bar',data:{labels:suc_labels,datasets:[{label:'Merma $',data:suc_vals,backgroundColor:suc_colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});
+    mkChart('ch-vb-prod',{type:'bar',data:{labels:VB_PROD_TOTALS.map(function(p){return p.n;}),datasets:[{label:'Merma $',data:VB_PROD_TOTALS.map(function(p){return p.pesos;}),backgroundColor:['rgba(178,34,34,.8)','rgba(230,126,34,.8)','rgba(27,175,122,.8)','rgba(127,119,221,.8)'],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});
+    var pct_labels=top_suc_pct.map(function(d){return d.s;});
+    var pct_vals2=top_suc_pct.map(function(d){return d.pct;});
+    var pct_colors=pct_vals2.map(function(v){return v>=30?'rgba(178,34,34,.8)':v>=15?'rgba(230,126,34,.8)':'rgba(27,175,122,.7)';});
+    mkChart('ch-vb-pct',{type:'bar',data:{labels:pct_labels,datasets:[{label:'% Merma promedio',data:pct_vals2,backgroundColor:pct_colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},annotation:{annotations:{line1:{type:'line',yMin:7,yMax:7,borderColor:'rgba(178,34,34,.8)',borderWidth:1.5,borderDash:[4,3]}}}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
+  },80);
+}
+
+// ─── MERMA GENERAL ───
+var activeMG='Polanco';
+function buildInsumos(){
+  var sucs=Object.keys(MERMA_GENERAL);
+  document.getElementById('mg-tabs').innerHTML=sucs.map(function(s){return'<button class="suc-tab'+(s===activeMG?' active':'')+'" onclick="setMG(\''+s+'\')">'+s+'</button>';}).join('');
+  renderMG(activeMG);
+  setTimeout(function(){
+    var labels=Object.keys(MG_TOTALS);
+    var vals=labels.map(function(l){return MG_TOTALS[l];});
+    var colors=labels.map(function(l){return l==='Polanco'?'rgba(178,34,34,.8)':'rgba(127,119,221,.7)';});
+    mkChart('ch-ins-suc',{type:'bar',data:{labels:labels,datasets:[{label:'Merma General $ (Sem 3 Jun)',data:vals,backgroundColor:colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});
+  },80);
+}
+function setMG(name){activeMG=name;document.querySelectorAll('#mg-tabs .suc-tab').forEach(function(t){t.classList.toggle('active',t.textContent===name);});renderMG(name);}
+function renderMG(name){
+  var d=MERMA_GENERAL[name];
+  if(!d){document.getElementById('mg-content').innerHTML='<div style="color:var(--gris);padding:20px">Sin datos para esta sucursal.</div>';return;}
+  function mgRows(data,colorHex){var max=data[0].v;return data.map(function(p,i){var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name" style="font-size:11px">'+p.n+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.v/max*100)+'%;background:'+colorHex+'"></div></div><div class="rank-val">'+f$(p.v)+'</div></div>';}).join('');}
+  var s3tot=d.s26.reduce(function(a,p){return a+p.v;},0);
+  var acumtot=d.acum.reduce(function(a,p){return a+p.v;},0);
+  document.getElementById('mg-content').innerHTML=
+    '<div class="card" style="margin-bottom:0"><div class="card-head"><div><div class="card-title">🗓 Semana 3 Jun — '+name+'</div><div class="card-sub">Total reportado: '+f$(s3tot)+'</div></div></div>'+mgRows(d.s26,'#B22222')+'</div>'
+    +'<div class="card" style="margin-bottom:0"><div class="card-head"><div><div class="card-title">📅 Acumulado Jun — '+name+'</div><div class="card-sub">Total: '+f$(acumtot)+'</div></div></div>'+mgRows(d.acum,'#7F77DD')+'</div>';
+}
+
+// ─── HISTÓRICO ───
+function buildHistorico(){
+  setTimeout(function(){
+    mkChart('ch-hist-main',{data:{labels:SEMS,datasets:[{type:'bar',label:'Merma $',data:MRMA,backgroundColor:MRMA.map(function(v,i){return i===SEMS.length-1?'rgba(178,34,34,.9)':'rgba(178,34,34,.55)';}),borderRadius:3,yAxisID:'y'},{type:'line',label:'% Merma',data:PCT,borderColor:'#E67E22',borderWidth:2.5,pointRadius:4,yAxisID:'y2',tension:.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10},boxWidth:9}}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}},y2:{position:'right',grid:{display:false},min:10,max:40,ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
+    var sucKeys=Object.keys(SUC_HIST_PCT),colors=['#2a78d6','#e34948','#1baf7a','#eda100','#4a3aa7','#eb6834','#e87ba4'];
+    mkChart('ch-hist-suc',{type:'line',data:{labels:SEMS,datasets:sucKeys.map(function(s,i){return{label:s,data:SUC_HIST_PCT[s],borderColor:colors[i%colors.length],borderWidth:1.8,pointRadius:3,tension:.3,spanGaps:true};})},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:9},boxWidth:8}}},scales:{x:{ticks:{font:{size:9},color:TC}},y:{min:0,max:65,ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
+  },80);
+  var t=document.getElementById('hist-table');
+  t.innerHTML='<thead><tr><th>Sem</th><th>Ventas $</th><th>Merma $</th><th>% Merma</th><th>Var. $</th><th>Utilidad %</th><th>Status</th></tr></thead><tbody>'+SEMS.map(function(s,i){var dv=i>0?MRMA[i]-MRMA[i-1]:0,last=i===SEMS.length-1;return'<tr style="'+(last?'background:#FFF8F0;font-weight:600':'')+'"><td class="mono">'+s+(last?' 🆕':'')+'</td><td class="mono">'+f$(VTAS[i])+'</td><td class="mono" style="color:var(--rojo)">'+f$(MRMA[i])+'</td><td class="mono" style="font-weight:700;color:'+sc(PCT[i])+'">'+fp(PCT[i])+'</td><td class="mono" style="color:'+(i>0?(dv>0?'var(--rojo)':'var(--verde2)'):'var(--gris)')+'">'+( i>0?(dv>0?'+':'')+f$(dv):'—')+'</td><td class="mono" style="color:#00897B;font-weight:700">'+fp(UTILIDAD_P[i])+'</td><td>'+pillHtml(PCT[i])+'</td></tr>';}).join('')+'</tbody>';
+}
+
+// ─── INIT ───
+function buildAll(){
+  try{buildDashboard();}catch(e){console.error('dash',e);}
+  try{buildMargen();}catch(e){console.error('margen',e);}
+  try{buildSucursales();}catch(e){console.error('suc',e);}
+  try{buildCategorias();}catch(e){console.error('cats',e);}
+  try{buildInsumos();}catch(e){console.error('ins',e);}
+  try{buildHistorico();}catch(e){console.error('hist',e);}
+}
+function startClock(){setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});},1000);}
+</script>
+</body>
+</html>
