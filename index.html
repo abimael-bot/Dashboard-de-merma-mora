@@ -297,18 +297,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
  <!-- MERMA GENERAL -->
  <div class="page" id="page-insumos">
  <div class="kpi-grid">
- <div class="kpi red"><div class="kpi-label">Merma General Junio 2026</div><div class="kpi-val">$17,373</div><div class="kpi-sub">Acumulado mes Jun · 9 sucursales</div></div>
- <div class="kpi amber"><div class="kpi-label">🆕 Merma Julio 1-12</div><div class="kpi-val">$11,763</div><div class="kpi-sub">8 sucursales · Condesa y Polanco lideran</div></div>
- <div class="kpi purple"><div class="kpi-label">Sucursal con más merma (Jun)</div><div class="kpi-val">Polanco</div><div class="kpi-sub">$18,828 · azúcar coco, levadura, aguacate</div></div>
+ <div class="kpi red"><div class="kpi-label">🆕 Merma General Julio 1-12</div><div class="kpi-val">$11,763</div><div class="kpi-sub">8 sucursales · Condesa y Polanco lideran</div></div>
+ <div class="kpi purple"><div class="kpi-label">Sucursal con más merma (Jul)</div><div class="kpi-val">Condesa</div><div class="kpi-sub">$4,328 · Arroz con leche, Limón eureka, Tempeh Gyro</div></div>
+ <div class="kpi amber"><div class="kpi-label">Merma General Junio 2026</div><div class="kpi-val">$17,373</div><div class="kpi-sub">Acumulado mes Jun (histórico) · 9 sucursales</div></div>
  <div class="kpi blue"><div class="kpi-label">Categorías incluidas</div><div class="kpi-val" style="font-size:14px">Jugos · Bakery · Producción</div><div class="kpi-sub">Reporte por sucursal completo</div></div>
  </div>
  <div class="card">
- <div class="card-head"><div><div class="card-title">Merma General — Top 10 por Sucursal</div><div class="card-sub">Jun (semana + acumulado) y 🆕 Julio 1-12 histórico · selecciona sucursal</div></div></div>
+ <div class="card-head"><div><div class="card-title">Merma General — Top 10 por Sucursal</div><div class="card-sub">🆕 Julio 1-12 primero · después Jun (semana + acumulado) histórico · selecciona sucursal</div></div></div>
  <div class="suc-tabs" id="mg-tabs"></div>
  <div class="g2" id="mg-content"></div>
  </div>
  <div class="card">
- <div class="card-head"><div><div class="card-title">Comparativa total por sucursal</div><div class="card-sub">Merma acumulada junio 2026 por sucursal</div></div></div>
+ <div class="card-head"><div><div class="card-title">Comparativa total por sucursal</div><div class="card-sub">🆕 Julio 1-12 vs. Junio 2026 (histórico)</div></div></div>
  <div style="position:relative;height:230px"><canvas id="ch-ins-suc"></canvas></div>
  </div>
  </div>
@@ -1427,28 +1427,34 @@ function buildInsumos(){
  var vals=labels.map(function(l){return MG_TOTALS[l];});
  var valsJul=labels.map(function(l){return MG_TOTALS_JUL[l]!==undefined?MG_TOTALS_JUL[l]:null;});
  var colors=labels.map(function(l){return l==='Polanco'?'rgba(178,34,34,.8)':'rgba(127,119,221,.7)';});
- mkChart('ch-ins-suc',{type:'bar',data:{labels:labels,datasets:[{label:'Acumulado Jun 2026',data:vals,backgroundColor:colors,borderRadius:4},{label:'Julio 1-12 (histórico)',data:valsJul,backgroundColor:'rgba(230,126,34,.8)',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{font:{size:9},boxWidth:9}}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});
+ mkChart('ch-ins-suc',{type:'bar',data:{labels:labels,datasets:[{label:'🆕 Julio 1-12',data:valsJul,backgroundColor:'rgba(230,126,34,.9)',borderRadius:4},{label:'Junio 2026 (histórico)',data:vals,backgroundColor:'rgba(127,119,221,.55)',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{font:{size:9},boxWidth:9}}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});
  },80);
 }
 function setMG(name){activeMG=name;document.querySelectorAll('#mg-tabs .suc-tab').forEach(function(t){t.classList.toggle('active',t.textContent===name);});renderMG(name);}
 function renderMG(name){
  var d=MERMA_GENERAL[name];
- if(!d){document.getElementById('mg-content').innerHTML='<div style="color:var(--gris);padding:20px">Sin datos para esta sucursal.</div>';return;}
  function mgRows(data,colorHex){var max=data[0].v;return data.map(function(p,i){var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name" style="font-size:11px">'+p.n+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.v/max*100)+'%;background:'+colorHex+'"></div></div><div class="rank-val">'+f$(p.v)+'</div></div>';}).join('');}
- var s3tot=d.s26.reduce(function(a,p){return a+p.v;},0);
- var acumtot=d.acum.reduce(function(a,p){return a+p.v;},0);
+
  var julData=MERMA_GENERAL_JUL[name];
  var julBlock='';
  if(julData&&julData.length){
    var jultot=MG_TOTALS_JUL[name]||julData.reduce(function(a,p){return a+p.v;},0);
-   julBlock='<div class="card" style="margin-bottom:0;grid-column:1/-1"><div class="card-head"><div><div class="card-title">🆕 Julio 2026 — días 1 al 12 — '+name+'</div><div class="card-sub">Histórico · Total reportado: '+f$(jultot)+' · Sem 1 (1-5) + Sem 2 (6-12)</div></div></div>'+mgRows(julData,'#E67E22')+'</div>';
+   julBlock='<div class="card" style="margin-bottom:13px;border-left:4px solid #E67E22"><div class="card-head"><div><div class="card-title">🆕 Julio 2026 — Top 10 en valor — '+name+'</div><div class="card-sub">Días 1 al 12 (Sem 1 + Sem 2) · Total reportado: <b>'+f$(jultot)+'</b></div></div></div>'+mgRows(julData,'#E67E22')+'</div>';
  } else {
-   julBlock='<div class="card" style="margin-bottom:0;grid-column:1/-1"><div class="card-head"><div><div class="card-title">🆕 Julio 2026 — días 1 al 12 — '+name+'</div><div class="card-sub">Sin hoja CAM_JULIO cargada para esta sucursal todavía</div></div></div></div>';
+   julBlock='<div class="card" style="margin-bottom:13px;border-left:4px solid #E67E22"><div class="card-head"><div><div class="card-title">🆕 Julio 2026 — '+name+'</div><div class="card-sub">Sin hoja CAM_JULIO cargada para esta sucursal todavía</div></div></div></div>';
  }
+
+ if(!d){
+   document.getElementById('mg-content').innerHTML='<div style="grid-column:1/-1">'+julBlock+'<div style="color:var(--gris);padding:20px;text-align:center">Sin datos de junio para esta sucursal.</div></div>';
+   return;
+ }
+ var s3tot=d.s26.reduce(function(a,p){return a+p.v;},0);
+ var acumtot=d.acum.reduce(function(a,p){return a+p.v;},0);
  document.getElementById('mg-content').innerHTML=
- '<div class="card" style="margin-bottom:0"><div class="card-head"><div><div class="card-title">🗓 Semana 3 Jun — '+name+'</div><div class="card-sub">Total reportado: '+f$(s3tot)+'</div></div></div>'+mgRows(d.s26,'#B22222')+'</div>'
- +'<div class="card" style="margin-bottom:0"><div class="card-head"><div><div class="card-title">📅 Acumulado Jun — '+name+'</div><div class="card-sub">Total: '+f$(acumtot)+'</div></div></div>'+mgRows(d.acum,'#7F77DD')+'</div>'
- +julBlock;
+ '<div style="grid-column:1/-1">'+julBlock+'</div>'
+ +'<div style="grid-column:1/-1;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gris);margin:4px 0 -4px 2px">📁 Histórico — Junio 2026</div>'
+ +'<div class="card" style="margin-bottom:0;opacity:.85"><div class="card-head"><div><div class="card-title">🗓 Semana 3 Jun — '+name+'</div><div class="card-sub">Total reportado: '+f$(s3tot)+'</div></div></div>'+mgRows(d.s26,'#B22222')+'</div>'
+ +'<div class="card" style="margin-bottom:0;opacity:.85"><div class="card-head"><div><div class="card-title">📅 Acumulado Jun — '+name+'</div><div class="card-sub">Total: '+f$(acumtot)+'</div></div></div>'+mgRows(d.acum,'#7F77DD')+'</div>';
 }
 
 
