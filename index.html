@@ -901,8 +901,7 @@ function renderSUP(el){
  {id:'21jul', label:'Diario 21 Jul'},
  {id:'22jul', label:'Diario 22 Jul'},
  {id:'23jul', label:'🆕 Diario 23 Jul'},
- {id:'diario', label:'📅 Diario'},
- {id:'semanal', label:'📋 Semanal'}
+ {id:'semanal', label:'📋 Semanal 22–26 Jul'}
  ];
  var tabsHtml='<div class="suc-tabs" style="margin-bottom:16px">'
  +tabs.map(function(t){
@@ -924,7 +923,6 @@ function renderSupTab(id){
  else if(id==='21jul') renderSup21Jul(el);
  else if(id==='22jul') renderSup22Jul(el);
  else if(id==='23jul') renderSup23Jul(el);
- else if(id==='diario') renderSupDiario(el);
  else if(id==='semanal') renderSupSemanal(el);
 }
 
@@ -1287,11 +1285,47 @@ function renderSupDiario(el){
 
 
 function renderSupSemanal(el){
- el.innerHTML='<div class="card" style="text-align:center;padding:48px;color:var(--gris)">'
- +'<div style="font-size:40px;margin-bottom:12px">📋</div>'
- +'<div style="font-size:15px;font-weight:700;margin-bottom:8px">Reporte Semanal</div>'
- +'<div>Disponible próximamente — se activará al cierre de cada semana con la conciliación completa.</div>'
+ var DET={
+  'Liverpool':[['Proteína vainilla Habits 488g',2,956],['Proteína cacao Performance Habits 578g',2,951],['Proteína vainilla Performance Habits 578g',2,951],['Sachet vainilla Habits 30g',16,503],['Proteína cacao Habits 488g',1,478],['Sachet chocolate Birdman 30g',3,71],['Sachet cacao Habits 30g',1,31],['Sachet Macchiato Habits 30g',2,0]],
+  'Polanco':[['Sachet cacao Habits 30g',16,503],['Sachet vainilla Habits 30g',16,503],['Proteína cacao Habits 488g',1,478],['Proteína vainilla Habits 488g',1,478],['Sachet vainilla Trulife 31g',8,216],['Sachet vainilla Birdman 30g',2,53],['Sachet moka Fitmingo Birdman 30g',1,27],['Sachet chocolate Birdman 30g',1,24]],
+  'Condesa':[['Proteína vainilla ON 740g',3,1686],['Sachet moka Fitmingo Birdman 30g',10,265],['Sachet cacao Habits 30g',2,63],['Sachet chocolate Birdman 30g',1,24]],
+  'San Miguel':[['Creatina ON 300g',4,1206]],
+  'Santa Fe':[['Proteína vainilla Habits 488g',1,478],['Sachet vainilla Habits 30g',3,94]],
+  'Roma':[['Sachet vainilla Habits 30g',1,31]],
+  'Insurgentes':[['Proteína vainilla Birdman 1.8kg',1,0]]
+ };
+ var ORDER=['Liverpool','Polanco','Condesa','San Miguel','Santa Fe','Roma','Insurgentes'];
+ var TOTPZ=101, TOTD=10071;
+ var html='';
+ html+='<div class="kpi-grid">'
+ +'<div class="kpi" style="border-top:3px solid #1565C0"><div class="kpi-label">Reporte semanal</div><div class="kpi-val" style="font-size:15px">22–26 Jul 2026</div><div class="kpi-sub">Pérdidas confirmadas de la semana</div></div>'
+ +'<div class="kpi red"><div class="kpi-label">Pérdida total $</div><div class="kpi-val">'+f$(TOTD)+'</div><div class="kpi-sub">Faltantes no justificados</div></div>'
+ +'<div class="kpi amber"><div class="kpi-label">Pérdida total pz</div><div class="kpi-val">'+TOTPZ+'</div><div class="kpi-sub">Piezas perdidas</div></div>'
+ +'<div class="kpi purple"><div class="kpi-label">Sucursales con pérdida</div><div class="kpi-val">6</div><div class="kpi-sub">de 8 activas</div></div>'
  +'</div>';
+ html+='<div class="card" style="background:#FFF8E1;border-left:4px solid var(--ambar)"><div style="font-size:12px;color:var(--txt)"><b>Criterio:</b> Pérdida = faltantes NO justificados. Se excluyen traspasos, errores de conteo e insumo/cocina. Faltantes de <b>Liverpool y Polanco</b> contados por no justificar en tiempo. Polanco con su registro. No incluye $2,068 de Colima ("Venta Market Condesa" = ventas).</div></div>';
+ // Resumen por sucursal
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📍 Resumen por sucursal</div><div class="card-sub">Semana 22–26 jul</div></div></div>'
+ +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Piezas</th><th>Pérdida $</th></tr></thead><tbody>';
+ ORDER.forEach(function(s){
+   var tpz=DET[s].reduce(function(a,r){return a+r[1];},0), td=DET[s].reduce(function(a,r){return a+r[2];},0);
+   var col=td>=2000?'var(--rojo)':td>=800?'var(--ambar)':'var(--gris)';
+   html+='<tr><td style="font-weight:700">'+s+'</td><td class="mono">'+tpz+'</td><td class="mono" style="font-weight:700;color:'+col+'">'+f$(td)+'</td></tr>';
+ });
+ html+='<tr style="border-top:2px solid var(--brd)"><td style="font-weight:800">TOTAL</td><td class="mono" style="font-weight:800">'+TOTPZ+'</td><td class="mono" style="font-weight:800;color:var(--rojo)">'+f$(TOTD)+'</td></tr>'
+ +'</tbody></table></div></div>';
+ // Detalle por sucursal: qué productos
+ html+='<div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--gris);margin:16px 0 8px">Detalle por sucursal — productos con pérdida</div>';
+ ORDER.forEach(function(s){
+   var tpz=DET[s].reduce(function(a,r){return a+r[1];},0), td=DET[s].reduce(function(a,r){return a+r[2];},0);
+   html+='<div class="card"><div class="card-head"><div><div class="card-title">'+s+'</div><div class="card-sub">'+tpz+' pz · '+f$(td)+' en pérdida</div></div></div>'
+   +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Producto</th><th>Piezas</th><th>Pérdida $</th></tr></thead><tbody>'
+   +DET[s].map(function(r){
+     return '<tr><td style="font-weight:600;font-size:12px">'+r[0]+'</td><td class="mono">'+r[1]+'</td><td class="mono" style="font-weight:700;color:var(--rojo)">'+f$(r[2])+'</td></tr>';
+   }).join('')
+   +'</tbody></table></div></div>';
+ });
+ el.innerHTML=html;
 }
 // ─── VITCH BAKERY SUCURSAL DETALLE (global scope) ───
 var VB_SUCS_ALL=['Condesa','Colima','Santa Fe','Liverpool','Polanco','Insurgentes','Roma','Kitchen Lab'];
