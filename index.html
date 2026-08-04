@@ -481,14 +481,15 @@ var CBC_KPIS={compras_l:355,ventas_l:264.1,merma_l:39.92,merma_ps:1469.06,ml_tot
 // ─── VITCH BAKERY DATA ───
 var VB_PRODS_DATA=[{n:'Blondie GF',suc:{Condesa:{pz:1,pct_m:0.4},Colima:{pz:41,pct_m:15.8},'Santa Fe':{pz:1,pct_m:0.5},Liverpool:{pz:0,pct_m:0.0},Polanco:{pz:17,pct_m:6.9},'San Miguel':{pz:11,pct_m:12.8},Insurgentes:{pz:32,pct_m:16.3},Roma:{pz:15,pct_m:20.8},'Kitchen Lab':{pz:3,pct_m:15.0}}},{n:'Rollo de Canela',suc:{Condesa:{pz:6,pct_m:4.9},Colima:{pz:12,pct_m:9.0},'Santa Fe':{pz:28,pct_m:16.7},Liverpool:{pz:0,pct_m:0.0},Polanco:{pz:22,pct_m:14.9},'San Miguel':{pz:0,pct_m:0.0},Insurgentes:{pz:8,pct_m:23.5},Roma:{pz:3,pct_m:11.1},'Kitchen Lab':{pz:8,pct_m:80.0}}},{n:'Maple Choco Chip',suc:{Condesa:{pz:21,pct_m:8.9},Colima:{pz:24,pct_m:11.7},'Santa Fe':{pz:0,pct_m:0.0},Liverpool:{pz:21,pct_m:21.4},Polanco:{pz:36,pct_m:15.2},'San Miguel':{pz:6,pct_m:9.1},Insurgentes:{pz:35,pct_m:32.4},Roma:{pz:4,pct_m:6.7},'Kitchen Lab':{pz:2,pct_m:13.3}}},{n:'Panqué de Plátano',suc:{Condesa:{pz:6,pct_m:12.0},Colima:{pz:17,pct_m:34.0},'Santa Fe':{pz:9,pct_m:23.7},Liverpool:{pz:19,pct_m:45.2},Polanco:{pz:14,pct_m:30.4},'Kitchen Lab':{pz:1,pct_m:25.0}}}];
 var VB_SUC_TOTALS={Polanco:{pz:89,pesos:2854},Colima:{pz:94,pesos:2807},Insurgentes:{pz:75,pesos:2034},Liverpool:{pz:40,pesos:1485},'Santa Fe':{pz:38,pesos:1407},Condesa:{pz:34,pesos:1132},Roma:{pz:22,pesos:555},'Kitchen Lab':{pz:14,pesos:451},'San Miguel':{pz:17,pesos:422}};
+var VB_SUC_VENTAS={Polanco:32526,Colima:30810,Insurgentes:12570,Liverpool:14187,'Santa Fe':35058,Condesa:35112,Roma:7239,'Kitchen Lab':1851,'San Miguel':9492};
 var VB_PROD_TOTALS=[{n:'Maple Choco Chip',pesos:4470,pz:149},{n:'Rollo de Canela',pesos:3045,pz:87},{n:'Panqué de Plátano',pesos:2970,pz:66},{n:'Blondie GF',pesos:2662,pz:121}];
 
 
-var VB_ALERTAS=[{suc:'Kitchen Lab',prod:'Rollo de Canela',pct:80.0},{suc:'Liverpool',prod:'Panqué de Plátano',pct:45.2},{suc:'Colima',prod:'Panqué de Plátano',pct:34.0},{suc:'Insurgentes',prod:'Maple Choco Chip',pct:32.4},{suc:'Polanco',prod:'Panqué de Plátano',pct:30.4},{suc:'Kitchen Lab',prod:'Panqué de Plátano',pct:25.0}];
+var VB_ALERTAS=[{suc:'Polanco',prod:'Maple Choco Chip',pct:9.0,m:1080},{suc:'Insurgentes',prod:'Maple Choco Chip',pct:24.0,m:1050},{suc:'Santa Fe',prod:'Rollo de Canela',pct:10.1,m:980},{suc:'Colima',prod:'Blondie GF',pct:10.6,m:902},{suc:'Liverpool',prod:'Panqué de Plátano',pct:41.3,m:855},{suc:'Polanco',prod:'Rollo de Canela',pct:8.9,m:770},{suc:'Colima',prod:'Panqué de Plátano',pct:25.8,m:765},{suc:'Colima',prod:'Maple Choco Chip',pct:6.6,m:720},{suc:'Insurgentes',prod:'Blondie GF',pct:11.0,m:704}];
 var CATS=[
  {id:'SUP',n:'Suplementos',ic:'💊',pol:5,merma:0,ventas:0,pct:0,color:'#eda100',sems:['Condesa','Colima','S.Fe','Liverpool','Polanco','Roma','CDI'],vals:[23.2,38.4,8.2,73.7,42.8,17.2,3.2]},
  {id:'CP',n:'Jugos Cold Pressed',ic:'🥤',pol:22,merma:187234,ventas:1658434,pct:26.1,color:'#2a78d6',sems:['Prom.Ene','Prom.Feb','S11','S12','S13','S14','S15','S16','S17','S18','S19','S20','S21','S22','S23','S24','S25','S26'],vals:[21235,20489,17749,13053,13940,16906,17779,16562,18621,14027,19889,17881,17567,17984,18681,13951,11107,16873]},
- {id:'VB',n:'Vitch Bakery',ic:'🥐',pol:7,merma:13147,ventas:42679,pct:23.6,color:'#1baf7a',sems:['Maple Choco Chip','Rollo de Canela','Panqué de Plátano','Blondie GF'],vals:[4470,3045,2970,2662]},
+ {id:'VB',n:'Vitch Bakery',ic:'🥐',pol:7,merma:13147,ventas:178845,pct:7.4,color:'#1baf7a',sems:['Maple Choco Chip','Rollo de Canela','Panqué de Plátano','Blondie GF'],vals:[4470,3045,2970,2662]},
  {id:'INS',n:'Insumos',ic:'📦',pol:5,merma:115543.4,ventas:0,pct:0,color:'#7F77DD',sems:[],vals:[]}
 ];
 
@@ -1443,7 +1444,7 @@ function renderInsTab(id){
 
 // ─── VITCH BAKERY completo ───
 function renderVB(el){
- var TOTAL_PESOS=13147,TOTAL_PZ=423,POL=7;
+ var TOTAL_PESOS=13147,TOTAL_PZ=423,POL=3;
  var suc_sorted=Object.keys(VB_SUC_TOTALS).sort(function(a,b){return VB_SUC_TOTALS[b].pesos-VB_SUC_TOTALS[a].pesos;});
  var top_suc_pct=Object.keys(VB_SUC_TOTALS).map(function(s){
  var tot_pz=VB_PRODS_DATA.reduce(function(a,p){return a+(p.suc[s]?p.suc[s].pz:0);},0);
@@ -1457,18 +1458,18 @@ function renderVB(el){
  // KPIs
  html+='<div class="kpi-grid">'
  +'<div class="kpi red"><div class="kpi-label">Merma total Jul</div><div class="kpi-val">'+f$(TOTAL_PESOS)+'</div><div class="kpi-sub">'+TOTAL_PZ+'pz · 9 sucursales</div></div>'
- +'<div class="kpi amber"><div class="kpi-label">% Merma VB</div><div class="kpi-val" style="color:var(--rojo)">23.6%</div><div class="kpi-sub">Objetivo ≤'+POL+'% <span class="badge badge-crit">Crítico</span></div></div>'
+ +'<div class="kpi amber"><div class="kpi-label">% Merma s/ventas</div><div class="kpi-val" style="color:var(--rojo)">7.4%</div><div class="kpi-sub">Objetivo ≤3% <span class="badge badge-crit">Sobre política</span></div></div>'
  +'<div class="kpi purple"><div class="kpi-label">Sucursal líder</div><div class="kpi-val">'+suc_sorted[0]+'</div><div class="kpi-sub">'+f$(VB_SUC_TOTALS[suc_sorted[0]].pesos)+' · '+VB_SUC_TOTALS[suc_sorted[0]].pz+' pz</div></div>'
- +'<div class="kpi green"><div class="kpi-label">Mayor % merma</div><div class="kpi-val">'+VB_ALERTAS[0].suc+'</div><div class="kpi-sub">'+VB_ALERTAS[0].pct+'% en '+VB_ALERTAS[0].prod+'</div></div>'
+ +'<div class="kpi green"><div class="kpi-label">Mayor pérdida $</div><div class="kpi-val">'+VB_ALERTAS[0].suc+'</div><div class="kpi-sub">'+f$(VB_ALERTAS[0].m)+' · '+VB_ALERTAS[0].prod+' ('+VB_ALERTAS[0].pct+'%)</div></div>'
  +'</div>';
 
 
  // Alertas críticas VB
- html+='<div class="card"><div class="card-head"><div><div class="card-title">🚨 Alertas por producto y sucursal</div><div class="card-sub">% merma real vs política ≤7%</div></div></div>'
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">🚨 Alertas por producto y sucursal</div><div class="card-sub">% merma sobre ventas · política ≤3% · 🔴 crítica ≥3% y ≥$800</div></div></div>'
  +'<div style="display:flex;flex-wrap:wrap;gap:8px;padding:8px 0">'
  +VB_ALERTAS.map(function(a){
- var cls=a.pct>=30?'badge-crit':a.pct>=15?'badge-mod':'badge-ok';
- return '<span class="badge '+cls+'" style="font-size:12px;padding:4px 10px">'+a.suc+' · '+a.prod+' · '+a.pct+'%</span>';
+ var cls=a.m>=800?'badge-crit':'badge-mod';
+ return '<span class="badge '+cls+'" style="font-size:12px;padding:4px 10px">'+a.suc+' · '+a.prod+' · '+f$(a.m)+' ('+a.pct+'%)</span>';
  }).join('')
  +'</div></div>';
 
@@ -1481,7 +1482,7 @@ function renderVB(el){
 
 
  // Gráfica % merma promedio por sucursal
- html+='<div class="card"><div class="card-head"><div><div class="card-title">% Merma promedio por sucursal — Jul 2026</div><div class="card-sub">Política ≤7% · línea roja</div></div></div><div style="position:relative;height:200px"><canvas id="ch-vb-pct"></canvas></div></div>';
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">Ventas vs Merma por sucursal — Jul 2026</div><div class="card-sub">Barras: Ventas $ y Merma $ · línea: % merma sobre ventas (política 3%)</div></div></div><div style="position:relative;height:240px"><canvas id="ch-vb-pct"></canvas></div></div>';
 
 
  // Top por sucursal en $ y en %
@@ -1547,10 +1548,11 @@ function renderVB(el){
  var suc_colors=suc_labels.map(function(s,i){return i===0?'rgba(178,34,34,.8)':'rgba(27,175,122,.7)';});
  mkChart('ch-vb-suc',{type:'bar',data:{labels:suc_labels,datasets:[{label:'Merma $',data:suc_vals,backgroundColor:suc_colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});
  mkChart('ch-vb-prod',{type:'bar',data:{labels:VB_PROD_TOTALS.map(function(p){return p.n;}),datasets:[{label:'Merma $',data:VB_PROD_TOTALS.map(function(p){return p.pesos;}),backgroundColor:['rgba(178,34,34,.8)','rgba(230,126,34,.8)','rgba(27,175,122,.8)','rgba(127,119,221,.8)'],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});
- var pct_labels=top_suc_pct.map(function(d){return d.s;});
- var pct_vals2=top_suc_pct.map(function(d){return d.pct;});
- var pct_colors=pct_vals2.map(function(v){return v>=30?'rgba(178,34,34,.8)':v>=15?'rgba(230,126,34,.8)':'rgba(27,175,122,.7)';});
- mkChart('ch-vb-pct',{type:'bar',data:{labels:pct_labels,datasets:[{label:'% Merma promedio',data:pct_vals2,backgroundColor:pct_colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},annotation:{annotations:{line1:{type:'line',yMin:7,yMax:7,borderColor:'rgba(178,34,34,.8)',borderWidth:1.5,borderDash:[4,3]}}}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
+ var vv_labs=suc_sorted;
+ var vv_ventas=vv_labs.map(function(s){return VB_SUC_VENTAS[s]||0;});
+ var vv_merma=vv_labs.map(function(s){return VB_SUC_TOTALS[s].pesos;});
+ var vv_pct=vv_labs.map(function(s){var v=VB_SUC_VENTAS[s]||0;return v?Math.round(VB_SUC_TOTALS[s].pesos/v*1000)/10:0;});
+ mkChart('ch-vb-pct',{type:'bar',data:{labels:vv_labs,datasets:[{label:'Ventas $',data:vv_ventas,backgroundColor:'rgba(27,175,122,.5)',borderRadius:4,yAxisID:'y'},{label:'Merma $',data:vv_merma,backgroundColor:'rgba(178,34,34,.85)',borderRadius:4,yAxisID:'y'},{type:'line',label:'% Merma s/ventas',data:vv_pct,borderColor:'#E67E22',backgroundColor:'#E67E22',borderWidth:2,tension:.3,pointRadius:3,yAxisID:'y1'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{font:{size:9},boxWidth:9}},annotation:{annotations:{line1:{type:'line',yMin:3,yMax:3,yScaleID:'y1',borderColor:'rgba(178,34,34,.7)',borderWidth:1.5,borderDash:[4,3]}}}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{position:'left',grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}},y1:{position:'right',min:0,grid:{display:false},ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
  },80);
 }
 
