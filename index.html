@@ -157,6 +157,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
  <button class="sb-item" onclick="showPage('insumos')"><span class="ic">📋</span>Registros Merma CAM</button>
  <button class="sb-item" onclick="showPage('gestion')"><span class="ic">🔄</span>Gestión Integral Suplementos<span class="sb-badge" style="background:#1565C0">🆕</span></button>
  <button class="sb-item" onclick="showPage('benchmark')"><span class="ic">💲</span>Benchmark de Precios</button>
+ <button class="sb-item" onclick="showPage('eficiencia')"><span class="ic">📊</span>Eficiencia por Categoría</button>
  <div class="sb-section" style="margin-top:6px">Por Categoría</div>
  <button class="sb-item sb-sub" onclick="showCatDirect('SUP')"><span class="ic">💊</span>Suplementos</button>
  <button class="sb-item sb-sub" onclick="showCatDirect('VB')"><span class="ic">🥐</span>Vitch Bakery</button>
@@ -188,6 +189,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
  <div class="kpi amber"><div class="kpi-label">% Merma S31</div><div class="kpi-val">28.3%</div><div class="kpi-sub"><span class="badge badge-mod">Moderada</span></div></div>
  <div class="kpi green"><div class="kpi-label">Merma reportada S31</div><div class="kpi-val">$3,955</div><div class="kpi-sub">Desv: $7,505 (65.5%)</div></div>
  <div class="kpi purple"><div class="kpi-label">Semanas registradas</div><div class="kpi-val">31</div><div class="kpi-sub">S11 → S31 + Ene/Feb</div></div>
+ <div class="kpi teal"><div class="kpi-label">% Merma s/ventas S31</div><div class="kpi-val">12.8%</div><div class="kpi-sub">🆕 Comparable con VB (7.4%)</div></div>
  </div>
  <!-- TABS DASHBOARD -->
  <div class="suc-tabs" id="dash-main-tabs" style="margin:12px 0">
@@ -358,6 +360,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
  </div>
  </div>
 
+ <!-- EFICIENCIA POR CATEGORÍA -->
+ <div class="page" id="page-eficiencia"></div>
+
 
  <!-- HISTÓRICO -->
  <div class="page" id="page-historico">
@@ -394,8 +399,8 @@ function startApp(u){document.getElementById('login-screen').style.display='none
 function logout(){document.getElementById('app').style.display='none';document.getElementById('login-screen').style.display='flex';document.getElementById('inp-email').value='';document.getElementById('inp-pass').value='';}
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
-var PAGE_META={dashboard:{title:'Dashboard — Jugos Cold Pressed',sub:'S11–S31 · 2026'},margen:{title:'Margen & Utilidad — Jugos Cold Pressed',sub:'Utilidad · Margen · Ventas vs Merma S11–S31'},alertas:{title:'Alertas',sub:'Notificaciones activas'},sucursales:{title:'Por Sucursal',sub:'Reporte completo · 11 sucursales'},top10:{title:'Merma General / CAM',sub:'Registros gerenciales · todas las categorías'},categorias:{title:'Por Categoría',sub:'Jugos · Bakery · Suplementos · Insumos'},insumos:{title:'Registros Merma CAM',sub:'🆕 Merma General Julio 2026 · por sucursal'},historico:{title:'Histórico',sub:'S11–S31 · Jugos Cold Pressed'},gestion:{title:'Gestión Integral Suplementos',sub:'Rotación · Desviación · Pérdidas — Suplementos 🆕'},benchmark:{title:'Benchmark de Precios',sub:'Suplementos vs. competencia — corrida 20 jul 2026'}};
-function showPage(id){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.querySelectorAll('.sb-item').forEach(function(b){b.classList.remove('active');});var pg=document.getElementById('page-'+id);if(pg)pg.classList.add('active');var m=PAGE_META[id]||{title:id,sub:''};document.getElementById('page-title').textContent=m.title;document.getElementById('page-sub').textContent=m.sub;document.querySelectorAll('.sb-item').forEach(function(b){if(b.getAttribute('onclick')&&b.getAttribute('onclick').indexOf("'"+id+"'")>=0)b.classList.add('active');});closeSidebar();}
+var PAGE_META={dashboard:{title:'Dashboard — Jugos Cold Pressed',sub:'S11–S31 · 2026'},margen:{title:'Margen & Utilidad — Jugos Cold Pressed',sub:'Utilidad · Margen · Ventas vs Merma S11–S31'},alertas:{title:'Alertas',sub:'Notificaciones activas'},sucursales:{title:'Por Sucursal',sub:'Reporte completo · 11 sucursales'},top10:{title:'Merma General / CAM',sub:'Registros gerenciales · todas las categorías'},categorias:{title:'Por Categoría',sub:'Jugos · Bakery · Suplementos · Insumos'},insumos:{title:'Registros Merma CAM',sub:'🆕 Merma General Julio 2026 · por sucursal'},historico:{title:'Histórico',sub:'S11–S31 · Jugos Cold Pressed'},gestion:{title:'Gestión Integral Suplementos',sub:'Rotación · Desviación · Pérdidas — Suplementos 🆕'},benchmark:{title:'Benchmark de Precios',sub:'Suplementos vs. competencia — corrida 20 jul 2026'},eficiencia:{title:'Eficiencia por Categoría',sub:'Merma $ sobre ventas · comparativo mensual 2026'}};
+function showPage(id){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.querySelectorAll('.sb-item').forEach(function(b){b.classList.remove('active');});var pg=document.getElementById('page-'+id);if(pg)pg.classList.add('active');var m=PAGE_META[id]||{title:id,sub:''};document.getElementById('page-title').textContent=m.title;document.getElementById('page-sub').textContent=m.sub;document.querySelectorAll('.sb-item').forEach(function(b){if(b.getAttribute('onclick')&&b.getAttribute('onclick').indexOf("'"+id+"'")>=0)b.classList.add('active');});if(id==='eficiencia')renderEficiencia(document.getElementById('page-eficiencia'));closeSidebar();}
 
 
 // ─── DATA ───
@@ -403,6 +408,7 @@ var SEMS=['S11','S12','S13','S14','S15','S16','S17','S18','S19','S20','S21','S22
 var VTAS=[174936, 155029, 137978, 138413, 132693, 154214, 149782, 143000, 138510, 144120, 149601, 138958, 142886, 127826, 135866, 136035, 133441, 132288, 188666, 116443, 89452];
 var MRMA=[17749, 13053, 13940, 16906, 17779, 16562, 18621, 14027, 19889, 17881, 17567, 17984, 18681, 13951, 11107, 17304, 14818, 13114, 15129, 16896, 11460];
 var PCT=[26.6, 24.5, 22.7, 26.5, 27.2, 24.5, 28.1, 22.1, 29.5, 28.3, 26.5, 28.9, 29.8, 25.2, 22.8, 30.7, 23.2, 25.0, 31.6, 31.6, 28.3];
+var PCT_VTAS=[10.1,8.4,10.1,12.2,13.4,10.7,12.4,9.8,14.4,12.4,11.7,12.9,13.1,10.9,8.2,12.7,11.1,9.9,8.0,14.5,12.8];
 var COSTO=[52726,46919,41502,42472,40134,46259,45390,43202,41122,42164,43090,42571,42052,35813,37657,37738,36851,36128,33356,32867,25539];
 var MARGEN=[122210,108110,96476,95941,92559,107955,104392,99798,97388,101956,106511,96387,100834,92013,98209,98297,96590,96160,155310,83576,69913];
 var UTILIDAD_P=[59.71,61.32,59.82,57.10,56.36,59.26,57.26,59.98,55.95,58.34,59.45,56.42,57.50,61.07,64.11,59.54,61.28,62.78,74.30,57.26,58.64];
@@ -537,7 +543,7 @@ var GC='rgba(0,0,0,.04)',TC='#718096';
 function buildDashboard(){
  buildWeekFilter();
  var _fd=getDashData();
- mkChart('ch-trend',{type:'line',data:{labels:_fd.sems,datasets:[{label:'% Merma',data:_fd.pct,borderColor:'#B22222',borderWidth:2.5,pointBackgroundColor:_fd.pct.map(function(v){return v>=30?'#B22222':v>=22?'#E67E22':'#27AE60';}),pointRadius:5,fill:{target:'origin',above:'rgba(178,34,34,.05)'},tension:.3},{label:'Política 22%',data:_fd.sems.map(function(){return 22;}),borderColor:'#E67E22',borderDash:[5,3],borderWidth:1.5,pointRadius:0},{label:'Crítica 30%',data:_fd.sems.map(function(){return 30;}),borderColor:'#B22222',borderDash:[3,3],borderWidth:1,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10},boxWidth:9}}},scales:{x:{grid:{color:GC},ticks:{font:{size:9},color:TC}},y:{min:10,max:45,grid:{color:GC},ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
+ mkChart('ch-trend',{type:'line',data:{labels:_fd.sems,datasets:[{label:'% Merma',data:_fd.pct,borderColor:'#B22222',borderWidth:2.5,pointBackgroundColor:_fd.pct.map(function(v){return v>=30?'#B22222':v>=22?'#E67E22':'#27AE60';}),pointRadius:5,fill:{target:'origin',above:'rgba(178,34,34,.05)'},tension:.3},{label:'% s/ventas',data:_fd.pctv,borderColor:'#1565C0',borderWidth:2,pointRadius:3,tension:.3},{label:'Política 22%',data:_fd.sems.map(function(){return 22;}),borderColor:'#E67E22',borderDash:[5,3],borderWidth:1.5,pointRadius:0},{label:'Crítica 30%',data:_fd.sems.map(function(){return 30;}),borderColor:'#B22222',borderDash:[3,3],borderWidth:1,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10},boxWidth:9}}},scales:{x:{grid:{color:GC},ticks:{font:{size:9},color:TC}},y:{min:5,max:45,grid:{color:GC},ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
  mkChart('ch-desv',{type:'bar',data:{labels:_fd.sems,datasets:[{label:'Var. Merma $',data:_fd.desv,backgroundColor:DESV.map(function(v){return v>0?'rgba(178,34,34,.7)':'rgba(39,174,96,.7)';}),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});
  var al=[{cls:'mod',ico:'🟡',t:'S31 — 28.3% Moderada (mejora vs S30)',d:'Baja de 31.6% a 28.3%. Merma real $11,460 (−$5,436 vs S30). Ventas $89,452.'},{cls:'mod',ico:'🟡',t:'Desviación S31: $7,505 (65.5%)',d:'Merma real $11,460 vs reportada $3,955 — revisar capturas.'},{cls:'ok',ico:'✅',t:'Colima y Polanco concentran la merma',d:'Colima $3,112 · Polanco $2,434 · Liverpool $1,812.'}];
  document.getElementById('dash-alerts').innerHTML=al.map(function(a){return'<div class="alert-item alert-'+a.cls+'"><div class="alert-ico">'+a.ico+'</div><div class="alert-body"><div class="alert-title">'+a.t+'</div><div class="alert-desc">'+a.d+'</div></div></div>';}).join('');
@@ -1635,10 +1641,10 @@ function getDashData(){
   if(_activeSem >= 0){
     // Semana individual: mostrar las últimas 8 para contexto
     var f = Math.max(0, _activeSem - 7), t = _activeSem + 1;
-    return {sems:SEMS.slice(f,t), pct:PCT.slice(f,t), vtas:VTAS.slice(f,t),
+    return {sems:SEMS.slice(f,t), pct:PCT.slice(f,t), pctv:PCT_VTAS.slice(f,t), vtas:VTAS.slice(f,t),
             mrma:MRMA.slice(f,t), desv:DESV.slice(f,t), selI:_activeSem-f};
   }
-  return {sems:SEMS, pct:PCT, vtas:VTAS, mrma:MRMA, desv:DESV, selI:SEMS.length-1};
+  return {sems:SEMS, pct:PCT, pctv:PCT_VTAS, vtas:VTAS, mrma:MRMA, desv:DESV, selI:SEMS.length-1};
 }
 function switchDashTab(id, btn){
   document.querySelectorAll('#dash-main-tabs .suc-tab').forEach(function(b){b.classList.remove('active');});
@@ -2073,6 +2079,42 @@ function renderBmRows(){
  +'</tr>';
  }).join('');
 }
+
+function renderEficiencia(el){
+ if(!el) return;
+ var meses=['Ene','Feb','Mar','Abr','Jul'];
+ var cats=[
+  {n:'Jugos',color:'#B22222',pct:[13.6,11.2,11.8,11.6,10.8]},
+  {n:'Vitch Bakery',color:'#1baf7a',pct:[8.7,null,10.6,7.4,7.4]},
+  {n:'Suplementos',color:'#7F77DD',pct:[null,null,null,null,0]}
+ ];
+ var html='<div class="kpi-grid">';
+ cats.forEach(function(c){
+  var vals=c.pct.filter(function(x){return x!==null;});
+  var last=vals[vals.length-1], first=vals[0], delta=(vals.length>=2)?(last-first):null;
+  html+='<div class="kpi" style="border-top:3px solid '+c.color+'"><div class="kpi-label">'+c.n+'</div><div class="kpi-val">'+(c.n==='Suplementos'?'~0%':last+'%')+'</div><div class="kpi-sub">'+(c.n==='Suplementos'?'Tracking nuevo (jul)':('Jul · % merma s/ventas'+(delta!=null?' · '+(delta<0?'↓':'↑')+Math.abs(delta).toFixed(1)+'pp vs Ene':'')))+'</div></div>';
+ });
+ html+='</div>';
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">Eficiencia por categoría — % merma sobre ventas</div><div class="card-sub">Mensual 2026 · métrica comparable entre categorías · menor = más eficiente</div></div></div><div style="position:relative;height:250px"><canvas id="ch-efic"></canvas></div></div>';
+ html+='<div class="card"><div class="card-head"><div class="card-title">Comparativo mensual</div></div><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Categoría</th>'+meses.map(function(m){return '<th>'+m+'</th>';}).join('')+'<th>Tendencia</th></tr></thead><tbody>';
+ cats.forEach(function(c){
+  var vals=c.pct.filter(function(x){return x!==null;});
+  var tr=vals.length>=2?(vals[vals.length-1]<vals[0]?'<span style="color:var(--verde2)">↓ mejora</span>':'<span style="color:var(--gris)">→ estable</span>'):'nuevo';
+  html+='<tr><td style="font-weight:700">'+c.n+'</td>'+c.pct.map(function(x){
+   if(x===null)return '<td class="mono" style="color:var(--gris)">—</td>';
+   if(c.n==='Suplementos'&&x===0)return '<td class="mono">~0%</td>';
+   var col=x<8?'#1B5E20':x<12?'var(--ambar)':'var(--rojo)';
+   return '<td class="mono" style="color:'+col+';font-weight:600">'+x+'%</td>';
+  }).join('')+'<td>'+tr+'</td></tr>';
+ });
+ html+='</tbody></table></div></div>';
+ html+='<div class="card" style="background:#E3F2FD;border-left:4px solid #1565C0"><div style="font-size:12px;color:var(--txt);line-height:1.7"><b>Hallazgos tras los cambios:</b><br>• <b>Jugos:</b> baja de 13.6% (Ene) a 10.8% (Jul) — la visibilidad semanal acompaña la mejora. Mayor merma $ absoluta por volumen.<br>• <b>Vitch Bakery:</b> ~7.4% real; el 23% de antes estaba inflado por medir en unidades. La categoría más eficiente.<br>• <b>Suplementos:</b> merma real ~0 — las diferencias eran traspasos entre sucursales y captura, no pérdida.</div></div>';
+ el.innerHTML=html;
+ setTimeout(function(){
+  mkChart('ch-efic',{type:'line',data:{labels:meses,datasets:cats.map(function(c){return {label:c.n,data:c.pct,borderColor:c.color,backgroundColor:c.color,borderWidth:2,tension:.3,spanGaps:true,pointRadius:3};})},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{font:{size:10},boxWidth:10}}},scales:{x:{grid:{display:false},ticks:{color:TC}},y:{grid:{color:GC},min:0,ticks:{callback:function(v){return v+'%';},color:TC}}}}});
+ },60);
+}
+
 function startClock(){setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});},1000);}
 </script>
 </body>
