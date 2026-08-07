@@ -350,6 +350,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
  <div id="gestion-accionables"></div>
  </div>
 
+ <div class="card">
+ <div class="card-head"><div><div class="card-title">🧮 Detalle por SKU y sucursal — arrastre</div><div class="card-sub">Inicial + Compras + Trasp.entra − Trasp.sale − Ventas = Teórico vs Físico · Julio 2026 · 🔵 = insumo (consumo, no merma)</div></div></div>
+ <div class="suc-tabs" id="gdet-tabs" style="margin-bottom:12px"></div>
+ <div id="gdet-content" style="overflow-x:auto"></div>
+ </div>
+
  </div>
 
  <!-- BENCHMARK DE PRECIOS -->
@@ -1986,7 +1992,42 @@ function buildAll(){
  try{buildInsumos();}catch(e){console.error('ins',e);}
  try{buildHistorico();}catch(e){console.error('hist',e);}
  try{buildGestion();}catch(e){console.error('gestion',e);}
+ try{buildGestionDetalle();}catch(e){console.error('gdet',e);}
  try{buildBenchmark();}catch(e){console.error('benchmark',e);}
+}
+var GDET_SUC=null;
+function buildGestionDetalle(){
+ var D=window.GESTION_DETALLE||{}; var sucs=Object.keys(D);
+ if(!sucs.length) return;
+ if(!GDET_SUC||sucs.indexOf(GDET_SUC)<0) GDET_SUC=sucs[0];
+ var tabsEl=document.getElementById('gdet-tabs'); if(!tabsEl) return;
+ tabsEl.innerHTML=sucs.map(function(s){return '<button class="suc-tab'+(s===GDET_SUC?' active':'')+('" onclick="setGdetSuc(&apos;'+s+'&apos;)">')+s+'</button>';}).join('');
+ renderGdet(GDET_SUC);
+}
+function setGdetSuc(s){GDET_SUC=s;document.querySelectorAll('#gdet-tabs .suc-tab').forEach(function(t){t.classList.toggle('active',t.textContent.trim()===s);});renderGdet(s);}
+function renderGdet(s){
+ var el=document.getElementById('gdet-content'); if(!el) return;
+ var rows=(window.GESTION_DETALLE||{})[s]||[];
+ var h='<table class="tbl"><thead><tr><th>Producto</th><th>Inicial</th><th>Compras</th><th>Trasp.entra</th><th>Trasp.sale</th><th>Ventas</th><th>Teórico</th><th>Físico</th><th>Dif pz</th><th>Dif $</th><th>Tipo</th></tr></thead><tbody>';
+ var merma=0,ins=0;
+ rows.forEach(function(r){
+  var nm=r[0],ini=r[1],comp=r[2],tin=r[3],tout=r[4],vta=r[5],teo=r[6],fin=r[7],mdol=r[9],isins=r[10];
+  var difpz=Math.round((fin-teo)*10)/10, difdol=-mdol;
+  var tipo,bg,col;
+  if(isins){tipo='🔵 Insumo';bg='#E3F2FD';col='#1565C0';ins+=mdol;}
+  else{tipo=difpz<0?'🔴 Falta':(difpz>0?'🟢 Sobra':'—');bg=difpz<0?'#FFEBEE':(difpz>0?'#E8F5E9':'');col=difpz<0?'var(--rojo)':(difpz>0?'#1B5E20':'var(--gris)');merma+=mdol;}
+  h+='<tr><td style="font-size:11px'+(isins?';font-weight:700':'')+'">'+nm+'</td>'
+   +'<td class="mono">'+(ini||'—')+'</td><td class="mono" style="color:#1565C0">'+(comp?'+'+comp:'—')+'</td>'
+   +'<td class="mono" style="color:#1B5E20">'+(tin?'+'+tin:'—')+'</td><td class="mono" style="color:#6A1B9A">'+(tout?'-'+tout:'—')+'</td>'
+   +'<td class="mono" style="color:#6A1B9A">'+(vta?'-'+vta:'—')+'</td><td class="mono" style="font-weight:700">'+teo+'</td>'
+   +'<td class="mono" style="background:#E8F5E9;font-weight:700">'+fin+'</td>'
+   +'<td class="mono" style="background:'+bg+';color:'+col+';font-weight:700">'+(difpz>0?'+'+difpz:difpz)+'</td>'
+   +'<td class="mono" style="background:'+bg+';color:'+col+';font-weight:700">'+f$(difdol)+'</td>'
+   +'<td style="font-size:11px">'+tipo+'</td></tr>';
+ });
+ h+='</tbody></table>';
+ h+='<div style="margin-top:8px;font-size:12px;padding:8px;background:#F5F7FA;border-radius:8px"><b style="color:#C0392B">Merma neta retail: '+f$(merma)+'</b> &nbsp;·&nbsp; <b style="color:#1565C0">Consumo insumo: '+f$(ins)+'</b></div>';
+ el.innerHTML=h;
 }
 function buildGestion(){
  var maxRot = Math.max.apply(null, GESTION_SUC.map(function(r){return r.rotacion||0;}));
