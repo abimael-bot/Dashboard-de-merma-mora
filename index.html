@@ -318,16 +318,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
  <!-- GESTIÓN INTEGRAL DE INVENTARIOS -->
  <div class="page" id="page-gestion">
  <div class="card" style="background:#E3F2FD;border-left:4px solid #1565C0">
- <div style="font-size:12px;color:var(--txt)"><b>🆕 Nuevo módulo — Fase 1: Suplementos.</b> Va más allá de la merma: inventarios, ventas, rotación, desviación (teórico vs. físico) y pérdidas consolidadas. Se irá extendiendo a Jugos y CAM General en próximas iteraciones. Datos del corte Jul 1-19 · 8 sucursales (Kitchen Lab pendiente de conteo físico).</div>
+ <div style="font-size:12px;color:var(--txt)"><b>🆕 Nuevo módulo — Fase 1: Suplementos.</b> Va más allá de la merma: inventarios, ventas, rotación, desviación (teórico vs. físico) y pérdidas consolidadas. Se irá extendiendo a Jugos y CAM General en próximas iteraciones. Reconciliación de JULIO completo (1–31): Inicial + Compras + Traspasos − Ventas = Teórico vs Físico. Insumo (Birdman 1.8 vainilla + Habits vainilla, ~$57k) separado como consumo de producción. LMNT y Condesa (cerró 24) fuera del cálculo de merma.</div>
  </div>
  <div class="kpi-grid">
- <div class="kpi blue"><div class="kpi-label">Rotación promedio</div><div class="kpi-val">0.51x</div><div class="kpi-sub">En 19 días · Insurgentes es la más ágil (0.96x)</div></div>
- <div class="kpi amber"><div class="kpi-label">Días de inventario promedio</div><div class="kpi-val">43.2 días</div><div class="kpi-sub">Para agotar stock al ritmo de venta actual</div></div>
- <div class="kpi red"><div class="kpi-label">Pérdidas (faltantes)</div><div class="kpi-val">$25,299</div><div class="kpi-sub">Suma de faltantes brutos, 8 sucursales</div></div>
- <div class="kpi purple"><div class="kpi-label">% Pérdida vs. ventas</div><div class="kpi-val">29.2%</div><div class="kpi-sub">Pérdida / ventas en $ del periodo</div></div>
+ <div class="kpi blue"><div class="kpi-label">Rotación promedio</div><div class="kpi-val">0.94x</div><div class="kpi-sub">Julio · Polanco la más ágil (1.39x)</div></div>
+ <div class="kpi amber"><div class="kpi-label">Días de inventario promedio</div><div class="kpi-val">44.4 días</div><div class="kpi-sub">Al ritmo de venta actual</div></div>
+ <div class="kpi red"><div class="kpi-label">Merma retail neta</div><div class="kpi-val">$19,450</div><div class="kpi-sub">8 sucursales · insumo ($57,314) aparte</div></div>
+ <div class="kpi purple"><div class="kpi-label">% Merma vs. ventas</div><div class="kpi-val">20.9%</div><div class="kpi-sub">Merma / ventas $ · ver detalle por sucursal</div></div>
  </div>
  <div class="card">
- <div class="card-head"><div><div class="card-title">📍 Rotación y pérdidas por sucursal</div><div class="card-sub">Inv. Ini + Compras − Ventas = Teórico vs. Final · Rotación = Ventas / Inv. Promedio · Suplementos, Jul 1-19</div></div></div>
+ <div class="card-head"><div><div class="card-title">📍 Rotación y pérdidas por sucursal</div><div class="card-sub">Inv. Ini + Compras − Ventas = Teórico vs. Final · Rotación = Ventas / Inv. Promedio · Suplementos, Julio 2026 (mes completo)</div></div></div>
  <div id="gestion-suc-table" style="overflow-x:auto"></div>
  </div>
  <div class="card">
@@ -346,7 +346,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
  </div>
 
  <div class="card">
- <div class="card-head"><div><div class="card-title">📋 Reporte detallado por sucursal — Accionables y seguimiento</div><div class="card-sub">Suplementos, Jul 1-19 · de cara al cierre de mes (31 jul)</div></div></div>
+ <div class="card-head"><div><div class="card-title">📋 Reporte detallado por sucursal — Accionables y seguimiento</div><div class="card-sub">Suplementos, Julio 2026 (mes completo) · de cara al cierre de mes (31 jul)</div></div></div>
  <div id="gestion-accionables"></div>
  </div>
 
@@ -475,12 +475,14 @@ var BENCHMARK_FECHA='20 de julio de 2026';
 var MG_TOTALS_JUL_S1={"Condesa": 2441.49, "Colima": 877.95, "Santa Fe": 240.22, "Liverpool": 200.07, "Polanco": 1259.26, "Insurgentes": 142.96, "Roma": 28.65, "Kitchen Lab": 0};
 var MG_TOTALS_JUL_S2={"Condesa": 1886.52, "Colima": 1110.81, "Santa Fe": 199.65, "Liverpool": 280.85, "Polanco": 2348.46, "Insurgentes": 429.9, "Roma": 287.06, "Kitchen Lab": 29.24};
 
-var DAY_STATUS={'21jul':{cerrado:false, fecha_cierre:null, validado_por:null},'22jul':{cerrado:false, fecha_cierre:null, validado_por:null},'23jul':{cerrado:false, fecha_cierre:null, validado_por:null}};
+var DAY_STATUS={'21jul':{cerrado:false, fecha_cierre:null, validado_por:null},'22jul':{cerrado:false, fecha_cierre:null, validado_por:null},'23jul':{cerrado:false, fecha_cierre:null, validado_por:null},'4ago':{cerrado:true, fecha_cierre:'6 ago 2026', validado_por:'Gerentes + Distrital'},'5ago':{cerrado:false, fecha_cierre:null, validado_por:null}};
 var CAUSA_CATS=['Error de captura/conteo','Venta no registrada','Merma no reportada','Transferencia/compra no registrada','Faltante real (posible pérdida)','Sobrante real (por confirmar origen)'];
 
 var SUP_SUCS_22JUL=["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "Insurgentes", "Roma", "San Miguel"];
 
 var SUP_SUCS_23JUL=["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "Insurgentes", "Roma", "San Miguel"];
+var SUP_SUCS_4AGO=["Colima","Insurgentes","Liverpool","Polanco","Roma","San Miguel","Santa Fe"];
+var SUP_SUCS_5AGO=["Colima","Insurgentes","Liverpool","Polanco","Roma","San Miguel","Santa Fe"];
 
 var CBC_ML_SUC=[{"suc": "Condesa", "ml": 59.0}, {"suc": "Colima", "ml": 46.4}, {"suc": "Santa Fe", "ml": 32.1}, {"suc": "Liverpool", "ml": 16.0}, {"suc": "Polanco", "ml": 46.4}, {"suc": "CDI", "ml": 3.5}, {"suc": "Coapa", "ml": 14.6}, {"suc": "Insurgentes", "ml": 19.4}, {"suc": "Roma", "ml": 19.5}, {"suc": "Kitchen Lab", "ml": 9.0}];
 var CBC_KPIS={compras_l:355,ventas_l:264.1,merma_l:39.92,merma_ps:1469.06,ml_total:266100};
@@ -898,14 +900,16 @@ function renderPI(el){
 
 
 // ─── SUPLEMENTOS ───
-var activeSupTab='23jul';
+var activeSupTab='5ago';
 function renderSUP(el){
  var tabs=[
  {id:'1-19jul', label:'1–19 Jul'},
  {id:'21jul', label:'Diario 21 Jul'},
  {id:'22jul', label:'Diario 22 Jul'},
- {id:'23jul', label:'🆕 Diario 23 Jul'},
- {id:'semanal', label:'📋 Semanal 22–26 Jul'}
+ {id:'23jul', label:'Diario 23 Jul'},
+ {id:'semanal', label:'📋 Semanal 22–26 Jul'},
+ {id:'4ago', label:'Diario 4 Ago'},
+ {id:'5ago', label:'🆕 Diario 5 Ago'}
  ];
  var tabsHtml='<div class="suc-tabs" style="margin-bottom:16px">'
  +tabs.map(function(t){
@@ -927,6 +931,8 @@ function renderSupTab(id){
  else if(id==='21jul') renderSup21Jul(el);
  else if(id==='22jul') renderSup22Jul(el);
  else if(id==='23jul') renderSup23Jul(el);
+ else if(id==='4ago') renderSupDayAgo(el,SUP_CFG_4AGO);
+ else if(id==='5ago') renderSupDayAgo(el,SUP_CFG_5AGO);
  else if(id==='semanal') renderSupSemanal(el);
 }
 
@@ -1182,6 +1188,61 @@ function renderSup23Jul(el){
 }
 
 
+var SUP_CFG_4AGO={dayId:'4ago',fecha:'4 Ago 2026 🟢',sucs_var:'SUP_SUCS_4AGO',R:'SUP_RESUMEN_4AGO',D:'SUP_DETALLE_4AGO',T:'SUP_TOP_DIFFS_4AGO',I:'INCIDENCIAS_4AGO',
+ notas:'<div class="card" style="background:#E8F5E9;border-left:4px solid #1B5E20"><div style="font-size:12px;color:var(--txt)"><b>🟢 Día cerrado y validado (Gerentes + Distrital).</b> De ~$31k en diferencias brutas, solo <b>$531</b> (1 faltante confirmado en San Miguel: Sachet vainilla Fitmingo) fue <b>merma real</b> — 0.29% s/inventario. El resto se justificó: error de conteo, traspasos entre sucursales y sobrantes reales.</div></div>'};
+var SUP_CFG_5AGO={dayId:'5ago',fecha:'5 Ago 2026 🆕',sucs_var:'SUP_SUCS_5AGO',R:'SUP_RESUMEN_5AGO',D:'SUP_DETALLE_5AGO',T:'SUP_TOP_DIFFS_5AGO',I:'INCIDENCIAS_5AGO',
+ notas:'<div class="card" style="background:#E3F2FD;border-left:4px solid #1565C0"><div style="font-size:12px;color:var(--txt)"><b>ℹ️ Inicial = existencia real corregida del 4</b> (con los comentarios de gerentes), no el físico crudo — así no se arrastran errores de conteo. Resultado: neto casi limpio (<b>+$346</b> vs −$6,842 con el método anterior). <b>Polanco</b> conserva un sobrante residual (−$3,215): productos no contados el 4 (Creatina Golden Peach, etc.) por su conteo incompleto de ese día — pendiente validar. <b>Insurgentes y Santa Fe</b> cuadran exacto.</div></div>'};
+function renderSupDayAgo(el,cfg){
+ var SUCS=window[cfg.sucs_var], RES=window[cfg.R], DET=window[cfg.D], TOP=window[cfg.T], INC=window[cfg.I];
+ if(!RES){el.innerHTML='<div class="card">Cargando…</div>';return;}
+ CURRENT_SUP_DETALLE=DET;
+ var html='';
+ var tot_fal=RES.reduce(function(a,d){return a+d.faltantes;},0);
+ var tot_sob=RES.reduce(function(a,d){return a+d.sobrantes;},0);
+ var max_diff=RES.reduce(function(a,d){return Math.abs(d.diff_ps)>Math.abs(a.diff_ps)?d:a;},{suc:'—',diff_ps:0});
+ html+='<div class="kpi-grid">'
+ +'<div class="kpi" style="border-top:3px solid #1565C0"><div class="kpi-label">Corte diario</div><div class="kpi-val" style="font-size:15px">'+cfg.fecha+'</div><div class="kpi-sub">'+SUCS.length+' sucursales · '+DET.length+' productos con movimiento</div></div>'
+ +'<div class="kpi red"><div class="kpi-label">Productos faltantes</div><div class="kpi-val">'+tot_fal+'</div><div class="kpi-sub">Inv. Teórico > Inv. Real</div></div>'
+ +'<div class="kpi amber"><div class="kpi-label">Productos sobrantes</div><div class="kpi-val">'+tot_sob+'</div><div class="kpi-sub">Inv. Real > Inv. Teórico</div></div>'
+ +'<div class="kpi purple"><div class="kpi-label">Mayor impacto $</div><div class="kpi-val">'+max_diff.suc+'</div><div class="kpi-sub">'+f$(max_diff.diff_ps)+' neto</div></div>'
+ +'</div>';
+ html+=cfg.notas;
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📍 Diferencia por sucursal</div><div class="card-sub">Inv.Ini + Compras − Ventas = Teórico  |  Diff = Teórico − Inv.Final</div></div></div>'
+ +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Diferencia $</th><th>Faltantes</th><th>Sobrantes</th><th>Estado</th></tr></thead><tbody>'
+ +RES.map(function(r){
+  var col=r.diff_ps>200?'var(--rojo)':r.diff_ps<-200?'#1B5E20':'var(--ambar)';
+  var bg=r.diff_ps>200?'#FFEBEE':r.diff_ps<-200?'#E8F5E9':'#FFFDE7';
+  var est=r.diff_ps>200?'🔴 Faltante':r.diff_ps<-200?'🟢 Sobrante':'🟡 Estable';
+  return'<tr><td style="font-weight:700">'+r.suc+'</td><td class="mono" style="font-weight:700;color:'+col+';background:'+bg+'">'+f$(r.diff_ps)+' '+est+'</td><td class="mono" style="color:var(--rojo)">'+r.faltantes+'</td><td class="mono" style="color:#1B5E20">'+r.sobrantes+'</td><td><span style="font-size:12px">'+est+'</span></td></tr>';
+ }).join('')
+ +'</tbody></table></div></div>';
+ html+='<div class="card"><div class="card-head"><div class="card-title">Diferencia neta por sucursal ($)</div><div class="card-sub">↑ sobrante · ↓ faltante</div></div><div style="position:relative;height:180px"><canvas id="ch-sup-diff-'+cfg.dayId+'"></canvas></div></div>';
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">Top diferencias por producto</div><div class="card-sub">Ordenado por impacto $</div></div></div>'
+ +TOP.slice(0,12).map(function(p,i){
+  var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';
+  var col=p.dps>0?'var(--rojo)':'#1B5E20'; var icon=p.dps>0?'🔴':'🟢';
+  return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name" style="flex:1">'+icon+' '+p.prod+' <span style="color:var(--gris);font-size:10px">('+p.sucs.join(', ')+')</span></div><div class="rank-val" style="color:'+col+'">'+f$(p.dps)+'</div></div>';
+ }).join('')
+ +'</div>';
+ var activeSuc=SUCS[0];
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Detalle por sucursal</div><div class="card-sub">Inv.Ini + Compras − Ventas = Teórico vs Inv.Final</div></div></div>'
+ +'<div class="suc-tabs" id="sup-suc-tabs" style="margin-bottom:12px">'
+ +SUCS.map(function(s){
+  var r=RES.find(function(x){return x.suc===s;});
+  var cls=r&&r.diff_ps>200?' suc-tab-crit':r&&r.diff_ps<-200?' suc-tab-ok':'';
+  return'<button class="suc-tab'+cls+(s===activeSuc?' active':'')+('" onclick="setSupSuc(&apos;'+s+'&apos;)">')+s+'</button>';
+ }).join('')
+ +'</div><div id="sup-det-content" style="overflow-x:auto"></div></div>';
+ html+=renderIncidenciasSection(cfg.dayId, INC);
+ el.innerHTML=html;
+ setTimeout(function(){
+  var labels=RES.map(function(r){return r.suc;});
+  var vals=RES.map(function(r){return -r.diff_ps;});
+  var colors=vals.map(function(v){return v<-200?'rgba(178,34,34,.8)':v>200?'rgba(27,94,32,.8)':'rgba(230,126,34,.8)';});
+  mkChart('ch-sup-diff-'+cfg.dayId,{type:'bar',data:{labels:labels,datasets:[{label:'Diff $',data:vals,backgroundColor:colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.abs(v);},font:{size:9},color:TC}}}}});
+  renderSupSucTable(activeSuc);
+ },80);
+}
 function renderSup1_19Jul(el){
  CURRENT_SUP_DETALLE = SUP_DETALLE_1_19JUL;
  var html='';
@@ -2092,7 +2153,7 @@ function renderEficiencia(el){
  cats.forEach(function(c){
   var vals=c.pct.filter(function(x){return x!==null;});
   var last=vals[vals.length-1], first=vals[0], delta=(vals.length>=2)?(last-first):null;
-  html+='<div class="kpi" style="border-top:3px solid '+c.color+'"><div class="kpi-label">'+c.n+'</div><div class="kpi-val">'+(c.n==='Suplementos'?'~0%':last+'%')+'</div><div class="kpi-sub">'+(c.n==='Suplementos'?'Tracking nuevo (jul)':('Jul · % merma s/ventas'+(delta!=null?' · '+(delta<0?'↓':'↑')+Math.abs(delta).toFixed(1)+'pp vs Ene':'')))+'</div></div>';
+  html+='<div class="kpi" style="border-top:3px solid '+c.color+'"><div class="kpi-label">'+c.n+'</div><div class="kpi-val">'+(c.n==='Suplementos'?'~0%':last+'%')+'</div><div class="kpi-sub">'+(c.n==='Suplementos'?'Ago · corte 4: $531 real (0.29%)':('Jul · % merma s/ventas'+(delta!=null?' · '+(delta<0?'↓':'↑')+Math.abs(delta).toFixed(1)+'pp vs Ene':'')))+'</div></div>';
  });
  html+='</div>';
  html+='<div class="card"><div class="card-head"><div><div class="card-title">Eficiencia por categoría — % merma sobre ventas</div><div class="card-sub">Mensual 2026 · métrica comparable entre categorías · menor = más eficiente</div></div></div><div style="position:relative;height:250px"><canvas id="ch-efic"></canvas></div></div>';
@@ -2108,7 +2169,7 @@ function renderEficiencia(el){
   }).join('')+'<td>'+tr+'</td></tr>';
  });
  html+='</tbody></table></div></div>';
- html+='<div class="card" style="background:#E3F2FD;border-left:4px solid #1565C0"><div style="font-size:12px;color:var(--txt);line-height:1.7"><b>Hallazgos tras los cambios:</b><br>• <b>Jugos:</b> baja de 13.6% (Ene) a 10.8% (Jul) — la visibilidad semanal acompaña la mejora. Mayor merma $ absoluta por volumen.<br>• <b>Vitch Bakery:</b> ~7.4% real; el 23% de antes estaba inflado por medir en unidades. La categoría más eficiente.<br>• <b>Suplementos:</b> merma real ~0 — las diferencias eran traspasos entre sucursales y captura, no pérdida.</div></div>';
+ html+='<div class="card" style="background:#E3F2FD;border-left:4px solid #1565C0"><div style="font-size:12px;color:var(--txt);line-height:1.7"><b>Hallazgos tras los cambios:</b><br>• <b>Jugos:</b> baja de 13.6% (Ene) a 10.8% (Jul) — la visibilidad semanal acompaña la mejora. Mayor merma $ absoluta por volumen.<br>• <b>Vitch Bakery:</b> ~7.4% real; el 23% de antes estaba inflado por medir en unidades. La categoría más eficiente.<br>• <b>Suplementos:</b> merma real ~0. Confirmado en el <b>corte del 4 ago</b>: de ~$31k en diferencias brutas, solo <b>$531</b> (1 faltante confirmado en San Miguel) fue merma real — <b>0.29%</b> s/inventario; el resto se justificó como error de conteo, traspasos y sobrantes reales.</div></div>';
  el.innerHTML=html;
  setTimeout(function(){
   mkChart('ch-efic',{type:'line',data:{labels:meses,datasets:cats.map(function(c){return {label:c.n,data:c.pct,borderColor:c.color,backgroundColor:c.color,borderWidth:2,tension:.3,spanGaps:true,pointRadius:3};})},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{font:{size:10},boxWidth:10}}},scales:{x:{grid:{display:false},ticks:{color:TC}},y:{grid:{color:GC},min:0,ticks:{callback:function(v){return v+'%';},color:TC}}}}});
