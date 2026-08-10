@@ -408,7 +408,7 @@ function startApp(u){document.getElementById('login-screen').style.display='none
 function logout(){document.getElementById('app').style.display='none';document.getElementById('login-screen').style.display='flex';document.getElementById('inp-email').value='';document.getElementById('inp-pass').value='';}
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
-var PAGE_META={dashboard:{title:'Dashboard — Jugos Cold Pressed',sub:'S11–S32 · 2026'},margen:{title:'Margen & Utilidad — Jugos Cold Pressed',sub:'Utilidad · Margen · Ventas vs Merma S11–S32'},alertas:{title:'Alertas',sub:'Notificaciones activas'},sucursales:{title:'Por Sucursal',sub:'Reporte completo · 11 sucursales'},top10:{title:'Merma General / CAM',sub:'Registros gerenciales · todas las categorías'},categorias:{title:'Por Categoría',sub:'Jugos · Bakery · Suplementos · Insumos'},insumos:{title:'Registros Merma CAM',sub:'Pendiente — se cargará agosto'},historico:{title:'Histórico',sub:'S11–S32 · Jugos Cold Pressed'},gestion:{title:'Gestión Integral Suplementos',sub:'Rotación · Desviación · Pérdidas — Suplementos 🆕'},benchmark:{title:'Benchmark de Precios',sub:'Suplementos vs. competencia — corrida 20 jul 2026'},eficiencia:{title:'Eficiencia por Categoría',sub:'Merma $ sobre ventas · comparativo mensual 2026'}};
+var PAGE_META={dashboard:{title:'Dashboard — Jugos Cold Pressed',sub:'S11–S32 · 2026'},margen:{title:'Margen & Utilidad — Jugos Cold Pressed',sub:'Utilidad · Margen · Ventas vs Merma S11–S32'},alertas:{title:'Alertas',sub:'Notificaciones activas'},sucursales:{title:'Por Sucursal',sub:'Reporte completo · 11 sucursales'},top10:{title:'Merma General / CAM',sub:'Registros gerenciales · todas las categorías'},categorias:{title:'Por Categoría',sub:'Jugos · Bakery · Suplementos · Insumos'},insumos:{title:'Registros Merma CAM',sub:'Pendiente — se cargará agosto'},historico:{title:'Histórico',sub:'S11–S32 · Jugos Cold Pressed'},gestion:{title:'Gestión Integral Suplementos',sub:'Rotación · Desviación · Pérdidas — Suplementos 🆕'},benchmark:{title:'Benchmark de Precios',sub:'Suplementos vs. competencia — corrida 10 ago 2026'},eficiencia:{title:'Eficiencia por Categoría',sub:'Merma $ sobre ventas · comparativo mensual 2026'}};
 function showPage(id){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.querySelectorAll('.sb-item').forEach(function(b){b.classList.remove('active');});var pg=document.getElementById('page-'+id);if(pg)pg.classList.add('active');var m=PAGE_META[id]||{title:id,sub:''};document.getElementById('page-title').textContent=m.title;document.getElementById('page-sub').textContent=m.sub;document.querySelectorAll('.sb-item').forEach(function(b){if(b.getAttribute('onclick')&&b.getAttribute('onclick').indexOf("'"+id+"'")>=0)b.classList.add('active');});if(id==='eficiencia')renderEficiencia(document.getElementById('page-eficiencia'));closeSidebar();}
 
 
@@ -478,8 +478,8 @@ var SUP_SUCS_21JUL=["Colima", "Santa Fe", "Liverpool", "Polanco", "Insurgentes",
 var SUP_SUCS_1_19JUL=["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "Insurgentes", "Roma", "San Miguel"];
 
 
-var BENCHMARK_KPIS=[{"num": "184", "lbl": "precios comparados"}, {"num": "53", "lbl": "Mora Mora más barato"}, {"num": "67", "lbl": "en línea (±5%)"}, {"num": "64", "lbl": "Mora Mora más caro"}, {"num": "14", "lbl": "sin comparable"}, {"num": "+4.6%", "lbl": "delta mediano vs competencia"}];
-var BENCHMARK_FECHA='20 de julio de 2026';
+var BENCHMARK_KPIS=[{"num": "800", "lbl": "precios comparados"}, {"num": "67", "lbl": "Mora Mora más barato"}, {"num": "44", "lbl": "en línea (±5%)"}, {"num": "53", "lbl": "Mora Mora más caro"}, {"num": "636", "lbl": "sin comparable"}, {"num": "-1.6%", "lbl": "delta mediano vs competencia"}];
+var BENCHMARK_FECHA='10 de agosto de 2026';
 
 var MG_TOTALS_JUL_S1={"Condesa": 2441.49, "Colima": 877.95, "Santa Fe": 240.22, "Liverpool": 200.07, "Polanco": 1259.26, "Insurgentes": 142.96, "Roma": 28.65, "Kitchen Lab": 0};
 var MG_TOTALS_JUL_S2={"Condesa": 1886.52, "Colima": 1110.81, "Santa Fe": 199.65, "Liverpool": 280.85, "Polanco": 2348.46, "Insurgentes": 429.9, "Roma": 287.06, "Kitchen Lab": 29.24};
@@ -721,6 +721,29 @@ var PROT_KPIS={choco_g:40300.7,vaini_g:60104.7,total_g:100405.4,choco_kg:40.3,va
 // ─── SUPLEMENTOS DATA ───
 var SUP_SUCS=["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "Roma", "CDI"];
 // ─── VASOS PLA 16oz ───
+function renderVPJul(el){
+ var D=window.VP_TABLA_JUL||[];
+ var totC=D.reduce(function(a,d){return a+d.comp;},0),totV=D.reduce(function(a,d){return a+d.vta;},0),totM=D.reduce(function(a,d){return a+d.merma;},0);
+ var nFalta=D.filter(function(d){return d.estado.indexOf('FALTA')>-1;}).length;
+ var nOk=D.filter(function(d){return d.estado.indexOf('OK')>-1;}).length;
+ var html='<div class="kpi-grid">'
+  +'<div class="kpi blue"><div class="kpi-label">Vasos comprados Jul</div><div class="kpi-val">'+totC.toLocaleString()+'</div><div class="kpi-sub">piezas · '+D.length+' sucursales</div></div>'
+  +'<div class="kpi green"><div class="kpi-label">Vasos vendidos Jul</div><div class="kpi-val">'+totV.toLocaleString()+'</div><div class="kpi-sub">según ventas</div></div>'
+  +'<div class="kpi amber"><div class="kpi-label">Diferencia neta $</div><div class="kpi-val">'+f$(totM)+'</div><div class="kpi-sub">'+nFalta+' con falta de captura · '+nOk+' OK</div></div>'
+  +'<div class="kpi red"><div class="kpi-label">Mayor diferencia</div><div class="kpi-val" style="font-size:15px">Polanco</div><div class="kpi-sub">'+f$(-1690)+' · compra de vasos no capturada</div></div>'
+  +'</div>';
+ html+='<div class="card" style="background:#FFF8E1;border-left:4px solid var(--ambar)"><div style="font-size:12px;color:var(--txt)"><b>⚠️ Nota del corte:</b> Varias sucursales salen con diferencia negativa por <b>compras/traspasos de vasos no capturados</b> (falta de captura), no por pérdida real — ej. Condesa recibió 30 vasos de Roma, Colima 21 de Condesa. Revisar con compras.</div></div>';
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Reporte por sucursal — Vasos PLA 16oz</div><div class="card-sub">Inicial + Compras − Ventas = Teórico vs Final · Julio 2026</div></div></div><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Inicial</th><th>Compras</th><th>Ventas</th><th>Teórico</th><th>Final</th><th>Dif.</th><th>Merma $</th><th>Estado</th><th>Justificación</th></tr></thead><tbody>'
+  +D.map(function(d){
+    var col=d.merma<-50?'#E67E22':(d.merma>50?'var(--rojo)':'var(--verde2)');
+    var eb=d.estado.indexOf('OK')>-1?'#E8F5E9':(d.estado.indexOf('FALTA')>-1?'#FFF8E1':'#FDECEA');
+    var ec=d.estado.indexOf('OK')>-1?'#1B5E20':(d.estado.indexOf('FALTA')>-1?'#9a7d0a':'#c0392b');
+    return '<tr><td style="font-weight:700">'+d.suc+'</td><td class="mono">'+d.ini+'</td><td class="mono" style="color:var(--verde2)">+'+d.comp+'</td><td class="mono" style="color:#2a78d6">-'+d.vta+'</td><td class="mono">'+d.teo+'</td><td class="mono">'+d.fin+'</td><td class="mono" style="font-weight:700">'+d.dif+'</td><td class="mono" style="font-weight:700;color:'+col+'">'+f$(d.merma)+'</td><td><span class="badge" style="background:'+eb+';color:'+ec+'">'+d.estado+'</span></td><td style="font-size:10px;color:var(--gris)">'+(d.just||'—')+'</td></tr>';
+  }).join('')
+  +'<tr style="background:var(--rojo2);font-weight:700"><td>TOTAL</td><td></td><td class="mono" style="color:var(--verde2)">+'+totC+'</td><td class="mono" style="color:#2a78d6">-'+totV+'</td><td></td><td></td><td></td><td class="mono">'+f$(totM)+'</td><td></td><td></td></tr>'
+  +'</tbody></table></div></div>';
+ el.innerHTML=html;
+}
 function renderVP(el){
  var total_vtas=VP_VENTAS_SUC.reduce(function(a,d){return a+d.v;},0);
  var html='';
@@ -1486,9 +1509,9 @@ function renderCat(i){
 }
 
 
-var activeInsTab='VP';
+var activeInsTab='VPJ';
 function renderINSMerged(el){
- var tabs=[{id:'VP',label:'🥤 Vasos PLA 16oz'},{id:'CB',label:'☕ Cold Brew Concentrado'},{id:'PI',label:'💪 Proteína Insumo'}];
+ var tabs=[{id:'VPJ',label:'🥤 Vasos PLA Julio'},{id:'VP',label:'🥤 Vasos PLA Junio'},{id:'CB',label:'☕ Cold Brew Concentrado'},{id:'PI',label:'💪 Proteína Insumo'}];
  var html='<div class="suc-tabs" id="ins-tabs">'
  +tabs.map(function(t){return '<button class="suc-tab'+(t.id===activeInsTab?' active':'')+'" onclick="setInsTab(\''+t.id+'\')">'+t.label+'</button>';}).join('')
  +'</div><div id="ins-tab-content"></div>';
@@ -1502,7 +1525,8 @@ function setInsTab(id){
 function renderInsTab(id){
  var el=document.getElementById('ins-tab-content');
  if(!el) return;
- if(id==='VP') renderVP(el);
+ if(id==='VPJ') renderVPJul(el);
+ else if(id==='VP') renderVP(el);
  else if(id==='CB') renderCBC(el);
  else if(id==='PI') renderPI(el);
 }
@@ -2088,7 +2112,7 @@ function buildGestion(){
  mkChart('ch-gestion-rot',{type:'bar',data:{labels:labels,datasets:[{label:'Rotación',data:vals,backgroundColor:colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{font:{size:9},color:TC}}}}});
  },80);
 }
-var BM_FILTER_SUC=null, BM_FILTER_TAG=null, BM_SEARCH='';
+var BM_FILTER_SUC=null, BM_FILTER_TAG=null, BM_SEARCH='', BM_FILTER_COMP=null;
 function buildBenchmark(){
  var el=document.getElementById('benchmark-content');
  if(!el || !window.BENCHMARK_ROWS) return;
@@ -2108,6 +2132,14 @@ function buildBenchmark(){
  html += '<div style="margin-bottom:8px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--gris);margin-bottom:5px">Sucursal</div><div class="suc-tabs" id="bm-suc-chips">'
  + '<button class="suc-tab active" onclick="setBmSuc(null,this)">Todas</button>'
  + sucs.map(function(s){return '<button class="suc-tab" onclick="setBmSuc(\''+s+'\',this)">'+s+'</button>';}).join('')
+ + '</div></div>';
+
+ // Filter bar: competidor chips
+ var comps=[];
+ BENCHMARK_ROWS.forEach(function(r){if(comps.indexOf(r.competidor)===-1) comps.push(r.competidor);});
+ html += '<div style="margin-bottom:8px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--gris);margin-bottom:5px">Competidor</div><div class="suc-tabs" id="bm-comp-chips">'
+ + '<button class="suc-tab active" onclick="setBmComp(null,this)">Todos</button>'
+ + comps.map(function(s){return '<button class="suc-tab" onclick="setBmComp(\''+s+'\',this)">'+s+'</button>';}).join('')
  + '</div></div>';
 
  // Filter bar: estado chips
@@ -2134,6 +2166,12 @@ function setBmSuc(suc,elm){
  elm.classList.add('active');
  renderBmRows();
 }
+function setBmComp(comp,elm){
+ BM_FILTER_COMP=comp;
+ document.querySelectorAll('#bm-comp-chips .suc-tab').forEach(function(c){c.classList.remove('active');});
+ elm.classList.add('active');
+ renderBmRows();
+}
 function setBmTag(tag,elm){
  BM_FILTER_TAG=tag;
  document.querySelectorAll('#bm-tag-chips .suc-tab').forEach(function(c){c.classList.remove('active');});
@@ -2147,6 +2185,7 @@ function setBmSearch(v){
 function renderBmRows(){
  var rows=BENCHMARK_ROWS.filter(function(r){
  if(BM_FILTER_SUC && r.suc!==BM_FILTER_SUC) return false;
+ if(BM_FILTER_COMP && r.competidor!==BM_FILTER_COMP) return false;
  if(BM_FILTER_TAG && r.tag.indexOf(BM_FILTER_TAG)===-1) return false;
  if(BM_SEARCH){
  var hay=(r.prod+' '+r.sku+' '+r.competidor+' '+r.prod_comp).toLowerCase();
