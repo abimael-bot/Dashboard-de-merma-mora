@@ -484,7 +484,7 @@ var BENCHMARK_FECHA='20 de julio de 2026';
 var MG_TOTALS_JUL_S1={"Condesa": 2441.49, "Colima": 877.95, "Santa Fe": 240.22, "Liverpool": 200.07, "Polanco": 1259.26, "Insurgentes": 142.96, "Roma": 28.65, "Kitchen Lab": 0};
 var MG_TOTALS_JUL_S2={"Condesa": 1886.52, "Colima": 1110.81, "Santa Fe": 199.65, "Liverpool": 280.85, "Polanco": 2348.46, "Insurgentes": 429.9, "Roma": 287.06, "Kitchen Lab": 29.24};
 
-var DAY_STATUS={'21jul':{cerrado:false, fecha_cierre:null, validado_por:null},'22jul':{cerrado:false, fecha_cierre:null, validado_por:null},'23jul':{cerrado:false, fecha_cierre:null, validado_por:null},'4ago':{cerrado:true, fecha_cierre:'6 ago 2026', validado_por:'Gerentes + Distrital'},'5ago':{cerrado:false, fecha_cierre:null, validado_por:null}};
+var DAY_STATUS={'21jul':{cerrado:false, fecha_cierre:null, validado_por:null},'22jul':{cerrado:false, fecha_cierre:null, validado_por:null},'23jul':{cerrado:false, fecha_cierre:null, validado_por:null},'4ago':{cerrado:true, fecha_cierre:'6 ago 2026', validado_por:'Gerentes + Distrital'},'5ago':{cerrado:false, fecha_cierre:null, validado_por:null},'1-9ago':{cerrado:true, fecha_cierre:'11 ago 2026', validado_por:'Gerentes + Distrital'}};
 var CAUSA_CATS=['Error de captura/conteo','Venta no registrada','Merma no reportada','Transferencia/compra no registrada','Faltante real (posible pérdida)','Sobrante real (por confirmar origen)'];
 
 var SUP_SUCS_22JUL=["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "Insurgentes", "Roma", "San Miguel"];
@@ -492,6 +492,7 @@ var SUP_SUCS_22JUL=["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "In
 var SUP_SUCS_23JUL=["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "Insurgentes", "Roma", "San Miguel"];
 var SUP_SUCS_4AGO=["Colima","Insurgentes","Liverpool","Polanco","Roma","San Miguel","Santa Fe"];
 var SUP_SUCS_5AGO=["Colima","Insurgentes","Liverpool","Polanco","Roma","San Miguel","Santa Fe"];
+var SUP_SUCS_1_9AGO=["Colima","Insurgentes","Liverpool","Polanco","Roma","San Miguel","Santa Fe"];
 
 var CBC_ML_SUC=[{"suc": "Condesa", "ml": 59.0}, {"suc": "Colima", "ml": 46.4}, {"suc": "Santa Fe", "ml": 32.1}, {"suc": "Liverpool", "ml": 16.0}, {"suc": "Polanco", "ml": 46.4}, {"suc": "CDI", "ml": 3.5}, {"suc": "Coapa", "ml": 14.6}, {"suc": "Insurgentes", "ml": 19.4}, {"suc": "Roma", "ml": 19.5}, {"suc": "Kitchen Lab", "ml": 9.0}];
 var CBC_KPIS={compras_l:355,ventas_l:264.1,merma_l:39.92,merma_ps:1469.06,ml_total:266100};
@@ -932,11 +933,12 @@ function renderPI(el){
 
 
 // ─── SUPLEMENTOS ───
-var activeSupTab='semanal';
+var activeSupTab='1-9ago';
 function renderSUP(el){
  var tabs=[
  {id:'1-19jul', label:'1–19 Jul'},
- {id:'semanal', label:'📋 Semanal 22–26 Jul'}
+ {id:'semanal', label:'📋 Semanal 22–26 Jul'},
+ {id:'1-9ago', label:'🆕 Semanal 1–9 Ago'}
  ];
  var tabsHtml='<div class="suc-tabs" style="margin-bottom:16px">'
  +tabs.map(function(t){
@@ -955,6 +957,7 @@ function renderSupTab(id){
  var el=document.getElementById('sup-tab-content');
  if(!el) return;
  else if(id==='1-19jul') renderSup1_19Jul(el);
+ else if(id==='1-9ago') renderSupDayAgo(el,SUP_CFG_1_9AGO);
  else if(id==='semanal') renderSupSemanal(el);
 }
 
@@ -1210,6 +1213,8 @@ function renderSup23Jul(el){
 }
 
 
+var SUP_CFG_1_9AGO={dayId:'1-9ago',fecha:'Semana 1–9 Ago 🟢',sucs_var:'SUP_SUCS_1_9AGO',R:'SUP_RESUMEN_1_9AGO',D:'SUP_DETALLE_1_9AGO',T:'SUP_TOP_DIFFS_1_9AGO',I:'INCIDENCIAS_1_9AGO',
+ notas:'<div class="card" style="background:#E8F5E9;border-left:4px solid #1B5E20"><div style="font-size:12px;color:var(--txt)"><b>🟢 Semana cerrada y validada.</b> Inicial = inventario final julio (31 jul), sin traspasos. De las diferencias, solo <b>$172</b> fue <b>merma real</b> (3 sachets, faltante confirmado en Roma y San Miguel). El resto: consumo de insumo (proteína a bebidas), errores de conteo y traspasos/compras no capturadas. Se aplicaron correcciones de físico según los comentarios de gerentes.</div></div>'};
 var SUP_CFG_4AGO={dayId:'4ago',fecha:'4 Ago 2026 🟢',sucs_var:'SUP_SUCS_4AGO',R:'SUP_RESUMEN_4AGO',D:'SUP_DETALLE_4AGO',T:'SUP_TOP_DIFFS_4AGO',I:'INCIDENCIAS_4AGO',
  notas:'<div class="card" style="background:#E8F5E9;border-left:4px solid #1B5E20"><div style="font-size:12px;color:var(--txt)"><b>🟢 Día cerrado y validado (Gerentes + Distrital).</b> De ~$31k en diferencias brutas, solo <b>$531</b> (1 faltante confirmado en San Miguel: Sachet vainilla Fitmingo) fue <b>merma real</b> — 0.29% s/inventario. El resto se justificó: error de conteo, traspasos entre sucursales y sobrantes reales.</div></div>'};
 var SUP_CFG_5AGO={dayId:'5ago',fecha:'5 Ago 2026 🆕',sucs_var:'SUP_SUCS_5AGO',R:'SUP_RESUMEN_5AGO',D:'SUP_DETALLE_5AGO',T:'SUP_TOP_DIFFS_5AGO',I:'INCIDENCIAS_5AGO',
