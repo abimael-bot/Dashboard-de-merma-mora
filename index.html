@@ -957,7 +957,7 @@ function renderSupTab(id){
  var el=document.getElementById('sup-tab-content');
  if(!el) return;
  else if(id==='1-19jul') renderSup1_19Jul(el);
- else if(id==='1-9ago') renderSupDayAgo(el,SUP_CFG_1_9AGO);
+ else if(id==='1-9ago') renderSupSem19(el);
  else if(id==='semanal') renderSupSemanal(el);
 }
 
@@ -1219,6 +1219,25 @@ var SUP_CFG_4AGO={dayId:'4ago',fecha:'4 Ago 2026 🟢',sucs_var:'SUP_SUCS_4AGO',
  notas:'<div class="card" style="background:#E8F5E9;border-left:4px solid #1B5E20"><div style="font-size:12px;color:var(--txt)"><b>🟢 Día cerrado y validado (Gerentes + Distrital).</b> De ~$31k en diferencias brutas, solo <b>$531</b> (1 faltante confirmado en San Miguel: Sachet vainilla Fitmingo) fue <b>merma real</b> — 0.29% s/inventario. El resto se justificó: error de conteo, traspasos entre sucursales y sobrantes reales.</div></div>'};
 var SUP_CFG_5AGO={dayId:'5ago',fecha:'5 Ago 2026 🆕',sucs_var:'SUP_SUCS_5AGO',R:'SUP_RESUMEN_5AGO',D:'SUP_DETALLE_5AGO',T:'SUP_TOP_DIFFS_5AGO',I:'INCIDENCIAS_5AGO',
  notas:'<div class="card" style="background:#E3F2FD;border-left:4px solid #1565C0"><div style="font-size:12px;color:var(--txt)"><b>ℹ️ Inicial = existencia real corregida del 4</b> (con los comentarios de gerentes), no el físico crudo — así no se arrastran errores de conteo. Resultado: neto casi limpio (<b>+$346</b> vs −$6,842 con el método anterior). <b>Polanco</b> conserva un sobrante residual (−$3,215): productos no contados el 4 (Creatina Golden Peach, etc.) por su conteo incompleto de ese día — pendiente validar. <b>Insurgentes y Santa Fe</b> cuadran exacto.</div></div>'};
+function renderSupSem19(el){
+ var D=window.SUP_SEM19||{faltantes:[],insumo_rows:[],insumo_suc:{},merma_real:0,insumo_total:0};
+ var html='<div class="kpi-grid">'
+  +'<div class="kpi" style="border-top:3px solid #1565C0"><div class="kpi-label">Corte semanal</div><div class="kpi-val" style="font-size:15px">1–9 Ago 2026 🟢</div><div class="kpi-sub">Inicial = inv. final julio · validado</div></div>'
+  +'<div class="kpi red"><div class="kpi-label">Merma real</div><div class="kpi-val">'+f$(D.merma_real)+'</div><div class="kpi-sub">'+D.faltantes.length+' faltantes confirmados</div></div>'
+  +'<div class="kpi" style="border-top:3px solid #1565C0"><div class="kpi-label">Consumo insumo</div><div class="kpi-val" style="color:#1565C0">'+f$(D.insumo_total)+'</div><div class="kpi-sub">proteína a bebidas · no es pérdida</div></div>'
+  +'<div class="kpi green"><div class="kpi-label">Estado</div><div class="kpi-val" style="font-size:15px">🟢 Cerrado</div><div class="kpi-sub">gerentes + distrital</div></div>'
+  +'</div>';
+ html+='<div class="card" style="background:#E8F5E9;border-left:4px solid #1B5E20"><div style="font-size:12px;color:var(--txt)">Solo se muestran los <b>faltantes confirmados</b> (merma real, rojo) y el <b>consumo de insumo</b> (azul, para ver su costo). El resto de diferencias (errores de conteo, traspasos, sobrantes, se cobró una por otra) se justificó en el documento de incidencias y no representa pérdida.</div></div>';
+ html+='<div class="card"><div class="card-head"><div><div class="card-title" style="color:var(--rojo)">🔴 Faltantes confirmados — merma real</div><div class="card-sub">Semana 1–9 ago · '+f$(D.merma_real)+' total</div></div></div><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Producto</th><th>Piezas</th><th>Merma $</th></tr></thead><tbody>'
+  +D.faltantes.map(function(f){return '<tr><td style="font-weight:600">'+f[0]+'</td><td>'+f[1]+'</td><td class="mono" style="color:var(--rojo)">'+f[2]+'</td><td class="mono" style="font-weight:700;color:var(--rojo)">'+f$(f[3])+'</td></tr>';}).join('')
+  +'<tr style="background:var(--rojo2);font-weight:700"><td colspan="3">TOTAL MERMA REAL</td><td class="mono" style="color:var(--rojo)">'+f$(D.merma_real)+'</td></tr>'
+  +'</tbody></table></div></div>';
+ html+='<div class="card"><div class="card-head"><div><div class="card-title" style="color:#1565C0">🔵 Consumo de insumo — no es pérdida</div><div class="card-sub">Proteína a granel (Birdman vainilla 1.8 · Habits vainilla · Birdman chocolate 1.8) usada en bebidas · '+f$(D.insumo_total)+' total</div></div></div><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Producto</th><th>Consumo $</th></tr></thead><tbody>'
+  +D.insumo_rows.map(function(r){return '<tr><td style="font-weight:600">'+r[0]+'</td><td>'+r[1]+'</td><td class="mono" style="font-weight:700;color:#1565C0">'+f$(r[2])+'</td></tr>';}).join('')
+  +'<tr style="background:#E3F2FD;font-weight:700"><td colspan="2">TOTAL CONSUMO INSUMO</td><td class="mono" style="color:#1565C0">'+f$(D.insumo_total)+'</td></tr>'
+  +'</tbody></table></div></div>';
+ el.innerHTML=html;
+}
 function renderSupDayAgo(el,cfg){
  var SUCS=window[cfg.sucs_var], RES=window[cfg.R], DET=window[cfg.D], TOP=window[cfg.T], INC=window[cfg.I];
  if(!RES){el.innerHTML='<div class="card">Cargando…</div>';return;}
