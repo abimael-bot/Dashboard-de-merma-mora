@@ -1,0 +1,2279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+ <link rel="icon" type="image/png" href="icon.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Mora Mora · Control de Merma</title>
+ <link rel="manifest" href="manifest.json">
+ <meta name="mobile-web-app-capable" content="yes">
+ <meta name="apple-mobile-web-app-capable" content="yes">
+ <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+ <meta name="apple-mobile-web-app-title" content="MM Merma">
+ <meta name="theme-color" content="#1C3A2A">
+ <link rel="apple-touch-icon" href="icon-192.png">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--verde:#1A6B3C;--verde2:#27AE60;--verde3:#E8F5EE;--azul:#1A3A5C;--azul2:#2E5F9E;--azul3:#EBF4FF;--rojo:#B22222;--rojo2:#FDE8E8;--ambar:#C07000;--ambar2:#FEF3E2;--gris:#718096;--brd:#E2E8F0;--bg:#F7F9FC;--card:#fff;--txt:#1A202C;--sw:224px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);font-size:14px;}
+#login-screen{min-height:100vh;background:linear-gradient(160deg,#0B2318,#1A3A5C 60%,#0D3355);display:flex;align-items:center;justify-content:center;padding:20px;}
+.login-box{background:#fff;border-radius:20px;padding:40px;width:100%;max-width:400px;box-shadow:0 30px 80px rgba(0,0,0,.4);}
+.login-logo{text-align:center;margin-bottom:28px;}.login-logo .leaf{font-size:40px;display:block;margin-bottom:8px;}
+.login-logo h1{font-size:24px;font-weight:800;color:var(--azul);}.login-logo p{font-size:12px;color:var(--gris);margin-top:2px;}
+.field{margin-bottom:16px;}.field label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--txt);margin-bottom:6px;}
+.field input{width:100%;padding:11px 14px;border:2px solid var(--brd);border-radius:10px;font-size:14px;outline:none;transition:border-color .15s;font-family:inherit;}
+.field input:focus{border-color:var(--azul2);}
+.err-msg{display:none;background:var(--rojo2);color:var(--rojo);border-radius:8px;padding:10px 14px;font-size:12px;margin-bottom:14px;text-align:center;font-weight:600;}
+.btn-login{width:100%;padding:13px;background:linear-gradient(135deg,var(--verde),#1E8449);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;}
+.btn-login:hover{opacity:.88;}
+
+
+
+
+
+
+
+
+
+
+#app{display:none;}
+.layout{display:flex;min-height:100vh;}
+.sidebar{width:var(--sw);background:var(--azul);position:fixed;top:0;left:0;height:100vh;display:flex;flex-direction:column;z-index:100;overflow-y:auto;}
+.sb-logo{padding:16px;border-bottom:1px solid rgba(255,255,255,.1);flex-shrink:0;}
+.sb-logo h2{color:#fff;font-size:13px;font-weight:800;}.sb-logo span{color:rgba(255,255,255,.4);font-size:10px;display:block;margin-top:2px;}
+.sb-nav{flex:1;padding:6px 0;}
+.sb-section{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:rgba(255,255,255,.3);padding:10px 16px 4px;}
+.sb-item{display:flex;align-items:center;gap:9px;padding:9px 16px;color:rgba(255,255,255,.6);font-size:12px;font-weight:500;cursor:pointer;transition:.15s;position:relative;border:none;background:none;width:100%;text-align:left;font-family:inherit;}
+.sb-item:hover{background:rgba(255,255,255,.08);color:#fff;}
+.sb-item.active{background:rgba(255,255,255,.14);color:#fff;}
+.sb-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--verde2);border-radius:0 2px 2px 0;}
+.sb-item .ic{font-size:14px;width:18px;text-align:center;}
+.sb-badge{margin-left:auto;background:var(--rojo);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;}
+.sb-user{padding:12px 16px;border-top:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:9px;flex-shrink:0;}
+.sb-avatar{width:30px;height:30px;border-radius:50%;background:var(--verde);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;}
+.sb-uinfo{flex:1;overflow:hidden;}.sb-uname{font-size:11px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.sb-urole{font-size:10px;color:rgba(255,255,255,.4);}
+.sb-logout{color:rgba(255,255,255,.3);cursor:pointer;font-size:14px;padding:4px;background:none;border:none;}.sb-logout:hover{color:#fff;}
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;}
+.topbar{height:50px;background:#fff;border-bottom:1px solid var(--brd);display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:50;}
+.topbar-title{font-size:14px;font-weight:700;}.topbar-sub{font-size:11px;color:var(--gris);}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}.clock{font-size:11px;color:var(--gris);font-family:monospace;}
+.live-badge{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:#1B5E20;background:#E8F5E9;padding:4px 10px;border-radius:20px;}
+.live-dot{width:8px;height:8px;border-radius:50%;background:#2E7D32;box-shadow:0 0 0 rgba(46,125,50,.6);animation:live-pulse 1.6s infinite;}
+@keyframes live-pulse{0%{box-shadow:0 0 0 0 rgba(46,125,50,.6);}70%{box-shadow:0 0 0 7px rgba(46,125,50,0);}100%{box-shadow:0 0 0 0 rgba(46,125,50,0);}}
+.content{padding:18px 20px;flex:1;}
+.page{display:none;}.page.active{display:block;}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:16px;}
+.kpi-grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-bottom:16px;}
+.kpi{background:var(--card);border-radius:12px;padding:14px 16px;border:1px solid var(--brd);position:relative;overflow:hidden;}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi.blue::before{background:var(--azul2);}.kpi.red::before{background:var(--rojo);}
+.kpi.amber::before{background:#E67E22;}.kpi.green::before{background:var(--verde2);}
+.kpi.purple::before{background:#7F77DD;}.kpi.teal::before{background:#00897B;}
+.kpi-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gris);}
+.kpi-val{font-size:21px;font-weight:800;margin:3px 0 2px;line-height:1.1;}.kpi-sub{font-size:11px;color:var(--gris);}
+.up{color:var(--rojo);font-weight:700;}.dn{color:var(--verde2);font-weight:700;}
+.card{background:var(--card);border-radius:12px;padding:16px;border:1px solid var(--brd);margin-bottom:13px;}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
+.card-title{font-size:13px;font-weight:700;}.card-sub{font-size:11px;color:var(--gris);margin-top:2px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;}
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;}
+.badge-ok{background:var(--verde3);color:#1A6B3C;}.badge-mod{background:var(--ambar2);color:var(--ambar);}
+.badge-crit{background:var(--rojo2);color:var(--rojo);}
+.pill{display:inline-flex;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;text-transform:uppercase;}
+.pill-ok{background:var(--verde3);color:#1A6B3C;}.pill-mod{background:var(--ambar2);color:var(--ambar);}
+.pill-crit{background:var(--rojo2);color:var(--rojo);}.pill-na{background:#EDF2F7;color:var(--gris);}
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--gris);padding:7px 9px;border-bottom:2px solid var(--brd);text-align:left;white-space:nowrap;}
+.tbl td{padding:7px 9px;font-size:12px;border-bottom:1px solid #F1F5F9;vertical-align:middle;}
+.tbl tbody tr:hover{background:#F8FAFC;}.mono{font-family:monospace;}
+.branch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:13px;}
+.branch-card{background:var(--card);border-radius:12px;padding:13px;border:1px solid var(--brd);cursor:pointer;transition:.15s;border-left:4px solid;}
+.branch-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.08);}
+.bc-ok{border-left-color:var(--verde2);}.bc-mod{border-left-color:#E67E22;}.bc-crit{border-left-color:var(--rojo);}.bc-na{border-left-color:var(--brd);}
+.bc-name{font-size:13px;font-weight:700;margin-bottom:3px;}
+.bc-pct{font-size:20px;font-weight:800;margin-bottom:2px;}
+.bc-pct-ok{color:var(--verde2);}.bc-pct-mod{color:#E67E22;}.bc-pct-crit{color:var(--rojo);}
+.bc-meta{font-size:10px;color:var(--gris);}
+.bc-bar{height:4px;background:#EDF2F7;border-radius:2px;margin-top:7px;overflow:hidden;}
+.bc-fill{height:100%;border-radius:2px;}
+.rank-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #F1F5F9;}
+.rank-row:last-child{border:none;}
+.rank-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+.rk1{background:#FFD700;color:#7A5C00;}.rk2{background:#C0C0C0;color:#444;}.rk3{background:#CD7F32;color:#5C2D00;}.rkn{background:#EDF2F7;color:var(--gris);}
+.rank-name{flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.rank-bar{flex:1;height:5px;background:#EDF2F7;border-radius:3px;overflow:hidden;}
+.rank-fill{height:100%;border-radius:3px;}
+.rank-val{width:54px;font-size:11px;font-family:monospace;text-align:right;font-weight:700;}
+.alert-item{display:flex;gap:10px;padding:10px 12px;border-radius:10px;margin-bottom:7px;border:1px solid;}
+.alert-crit{background:var(--rojo2);border-color:#FBCFCF;}.alert-mod{background:var(--ambar2);border-color:#FDDCA0;}.alert-ok{background:var(--verde3);border-color:#B3E8C9;}
+.alert-ico{font-size:16px;flex-shrink:0;}.alert-body{flex:1;}
+.alert-title{font-size:12px;font-weight:700;margin-bottom:2px;}.alert-desc{font-size:11px;color:var(--gris);}
+.cat-tabs{display:flex;gap:6px;margin-bottom:13px;flex-wrap:wrap;}
+.cat-tab{padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--brd);background:var(--card);color:var(--gris);transition:.15s;font-family:inherit;}
+.cat-tab.active{background:var(--azul);color:#fff;border-color:var(--azul);}
+/* TOP 10 sucursal tabs */
+.suc-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:13px;}
+.suc-tab{padding:5px 11px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--brd);background:var(--card);color:var(--gris);transition:.15s;font-family:inherit;}
+.suc-tab.active{background:var(--azul);color:#fff;border-color:var(--azul);}
+.status-row{display:flex;gap:6px;margin-bottom:13px;flex-wrap:wrap;}
+.status-chip{background:var(--bg);border:1px solid var(--brd);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;}
+.suc-filter{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:13px;}
+.suc-chip{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--brd);background:var(--card);color:var(--gris);transition:.15s;font-family:inherit;}
+.suc-chip.active{background:var(--azul);color:#fff;border-color:var(--azul);}
+.menu-toggle{display:none;background:none;border:none;font-size:22px;cursor:pointer;color:var(--txt);}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99;}.overlay.show{display:block;}
+@media(max-width:900px){.sidebar{transform:translateX(-100%);transition:.25s;}.sidebar.open{transform:translateX(0);}.main{margin-left:0;}.menu-toggle{display:block;}.kpi-grid,.kpi-grid-5,.g2,.g3,.branch-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:560px){.kpi-grid,.kpi-grid-5,.g2,.g3,.branch-grid{grid-template-columns:1fr;}.content{padding:13px;}}
+</style>
+</head>
+<body>
+<div id="login-screen">
+ <div class="login-box">
+ <div class="login-logo"><span class="leaf">🌿</span><h1>Mora Mora</h1><p>Control de Merma · 2026</p></div>
+ <div class="field"><label>Correo</label><input type="text" id="inp-email" placeholder="correo@moramora.mx" onkeydown="if(event.key==='Enter')document.getElementById('inp-pass').focus()"></div>
+ <div class="field"><label>Contraseña</label><input type="password" id="inp-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()"></div>
+ <div class="err-msg" id="err-msg">Correo o contraseña incorrectos</div>
+ <button class="btn-login" onclick="login()">Iniciar sesión</button>
+
+
+ </div>
+</div>
+
+
+<div id="app">
+ <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+ <div class="layout">
+ <aside class="sidebar" id="sidebar">
+ <div class="sb-logo"><h2>🌿 ControlMerma</h2><span>Mora Mora · 2026</span></div>
+ <nav class="sb-nav">
+ <div class="sb-section">Jugos Cold Pressed</div>
+ <button class="sb-item active" onclick="showPage('dashboard')"><span class="ic">📊</span>Dashboard — Jugos CP</button>
+ <button class="sb-item" onclick="showPage('margen')"><span class="ic">💰</span>Margen & Utilidad</button>
+ <div class="sb-section">Análisis</div>
+ <button class="sb-item" onclick="showPage('sucursales')" style="display:none"><span class="ic">🏪</span>Por Sucursal</button>
+ <button class="sb-item" onclick="showPage('categorias')" style="display:none"><span class="ic">📦</span>Por Categoría</button>
+ <button class="sb-item" onclick="showPage('insumos')"><span class="ic">📋</span>Registros Merma CAM</button>
+ <button class="sb-item" onclick="showPage('gestion')"><span class="ic">🔄</span>Gestión Integral Suplementos<span class="sb-badge" style="background:#1565C0">🆕</span></button>
+ <button class="sb-item" onclick="showPage('benchmark')"><span class="ic">💲</span>Benchmark de Precios</button>
+ <button class="sb-item" onclick="showPage('eficiencia')"><span class="ic">📊</span>Eficiencia por Categoría</button>
+ <div class="sb-section" style="margin-top:6px">Por Categoría</div>
+ <button class="sb-item sb-sub" onclick="showCatDirect('SUP')"><span class="ic">💊</span>Suplementos</button>
+ <button class="sb-item sb-sub" onclick="showCatDirect('VB')"><span class="ic">🥐</span>Vitch Bakery</button>
+ <button class="sb-item sb-sub" onclick="showCatDirect('INS')"><span class="ic">📦</span>Insumos</button>
+ <button class="sb-item" onclick="showPage('historico')"><span class="ic">📈</span>Histórico</button>
+ </nav>
+ <div class="sb-user">
+ <div class="sb-avatar" id="u-avatar">MM</div>
+ <div class="sb-uinfo"><div class="sb-uname" id="u-name">–</div><div class="sb-urole" id="u-role">–</div></div>
+ <button class="sb-logout" onclick="logout()">⏻</button>
+ </div>
+ </aside>
+
+
+ <div class="main">
+ <header class="topbar">
+ <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+ <div><div class="topbar-title" id="page-title">Dashboard — Jugos Cold Pressed</div><div class="topbar-sub" id="page-sub">S11–S33 · 2026</div></div>
+ <div class="topbar-right"><span class="live-badge"><span class="live-dot"></span>En vivo</span><span class="clock" id="clock"></span></div>
+ </header>
+ <div class="content">
+
+
+ <!-- DASHBOARD -->
+ <div class="page active" id="page-dashboard">
+ <div class="kpi-grid-5">
+ <div class="kpi blue"><div class="kpi-label">Ventas S33</div><div class="kpi-val">$91,629</div><div class="kpi-sub"><span style="color:var(--rojo)">↓ −10.2%</span> vs S32 · semana completa</div></div>
+ <div class="kpi red"><div class="kpi-label">Merma S33</div><div class="kpi-val">$12,805</div><div class="kpi-sub"><span style="color:var(--rojo)">↑ +$1,721</span> vs S32</div></div>
+ <div class="kpi amber"><div class="kpi-label">% Merma S33</div><div class="kpi-val">29.7%</div><div class="kpi-sub"><span class="badge badge-mod">Moderada</span></div></div>
+ <div class="kpi green"><div class="kpi-label">Merma reportada S33</div><div class="kpi-val">$4,982</div><div class="kpi-sub">Desv: $7,823 (61.1%)</div></div>
+ <div class="kpi purple"><div class="kpi-label">Semanas registradas</div><div class="kpi-val">33</div><div class="kpi-sub">S11 → S33 + Ene/Feb</div></div>
+ <div class="kpi teal"><div class="kpi-label">% Merma s/ventas S32</div><div class="kpi-val">10.9%</div><div class="kpi-sub">🆕 Comparable con VB (7.4%)</div></div>
+ </div>
+ <!-- TABS DASHBOARD -->
+ <div class="suc-tabs" id="dash-main-tabs" style="margin:12px 0">
+  <button class="suc-tab active" onclick="switchDashTab('resumen',this)">📊 Resumen</button>
+  <button class="suc-tab" onclick="switchDashTab('sucursales',this)">🏪 Por Sucursal</button>
+ </div>
+ <div id="dash-tab-resumen">
+ <div id="dash-week-filter" style="margin-bottom:10px"></div>
+ <div class="g2">
+ <div class="card">
+ <div class="card-head"><div><div class="card-title">% Merma semanal vs Política</div><div class="card-sub">S11–S33 · línea roja = 22% · línea naranja = 30%</div></div><span class="badge badge-mod">S33: 29.7%</span></div>
+ <div style="position:relative;height:200px"><canvas id="ch-trend"></canvas></div>
+ </div>
+ <div class="card">
+ <div class="card-head"><div><div class="card-title">Desviación semanal ($)</div><div class="card-sub">Variación de merma vs semana anterior</div></div></div>
+ <div style="position:relative;height:200px"><canvas id="ch-desv"></canvas></div>
+ </div>
+ </div>
+ <div class="g2">
+ <div class="card">
+ <div class="card-head"><div><div class="card-title">🔔 Alertas activas</div></div><span class="badge badge-crit">3 críticas</span></div>
+ <div id="dash-alerts"></div>
+ <button onclick="showPage('alertas')" style="margin-top:10px;padding:6px 12px;border:1.5px solid var(--brd);border-radius:8px;background:#fff;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit">Ver todas →</button>
+ </div>
+ <div class="card">
+ <div class="card-head"><div><div class="card-title">Ranking — % Merma promedio por sucursal</div></div></div>
+ <div id="dash-rank"></div>
+ </div>
+ </div>
+ </div><!-- end dash-tab-resumen -->
+ <div id="dash-tab-sucursales" style="display:none;margin-top:12px"></div>
+ </div><!-- fix balance -->
+<!-- MARGEN -->
+ <div class="page" id="page-margen">
+ <div class="kpi-grid">
+ <div class="kpi green"><div class="kpi-label">Utilidad % promedio</div><div class="kpi-val">59.9%</div><div class="kpi-sub">S11–S33 acumulado</div></div>
+ <div class="kpi blue"><div class="kpi-label">Ventas acumuladas</div><div class="kpi-val">$3.15M</div><div class="kpi-sub">S11–S33 Jugos CP</div></div>
+ <div class="kpi teal"><div class="kpi-label">Margen total S33</div><div class="kpi-val">$66,212</div><div class="kpi-sub">Ventas − Costo − Merma S33</div></div>
+ <div class="kpi red"><div class="kpi-label">Impacto merma total</div><div class="kpi-val">$358,307</div><div class="kpi-sub">Acumulado S11–S33</div></div>
+ </div>
+ <div class="g2">
+ <div class="card">
+ <div class="card-head"><div><div class="card-title">Utilidad % por semana</div><div class="card-sub">S11–S33 · teal = utilidad, rojo = % merma</div></div></div>
+ <div style="position:relative;height:210px"><canvas id="ch-util"></canvas></div>
+ </div>
+ <div class="card">
+ <div class="card-head"><div><div class="card-title">Merma $ vs Ventas $ semanal</div><div class="card-sub">Barras = merma · línea = ventas</div></div></div>
+ <div style="position:relative;height:210px"><canvas id="ch-merma-vtas"></canvas></div>
+ </div>
+ </div>
+ <div class="card">
+ <div class="card-head"><div><div class="card-title">Tabla completa — Margen & Utilidad</div></div></div>
+ <div style="overflow-x:auto"><table class="tbl" id="tbl-margen"></table></div>
+ </div>
+ <div class="card">
+ <div class="card-head"><div><div class="card-title">Resumen mensual</div><div class="card-sub">Ene–Abr 2026</div></div></div>
+ <div style="position:relative;height:190px"><canvas id="ch-meses"></canvas></div>
+ </div>
+ </div>
+
+
+ <!-- ALERTAS -->
+ <div class="page" id="page-alertas">
+ <div class="card">
+ <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gris);margin-bottom:10px;">🔴 Críticas — Acción inmediata</div>
+ <div class="alert-item alert-mod"><div class="alert-ico">🟡</div><div class="alert-body"><div class="alert-title">S33 — 29.7% Moderada (empeora vs S32)</div><div class="alert-desc">Sube de 26.2% a 29.7%. Merma real $12,805 (+$1,721 vs S32). Sigue sobre política del 22%, cerca del umbral crítico (30%).</div></div></div>
+ <div class="alert-item alert-mod"><div class="alert-ico">🟡</div><div class="alert-body"><div class="alert-title">Ventas S33: $91,629 (−10.2% vs S32)</div><div class="alert-desc">Bajan las ventas mientras la merma $ sube, por eso empeora el %.</div></div></div>
+ <div class="alert-item alert-mod"><div class="alert-ico">🟡</div><div class="alert-body"><div class="alert-title">Desviación S33: $7,823 (61.1%)</div><div class="alert-desc">Merma real $12,805 vs reportada $4,982 — revisar capturas.</div></div></div>
+ </div>
+ <div class="card">
+ <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gris);margin-bottom:10px;">🟡 Moderadas — Monitorear</div>
+ <div class="alert-item alert-mod"><div class="alert-ico">🟡</div><div class="alert-body"><div class="alert-title">% de merma por sucursal S33 — en validación</div><div class="alert-desc">El desglose por sucursal está pendiente (sección B / traspasos y ajustes por el cierre de Condesa).</div></div></div>
+ <div class="alert-item alert-mod"><div class="alert-ico">🟡</div><div class="alert-body"><div class="alert-title">Merma $ por sucursal (S33)</div><div class="alert-desc">Mayores: Polanco $2,952 · Santa Fe $2,327 · Liverpool $2,050 · Colima $1,571 · San Miguel $1,252.</div></div></div>
+ <div class="alert-item alert-mod"><div class="alert-ico">🟡</div><div class="alert-body"><div class="alert-title">Condesa fuera del corte</div><div class="alert-desc">Cerrada temporalmente; sus suplementos/productos se traspasaron a Colima.</div></div></div>
+ </div>
+ <div class="card">
+ <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gris);margin-bottom:10px;">✅ Positivas</div>
+ <div class="alert-item alert-ok"><div class="alert-ico">✅</div><div class="alert-body"><div class="alert-title">Kitchen Lab — menor merma $ del periodo</div><div class="alert-desc">$329 en S33, la más baja de las sucursales activas.</div></div></div>
+ <div class="alert-item alert-ok"><div class="alert-ico">✅</div><div class="alert-body"><div class="alert-title">Insurgentes — merma $ baja</div><div class="alert-desc">$504 en S33, de las más bajas de las sucursales activas.</div></div></div>
+ <div class="alert-item alert-ok"><div class="alert-ico">✅</div><div class="alert-body"><div class="alert-title">Utilidad se mantiene sólida — 58.3%</div><div class="alert-desc">Similar al promedio histórico (59.9%) pese a la subida de merma en S33.</div></div></div>
+ </div>
+ </div>
+
+
+ <!-- POR SUCURSAL -->
+ <div class="page" id="page-sucursales">
+ <div class="status-row" id="suc-status"></div>
+ <div class="suc-filter" id="suc-filter"></div>
+ <div id="suc-detail-view" style="display:none"></div>
+ <div id="suc-grid-view"><div class="branch-grid" id="branch-grid"></div></div>
+ </div>
+
+
+ <!-- TOP 10 POR SUCURSAL -->
+ <div class="page" id="page-top10">
+ <div class="suc-tabs" id="top10-tabs"></div>
+ <div class="g2" id="top10-content"></div>
+ </div>
+
+
+ <!-- POR CATEGORÍA -->
+ <div class="page" id="page-categorias">
+ <div class="cat-tabs" id="cat-tabs"></div>
+ <div id="cat-content"></div>
+ </div>
+
+
+ <!-- MERMA GENERAL -->
+ <div class="page" id="page-insumos">
+ <div class="card" style="text-align:center;padding:48px;color:var(--gris)"><div style="font-size:40px;margin-bottom:12px">🧹</div><div style="font-size:15px;font-weight:700;margin-bottom:8px;color:var(--txt)">Merma CAM — pendiente de carga</div><div>Los registros de julio se limpiaron. Se cargará la información de <b>agosto</b> cuando esté disponible.</div></div>
+ <div style="display:none">
+ <div class="kpi-grid">
+ <div class="kpi red"><div class="kpi-label">🆕 Merma General Julio 1-12</div><div class="kpi-val">$11,763</div><div class="kpi-sub">8 sucursales · Condesa y Polanco lideran</div></div>
+ <div class="kpi purple"><div class="kpi-label">Sucursal con más merma (Jul)</div><div class="kpi-val">Condesa</div><div class="kpi-sub">$4,328 · Arroz con leche, Limón eureka, Tempeh Gyro</div></div>
+ <div class="kpi blue"><div class="kpi-label">Categorías incluidas</div><div class="kpi-val" style="font-size:14px">Jugos · Bakery · Producción</div><div class="kpi-sub">Reporte por sucursal completo</div></div>
+ </div>
+ <div class="card">
+ <div class="card-head"><div><div class="card-title">Merma General — Top 10 por Sucursal</div><div class="card-sub">🆕 Julio 2026 · selecciona sucursal</div></div></div>
+ <div class="suc-tabs" id="mg-tabs"></div>
+ <div class="g2" id="mg-content"></div>
+ </div>
+ <div class="card">
+ <div class="card-head"><div><div class="card-title">Merma General Julio por sucursal</div><div class="card-sub">🆕 Julio 2026 · todas las categorías</div></div></div>
+ <div style="position:relative;height:230px"><canvas id="ch-ins-suc"></canvas></div>
+ </div>
+ </div>
+ </div>
+
+ <!-- GESTIÓN INTEGRAL DE INVENTARIOS -->
+ <div class="page" id="page-gestion">
+ <div class="card" style="background:#E3F2FD;border-left:4px solid #1565C0">
+ <div style="font-size:12px;color:var(--txt)"><b>🆕 Nuevo módulo — Fase 1: Suplementos.</b> Va más allá de la merma: inventarios, ventas, rotación, desviación (teórico vs. físico) y pérdidas consolidadas. Se irá extendiendo a Jugos y CAM General en próximas iteraciones. Reconciliación de JULIO completo (1–31): Inicial + Compras + Traspasos − Ventas = Teórico vs Físico. Insumo (Birdman 1.8 vainilla + Habits vainilla, ~$57k) separado como consumo de producción. LMNT y Condesa (cerró 24) fuera del cálculo de merma.</div>
+ </div>
+ <div class="kpi-grid">
+ <div class="kpi blue"><div class="kpi-label">Rotación promedio</div><div class="kpi-val">0.94x</div><div class="kpi-sub">Julio · Polanco la más ágil (1.39x)</div></div>
+ <div class="kpi amber"><div class="kpi-label">Días de inventario promedio</div><div class="kpi-val">44.4 días</div><div class="kpi-sub">Al ritmo de venta actual</div></div>
+ <div class="kpi red"><div class="kpi-label">Merma retail neta</div><div class="kpi-val">$19,450</div><div class="kpi-sub">8 sucursales · insumo ($57,314) aparte</div></div>
+ <div class="kpi purple"><div class="kpi-label">% Merma vs. ventas</div><div class="kpi-val">20.9%</div><div class="kpi-sub">Merma / ventas $ · ver detalle por sucursal</div></div>
+ </div>
+ <div class="card">
+ <div class="card-head"><div><div class="card-title">📍 Rotación y pérdidas por sucursal</div><div class="card-sub">Inv. Ini + Compras − Ventas = Teórico vs. Final · Rotación = Ventas / Inv. Promedio · Suplementos, Julio 2026 (mes completo)</div></div></div>
+ <div id="gestion-suc-table" style="overflow-x:auto"></div>
+ </div>
+ <div class="card">
+ <div class="card-head"><div class="card-title">Rotación por sucursal (veces en el periodo)</div></div>
+ <div style="position:relative;height:200px"><canvas id="ch-gestion-rot"></canvas></div>
+ </div>
+ <div class="g2">
+ <div class="card" style="margin-bottom:0">
+ <div class="card-head"><div><div class="card-title">🐌 Productos de baja rotación</div><div class="card-sub">Candidatos a reducir compra o descontinuar</div></div></div>
+ <div id="gestion-slow"></div>
+ </div>
+ <div class="card" style="margin-bottom:0">
+ <div class="card-head"><div><div class="card-title">⚡ Productos de alta rotación</div><div class="card-sub">Riesgo de quiebre de stock — vigilar reabasto</div></div></div>
+ <div id="gestion-fast"></div>
+ </div>
+ </div>
+
+ <div class="card">
+ <div class="card-head"><div><div class="card-title">📋 Reporte detallado por sucursal — Accionables y seguimiento</div><div class="card-sub">Suplementos, Julio 2026 (mes completo) · de cara al cierre de mes (31 jul)</div></div></div>
+ <div id="gestion-accionables"></div>
+ </div>
+
+ <div class="card">
+ <div class="card-head"><div><div class="card-title">🧮 Detalle por SKU y sucursal — arrastre</div><div class="card-sub">Inicial + Compras + Trasp.entra − Trasp.sale − Ventas = Teórico vs Físico · Julio 2026 · 🔵 = insumo (consumo, no merma)</div></div></div>
+ <div class="suc-tabs" id="gdet-tabs" style="margin-bottom:12px"></div>
+ <div id="gdet-content" style="overflow-x:auto"></div>
+ </div>
+
+ </div>
+
+ <!-- BENCHMARK DE PRECIOS -->
+ <div class="page" id="page-benchmark">
+ <div class="card">
+ <div class="card-head"><div><div class="card-title">💲 Benchmark de Precios — Competencia</div><div class="card-sub">Suplementos vs. Walmart Express · City Market · GNC · Yema · Liverpool · Sumesa · Farmacia San Pablo</div></div><span class="badge badge-ok" id="bm-badge">✅ Actualizado</span></div>
+ <div id="benchmark-content"></div>
+ </div>
+ </div>
+
+ <!-- EFICIENCIA POR CATEGORÍA -->
+ <div class="page" id="page-eficiencia"></div>
+
+
+ <!-- HISTÓRICO -->
+ <div class="page" id="page-historico">
+ <div class="card">
+ <div class="card-head"><div><div class="card-title">Merma $ y % semanal — S11–S33</div></div></div>
+ <div style="position:relative;height:210px"><canvas id="ch-hist-main"></canvas></div>
+ </div>
+ <div class="card">
+ <div class="card-head"><div><div class="card-title">% Merma por sucursal — evolución S11–S33</div></div></div>
+ <div style="position:relative;height:230px"><canvas id="ch-hist-suc"></canvas></div>
+ </div>
+ <div class="card">
+ <div class="card-head"><div><div class="card-title">Tabla histórica completa</div></div></div>
+ <div style="overflow-x:auto"><table class="tbl" id="hist-table"></table></div>
+ </div>
+ </div>
+
+
+ </div>
+ </div>
+ </div>
+</div>
+
+
+<script>
+var __DATA_LOADED=false;
+var __DATA_READY=fetch('datos.json').then(function(r){return r.json();}).then(function(d){Object.keys(d).forEach(function(k){window[k]=d[k];});CURRENT_SUP_DETALLE=window.SUP_DETALLE;__DATA_LOADED=true;}).catch(function(e){console.error('No se pudo cargar datos.json',e);alert('Error al cargar los datos del dashboard.');});
+// ─── AUTH ───
+var CREDS=[{email:'admin@moramora.mx',pass:'moramora2026',rol:'admin',name:'Administrador',av:'AD'},{email:'gerencia@moramora.mx',pass:'gerencia2026',rol:'gerente',name:'Gerencia',av:'GR'}];
+function login(){if(!__DATA_LOADED){__DATA_READY.then(login);return;}var e=document.getElementById('inp-email').value.trim().toLowerCase(),p=document.getElementById('inp-pass').value,u=null;for(var i=0;i<CREDS.length;i++)if(CREDS[i].email===e&&CREDS[i].pass===p){u=CREDS[i];break;}if(u){document.getElementById('err-msg').style.display='none';startApp(u);}else{document.getElementById('err-msg').style.display='block';}}
+
+
+function startApp(u){document.getElementById('login-screen').style.display='none';document.getElementById('app').style.display='block';document.getElementById('u-avatar').textContent=u.av;document.getElementById('u-name').textContent=u.name;document.getElementById('u-role').textContent=u.rol==='admin'?'Administrador':'Gerente';buildAll();startClock();}
+function logout(){document.getElementById('app').style.display='none';document.getElementById('login-screen').style.display='flex';document.getElementById('inp-email').value='';document.getElementById('inp-pass').value='';}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
+var PAGE_META={dashboard:{title:'Dashboard — Jugos Cold Pressed',sub:'S11–S33 · 2026'},margen:{title:'Margen & Utilidad — Jugos Cold Pressed',sub:'Utilidad · Margen · Ventas vs Merma S11–S33'},alertas:{title:'Alertas',sub:'Notificaciones activas'},sucursales:{title:'Por Sucursal',sub:'Reporte completo · 11 sucursales'},top10:{title:'Merma General / CAM',sub:'Registros gerenciales · todas las categorías'},categorias:{title:'Por Categoría',sub:'Jugos · Bakery · Suplementos · Insumos'},insumos:{title:'Registros Merma CAM',sub:'Pendiente — se cargará agosto'},historico:{title:'Histórico',sub:'S11–S33 · Jugos Cold Pressed'},gestion:{title:'Gestión Integral Suplementos',sub:'Rotación · Desviación · Pérdidas — Suplementos 🆕'},benchmark:{title:'Benchmark de Precios',sub:'Suplementos vs. competencia — corrida 20 jul 2026'},eficiencia:{title:'Eficiencia por Categoría',sub:'Merma $ sobre ventas · comparativo mensual 2026'}};
+function showPage(id){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.querySelectorAll('.sb-item').forEach(function(b){b.classList.remove('active');});var pg=document.getElementById('page-'+id);if(pg)pg.classList.add('active');var m=PAGE_META[id]||{title:id,sub:''};document.getElementById('page-title').textContent=m.title;document.getElementById('page-sub').textContent=m.sub;document.querySelectorAll('.sb-item').forEach(function(b){if(b.getAttribute('onclick')&&b.getAttribute('onclick').indexOf("'"+id+"'")>=0)b.classList.add('active');});if(id==='eficiencia')renderEficiencia(document.getElementById('page-eficiencia'));closeSidebar();}
+
+
+// ─── DATA ───
+var SEMS=['S11','S12','S13','S14','S15','S16','S17','S18','S19','S20','S21','S22','S23','S24','S25','S26','S27','S28','S29','S30','S31','S32','S33'];
+var VTAS=[174936, 155029, 137978, 138413, 132693, 154214, 149782, 143000, 138510, 144120, 149601, 138958, 142886, 127826, 135866, 136035, 133441, 132288, 188666, 116443, 89452, 101995, 91629];
+var MRMA=[17749, 13053, 13940, 16906, 17779, 16562, 18621, 14027, 19889, 17881, 17567, 17984, 18681, 13951, 11107, 17304, 14818, 13114, 15129, 16896, 11460, 11084, 12805];
+var PCT=[26.6, 24.5, 22.7, 26.5, 27.2, 24.5, 28.1, 22.1, 29.5, 28.3, 26.5, 28.9, 29.8, 25.2, 22.8, 30.7, 23.2, 25.0, 31.6, 31.6, 28.3, 26.2, 29.7];
+var PCT_VTAS=[10.1,8.4,10.1,12.2,13.4,10.7,12.4,9.8,14.4,12.4,11.7,12.9,13.1,10.9,8.2,12.7,11.1,9.9,8.0,14.5,12.8,10.9,14.0];
+var COSTO=[52726,46919,41502,42472,40134,46259,45390,43202,41122,42164,43090,42571,42052,35813,37657,37738,36851,36128,33356,32867,25539,28806,25418];
+var MARGEN=[122210,108110,96476,95941,92559,107955,104392,99798,97388,101956,106511,96387,100834,92013,98209,98297,96590,96160,155310,83576,69913,73190,66212];
+var UTILIDAD_P=[59.71,61.32,59.82,57.10,56.36,59.26,57.26,59.98,55.95,58.34,59.45,56.42,57.50,61.07,64.11,59.54,61.28,62.78,74.30,57.26,58.64,60.9,58.28];
+var DESV=MRMA.map(function(v,i){return i===0?0:v-MRMA[i-1];});
+var MESES=[{m:'Enero',v:654125,mr:89186},{m:'Febrero',v:730659,mr:81956},{m:'Marzo',v:522721,mr:61648},{m:'Abril',v:579689,mr:66990}];
+
+
+// Sucursales con datos S11-S26 completos
+var BRANCHES=[
+ {n:'Condesa', pct:20.9, s:{11:2776,12:3001,13:2011,14:3095,15:2011,16:2112,17:3470,18:2540,19:3655,20:3480,21:2690,22:3109,23:2942,24:0,25:1277,26:4189,27:4506.3,28:3289.24,29:2340.04}, pct_s:{11:.189,12:.238,13:.158,14:.178,15:.158,16:.152,17:.266,18:.164,19:.258,20:.227,21:.205,22:.249,23:null,24:null,25:.157,26:.389,27:.295,28:.34,29:.24}, st:'mod', ins:[958.93,1751.34,822.14]},
+ {n:'Colima', pct:28.2, s:{11:5237,12:2589,13:3545,14:2799,15:3545,16:2579,17:2485,18:3884,19:4240,20:3069,21:3870,22:3286,23:2519,24:1651,25:1990,26:1913,27:1693.37,28:1975.02,29:2035.56,30:2777,31:3112,32:1484,33:1570.75}, pct_s:{11:.375,12:.323,13:.266,14:.323,15:.275,16:.266,17:.262,18:.23,19:.361,20:.202,21:.296,22:.284,23:null,24:.187,25:.189,26:.194,27:.138,28:.239,29:.276,30:null,31:null,32:null,33:null}, st:'mod', ins:[1874.53,1009.80,4939.49]},
+ {n:'Santa Fe', pct:23.1, s:{11:1467,12:1823,13:1835,14:994,15:1546,16:2185,17:1693,18:1442,19:879,20:1378,21:1060,22:1895,23:1051,24:1812,25:2113,26:2423,27:1773.21,28:886.13,29:604.93,30:1461,31:803,32:1685,33:2326.52}, pct_s:{11:.215,12:.228,13:.21,14:.218,15:.222,16:.21,17:.226,18:.176,19:.174,20:.173,21:.221,22:.274,23:null,24:.258,25:.301,26:.299,27:.32,28:.169,29:.185,30:null,31:null,32:null,33:null}, st:'ok', ins:[709.30,833.75,526.72]},
+ {n:'Liverpool', pct:35.0, s:{11:1127,12:1216,13:1773,14:1043,15:1773,16:2177,17:1936,18:1361,19:2597,20:1841,21:2998,22:1897,23:761,24:2411,25:897,26:1905,27:961.61,28:1199.8,29:2222.74,30:1468,31:1812,32:1329,33:2050}, pct_s:{11:.281,12:.274,13:.353,14:.328,15:.356,16:.353,17:.37,18:.305,19:.385,20:.398,21:.404,22:.345,23:null,24:.421,25:.231,26:.359,27:.203,28:.277,29:.584,30:null,31:null,32:null,33:null}, st:'crit',ins:[362.23,1189.82,1175.06]},
+ {n:'Polanco', pct:19.9, s:{11:1463,12:880,13:2165,14:2453,15:2291,16:1724,17:2614,18:3116,19:1868,20:1356,21:2058,22:1481,23:1140,24:726,25:1361,26:1740,27:1682.94,28:666.97,29:1412.04,30:2328,31:2434,32:1678,33:2951.54}, pct_s:{11:.185,12:.191,13:.125,14:.196,15:.124,16:.256,17:.236,18:.268,19:.175,20:.158,21:.19,22:.182,23:null,24:.127,25:.211,26:.238,27:.252,28:.129,29:.234,30:null,31:null,32:null,33:null}, st:'mod', ins:[6408.65,3917.41,4939.49]},
+ {n:'Coapa', pct:29.9, s:{11:1496,12:782,13:232,14:652,15:578,16:950,17:493,18:830,19:956,20:659,21:560,22:574,23:815,24:919,25:381,26:738}, pct_s:{11:.284,12:.185,13:.165,14:.33,15:.333,16:.333,17:.408,18:.537,19:.39,20:.131,21:.24,22:.267,23:null,24:.198,25:.24,26:.24}, st:'mod', ins:[32.52,397.87,213.75]},
+ {n:'Insurgentes',pct:29.8, s:{11:3044,12:1082,13:60,14:3075,15:2770,16:2465,17:2151,18:259,19:2131,20:2198,21:1701,22:1358,23:2716,24:3609,25:1471,26:1740,27:1858.44,28:861.24,29:1266.74,30:1084,33:504}, pct_s:{11:.367,12:.273,13:.127,14:.319,15:.273,16:.287,17:.26,18:.261,19:.387,20:.388,21:.297,22:.314,23:null,24:.529,25:.24,26:.406,27:.41,28:.307,29:.313,30:null,33:null}, st:'crit', ins:[968.27,2232.44,2321.67]},
+ {n:'Roma', pct:27.2, s:{11:946,12:902,13:1579,14:2064,15:1818,16:1306,17:1677,18:1272,19:2373,20:2485,21:1765,22:2195,23:2136,24:1806,25:739,26:1337,27:769.0,28:1164.1,29:1602.21,30:737,31:1351,32:801,33:850.37}, pct_s:{11:.2,12:.217,13:.265,14:.223,15:.265,16:.265,17:.165,18:.19,19:.452,20:.382,21:.328,22:.335,23:null,24:.323,25:.201,26:.246,27:.176,28:.288,29:.374,30:null,31:null,32:null,33:null}, st:'crit', ins:[1240.57,850.15,526.72]},
+ {n:'Kitchen Lab',pct:36.1, s:{11:927,12:707,13:739,14:731,15:1140,16:505,17:2103,18:772,19:0,20:0,21:0,22:528,23:472,24:209,25:666,26:368,27:924.71,28:484.81,29:139.39,30:303,31:135,32:980,33:329}, pct_s:{11:.308,12:.277,13:.308,14:.384,15:.22,16:.273,17:.573,18:.464,19:null,20:null,21:null,22:null,23:null,24:null,25:null,26:null,27:null,28:.15,29:.146,30:null,31:null,32:null,33:null}, st:'ok',ins:[22.00,1114.59,1108.93]},
+ {n:'Duraznos', pct:0, s:{}, pct_s:{}, stat:'na', ins:[0,0,0]},
+ {n:'San Miguel', pct:21.1, s:{28:1441.5,29:2378.24,30:1599,31:461,32:1574,33:1251.87}, pct_s:{28:.211,29:.256,30:null,31:null,32:null,33:null}, st:'mod', ins:[0,0,0]},
+ {n:'CDI', pct:0, s:{}, pct_s:{}, stat:'na', ins:[0,0,0]}
+];
+
+
+// Top 10 productos por sucursal — S26 y acumulado mes Jun
+var TOP10_SUC = {
+ 'Condesa': {s26:[{"n": "Fire Shot", "v": 1152}, {"n": "Don Pastito", "v": 448}, {"n": "El Místico", "v": 486}, {"n": "Verde AF", "v": 468}, {"n": "Guerrero", "v": 800}, {"n": "Xolo Verde", "v": 484}, {"n": "Super C+", "v": 754}, {"n": "Betabella", "v": 132}, {"n": "Limón Partido", "v": 151}, {"n": "Shot Jengibre", "v": 184}],acum:[{"n": "Fire Shot", "v": 1152}, {"n": "Guerrero", "v": 800}, {"n": "Super C+", "v": 754}, {"n": "El Místico", "v": 486}, {"n": "Xolo Verde", "v": 484}, {"n": "Verde AF", "v": 468}, {"n": "Don Pastito", "v": 448}, {"n": "Shot Jengibre", "v": 184}, {"n": "Limón Partido", "v": 151}, {"n": "Betabella", "v": 132}]},
+ 'Colima': {s26:[{"n": "Fire Shot", "v": 55}, {"n": "Verde AF", "v": 255}, {"n": "Xolo Verde", "v": 308}, {"n": "Don Pastito", "v": 37}, {"n": "El Místico", "v": 86}, {"n": "Super C+", "v": 40}, {"n": "Betabella", "v": 0}, {"n": "Limón Partido", "v": 25}, {"n": "Shot Jengibre", "v": 0}, {"n": "Golden Elixir", "v": 0}],acum:[{"n": "Xolo Verde", "v": 308}, {"n": "Verde AF", "v": 255}, {"n": "El Místico", "v": 86}, {"n": "Fire Shot", "v": 55}, {"n": "Super C+", "v": 40}, {"n": "Don Pastito", "v": 37}, {"n": "Limón Partido", "v": 25}, {"n": "Betabella", "v": 0}, {"n": "Shot Jengibre", "v": 0}, {"n": "Golden Elixir", "v": 0}]},
+ 'Santa Fe': {s26:[{"n": "Fire Shot", "v": 68}, {"n": "Don Pastito", "v": 0}, {"n": "El Místico", "v": 29}, {"n": "Verde AF", "v": 170}, {"n": "Guerrero", "v": 0}, {"n": "Xolo Verde", "v": 0}, {"n": "Super C+", "v": 0}, {"n": "Betabella", "v": 79}, {"n": "Limón Partido", "v": 25}, {"n": "Shot Jengibre", "v": 0}],acum:[{"n": "Verde AF", "v": 170}, {"n": "Betabella", "v": 79}, {"n": "Fire Shot", "v": 68}, {"n": "El Místico", "v": 29}, {"n": "Limón Partido", "v": 25}, {"n": "Don Pastito", "v": 0}, {"n": "Guerrero", "v": 0}, {"n": "Xolo Verde", "v": 0}, {"n": "Super C+", "v": 0}, {"n": "Shot Jengibre", "v": 0}]},
+ 'Liverpool': {s26:[{"n": "Fire Shot", "v": 81}, {"n": "Don Pastito", "v": 149}, {"n": "El Místico", "v": 96}, {"n": "Verde AF", "v": 39}, {"n": "Betabella", "v": 146}, {"n": "Limón Partido", "v": 100}, {"n": "Shot Jengibre", "v": 23}, {"n": "Super C+", "v": 0}, {"n": "Xolo Verde", "v": 0}, {"n": "Golden Elixir", "v": 45}],acum:[{"n": "Don Pastito", "v": 149}, {"n": "Betabella", "v": 146}, {"n": "Limón Partido", "v": 100}, {"n": "El Místico", "v": 96}, {"n": "Fire Shot", "v": 81}, {"n": "Golden Elixir", "v": 45}, {"n": "Verde AF", "v": 39}, {"n": "Shot Jengibre", "v": 23}, {"n": "Super C+", "v": 0}, {"n": "Xolo Verde", "v": 0}]},
+ 'Polanco': {s26:[{"n": "Fire Shot", "v": 41}, {"n": "Don Pastito", "v": 112}, {"n": "El Místico", "v": 86}, {"n": "Verde AF", "v": 128}, {"n": "Guerrero", "v": 96}, {"n": "Xolo Verde", "v": 168}, {"n": "Super C+", "v": 159}, {"n": "Betabella", "v": 0}, {"n": "Limón Partido", "v": 0}, {"n": "Shot Jengibre", "v": 0}],acum:[{"n": "Xolo Verde", "v": 168}, {"n": "Super C+", "v": 159}, {"n": "Verde AF", "v": 128}, {"n": "Don Pastito", "v": 112}, {"n": "Guerrero", "v": 96}, {"n": "El Místico", "v": 86}, {"n": "Fire Shot", "v": 41}, {"n": "Betabella", "v": 0}, {"n": "Limón Partido", "v": 0}, {"n": "Shot Jengibre", "v": 0}]},
+ 'Coapa': {s26:[{"n": "Xolo Verde", "v": 252}, {"n": "Super C+", "v": 28}, {"n": "Guerrero", "v": 65}, {"n": "Fire Shot", "v": 0}, {"n": "El Místico", "v": 127}, {"n": "Betabella", "v": 0}, {"n": "Shot Jengibre", "v": 0}, {"n": "Verde AF", "v": 0}, {"n": "Don Pastito", "v": 0}, {"n": "Limón Partido", "v": 0}],acum:[{"n": "Xolo Verde", "v": 252}, {"n": "El Místico", "v": 127}, {"n": "Guerrero", "v": 65}, {"n": "Super C+", "v": 28}, {"n": "Fire Shot", "v": 0}, {"n": "Betabella", "v": 0}, {"n": "Shot Jengibre", "v": 0}, {"n": "Verde AF", "v": 0}, {"n": "Don Pastito", "v": 0}, {"n": "Limón Partido", "v": 0}]},
+ 'Insurgentes': {s26:[{"n": "Fire Shot", "v": 14}, {"n": "Don Pastito", "v": 252}, {"n": "El Místico", "v": 29}, {"n": "Verde AF", "v": 128}, {"n": "Guerrero", "v": 64}, {"n": "Xolo Verde", "v": 0}, {"n": "Super C+", "v": 79}, {"n": "Betabella", "v": 79}, {"n": "Limón Partido", "v": 85}, {"n": "Shot Jengibre", "v": 0}],acum:[{"n": "Don Pastito", "v": 252}, {"n": "Verde AF", "v": 128}, {"n": "Limón Partido", "v": 85}, {"n": "Super C+", "v": 79}, {"n": "Betabella", "v": 79}, {"n": "Guerrero", "v": 64}, {"n": "El Místico", "v": 29}, {"n": "Fire Shot", "v": 14}, {"n": "Xolo Verde", "v": 0}, {"n": "Shot Jengibre", "v": 0}]},
+ 'Roma': {s26:[{"n": "Don Pastito", "v": 36}, {"n": "El Místico", "v": 127}, {"n": "Jugo Apio", "v": 45}, {"n": "Guerrero", "v": 43}, {"n": "Betabella", "v": 58}, {"n": "Limón Partido", "v": 57}, {"n": "Shot Jengibre", "v": 23}, {"n": "Verde AF", "v": 43}, {"n": "Xolo Verde", "v": 84}, {"n": "Fire Shot", "v": 27}],acum:[{"n": "El Místico", "v": 127}, {"n": "Xolo Verde", "v": 84}, {"n": "Betabella", "v": 58}, {"n": "Limón Partido", "v": 57}, {"n": "Jugo Apio", "v": 45}, {"n": "Guerrero", "v": 43}, {"n": "Verde AF", "v": 43}, {"n": "Don Pastito", "v": 36}, {"n": "Fire Shot", "v": 27}, {"n": "Shot Jengibre", "v": 23}]},
+ 'Kitchen Lab': {s26:[{"n": "El Místico", "v": 127}, {"n": "Verde AF", "v": 128}, {"n": "Betabella", "v": 58}, {"n": "Xolo Verde", "v": 84}, {"n": "Green Warrior", "v": 73}, {"n": "Fire Shot", "v": 41}, {"n": "Don Pastito", "v": 36}, {"n": "Shot Jengibre", "v": 23}, {"n": "Super C+", "v": 40}, {"n": "Limón Partido", "v": 28}],acum:[{"n": "Verde AF", "v": 128}, {"n": "El Místico", "v": 127}, {"n": "Xolo Verde", "v": 84}, {"n": "Green Warrior", "v": 73}, {"n": "Betabella", "v": 58}, {"n": "Fire Shot", "v": 41}, {"n": "Super C+", "v": 40}, {"n": "Don Pastito", "v": 36}, {"n": "Limón Partido", "v": 28}, {"n": "Shot Jengibre", "v": 23}]}
+};
+
+
+
+
+
+
+// ─── PROTEÍNA INSUMO ───
+var PROT_PROD_CHOCO=[{"n": "Chocohongo", "g": 16140.0, "pz": 1076}, {"n": "The Protein Macchiato", "g": 11640.0, "pz": 776}, {"n": "Chocolate Shake", "g": 7590.0, "pz": 506}, {"n": "Smoothie del Día (Choco)", "g": 4930.7, "pz": 329}];
+var PROT_KPIS={choco_g:40300.7,vaini_g:60104.7,total_g:100405.4,choco_kg:40.3,vaini_kg:60.1,total_kg:100.41};
+
+
+// ─── SUPLEMENTOS DATA ───
+// ─── VASOS PLA 16oz ───
+var VP_VENTAS_SUC=[{"suc": "Condesa", "v": 2911}, {"suc": "Colima", "v": 2528}, {"suc": "Santa Fe", "v": 1850}, {"suc": "Liverpool", "v": 997}, {"suc": "Polanco", "v": 2402}, {"suc": "CDI", "v": 340}, {"suc": "Coapa", "v": 459}, {"suc": "Insurgentes", "v": 1243}, {"suc": "Roma", "v": 1347}, {"suc": "Kitchen Lab", "v": 255}];
+var VP_KPIS={compras:11800,ventas:13355,merma_pz:377,merma_ps:1357.2,pct:2.3};
+
+
+// ─── COLD BREW CONCENTRADO ───
+var SUP_SUCS_21JUL=["Colima", "Santa Fe", "Liverpool", "Polanco", "Insurgentes", "Roma", "San Miguel"];
+
+
+var SUP_SUCS_1_19JUL=["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "Insurgentes", "Roma", "San Miguel"];
+
+
+var BENCHMARK_KPIS=[{"num": "184", "lbl": "precios comparados"}, {"num": "53", "lbl": "Mora Mora más barato"}, {"num": "67", "lbl": "en línea (±5%)"}, {"num": "64", "lbl": "Mora Mora más caro"}, {"num": "14", "lbl": "sin comparable"}, {"num": "+4.6%", "lbl": "delta mediano vs competencia"}];
+var BENCHMARK_FECHA='20 de julio de 2026';
+
+var MG_TOTALS_JUL_S1={"Condesa": 2441.49, "Colima": 877.95, "Santa Fe": 240.22, "Liverpool": 200.07, "Polanco": 1259.26, "Insurgentes": 142.96, "Roma": 28.65, "Kitchen Lab": 0};
+var MG_TOTALS_JUL_S2={"Condesa": 1886.52, "Colima": 1110.81, "Santa Fe": 199.65, "Liverpool": 280.85, "Polanco": 2348.46, "Insurgentes": 429.9, "Roma": 287.06, "Kitchen Lab": 29.24};
+
+var DAY_STATUS={'21jul':{cerrado:false, fecha_cierre:null, validado_por:null},'22jul':{cerrado:false, fecha_cierre:null, validado_por:null},'23jul':{cerrado:false, fecha_cierre:null, validado_por:null},'4ago':{cerrado:true, fecha_cierre:'6 ago 2026', validado_por:'Gerentes + Distrital'},'5ago':{cerrado:false, fecha_cierre:null, validado_por:null},'1-9ago':{cerrado:true, fecha_cierre:'11 ago 2026', validado_por:'Gerentes + Distrital'}};
+var CAUSA_CATS=['Error de captura/conteo','Venta no registrada','Merma no reportada','Transferencia/compra no registrada','Faltante real (posible pérdida)','Sobrante real (por confirmar origen)'];
+
+var SUP_SUCS_22JUL=["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "Insurgentes", "Roma", "San Miguel"];
+
+var SUP_SUCS_23JUL=["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "Insurgentes", "Roma", "San Miguel"];
+var SUP_SUCS_4AGO=["Colima","Insurgentes","Liverpool","Polanco","Roma","San Miguel","Santa Fe"];
+var SUP_SUCS_5AGO=["Colima","Insurgentes","Liverpool","Polanco","Roma","San Miguel","Santa Fe"];
+var SUP_SUCS_1_9AGO=["Colima","Insurgentes","Liverpool","Polanco","Roma","San Miguel","Santa Fe"];
+
+var CBC_ML_SUC=[{"suc": "Condesa", "ml": 59.0}, {"suc": "Colima", "ml": 46.4}, {"suc": "Santa Fe", "ml": 32.1}, {"suc": "Liverpool", "ml": 16.0}, {"suc": "Polanco", "ml": 46.4}, {"suc": "CDI", "ml": 3.5}, {"suc": "Coapa", "ml": 14.6}, {"suc": "Insurgentes", "ml": 19.4}, {"suc": "Roma", "ml": 19.5}, {"suc": "Kitchen Lab", "ml": 9.0}];
+var CBC_KPIS={compras_l:355,ventas_l:264.1,merma_l:39.92,merma_ps:1469.06,ml_total:266100};
+// ─── VITCH BAKERY DATA ───
+var VB_PRODS_DATA=[{n:'Blondie GF',suc:{Condesa:{pz:1,pct_m:0.4},Colima:{pz:41,pct_m:15.8},'Santa Fe':{pz:1,pct_m:0.5},Liverpool:{pz:0,pct_m:0.0},Polanco:{pz:17,pct_m:6.9},'San Miguel':{pz:11,pct_m:12.8},Insurgentes:{pz:32,pct_m:16.3},Roma:{pz:15,pct_m:20.8},'Kitchen Lab':{pz:3,pct_m:15.0}}},{n:'Rollo de Canela',suc:{Condesa:{pz:6,pct_m:4.9},Colima:{pz:12,pct_m:9.0},'Santa Fe':{pz:28,pct_m:16.7},Liverpool:{pz:0,pct_m:0.0},Polanco:{pz:22,pct_m:14.9},'San Miguel':{pz:0,pct_m:0.0},Insurgentes:{pz:8,pct_m:23.5},Roma:{pz:3,pct_m:11.1},'Kitchen Lab':{pz:8,pct_m:80.0}}},{n:'Maple Choco Chip',suc:{Condesa:{pz:21,pct_m:8.9},Colima:{pz:24,pct_m:11.7},'Santa Fe':{pz:0,pct_m:0.0},Liverpool:{pz:21,pct_m:21.4},Polanco:{pz:36,pct_m:15.2},'San Miguel':{pz:6,pct_m:9.1},Insurgentes:{pz:35,pct_m:32.4},Roma:{pz:4,pct_m:6.7},'Kitchen Lab':{pz:2,pct_m:13.3}}},{n:'Panqué de Plátano',suc:{Condesa:{pz:6,pct_m:12.0},Colima:{pz:17,pct_m:34.0},'Santa Fe':{pz:9,pct_m:23.7},Liverpool:{pz:19,pct_m:45.2},Polanco:{pz:14,pct_m:30.4},'Kitchen Lab':{pz:1,pct_m:25.0}}}];
+var VB_SUC_TOTALS={Polanco:{pz:89,pesos:2854},Colima:{pz:94,pesos:2807},Insurgentes:{pz:75,pesos:2034},Liverpool:{pz:40,pesos:1485},'Santa Fe':{pz:38,pesos:1407},Condesa:{pz:34,pesos:1132},Roma:{pz:22,pesos:555},'Kitchen Lab':{pz:14,pesos:451},'San Miguel':{pz:17,pesos:422}};
+var VB_SUC_VENTAS={Polanco:32526,Colima:30810,Insurgentes:12570,Liverpool:14187,'Santa Fe':35058,Condesa:35112,Roma:7239,'Kitchen Lab':1851,'San Miguel':9492};
+var VB_PROD_TOTALS=[{n:'Maple Choco Chip',pesos:4470,pz:149},{n:'Rollo de Canela',pesos:3045,pz:87},{n:'Panqué de Plátano',pesos:2970,pz:66},{n:'Blondie GF',pesos:2662,pz:121}];
+
+
+var VB_ALERTAS=[{suc:'Polanco',prod:'Maple Choco Chip',pct:9.0,m:1080},{suc:'Insurgentes',prod:'Maple Choco Chip',pct:24.0,m:1050},{suc:'Santa Fe',prod:'Rollo de Canela',pct:10.1,m:980},{suc:'Colima',prod:'Blondie GF',pct:10.6,m:902},{suc:'Liverpool',prod:'Panqué de Plátano',pct:41.3,m:855},{suc:'Polanco',prod:'Rollo de Canela',pct:8.9,m:770},{suc:'Colima',prod:'Panqué de Plátano',pct:25.8,m:765},{suc:'Colima',prod:'Maple Choco Chip',pct:6.6,m:720},{suc:'Insurgentes',prod:'Blondie GF',pct:11.0,m:704}];
+var CATS=[
+ {id:'SUP',n:'Suplementos',ic:'💊',pol:5,merma:0,ventas:0,pct:0,color:'#eda100',sems:['Condesa','Colima','S.Fe','Liverpool','Polanco','Roma','CDI'],vals:[23.2,38.4,8.2,73.7,42.8,17.2,3.2]},
+ {id:'CP',n:'Jugos Cold Pressed',ic:'🥤',pol:22,merma:187234,ventas:1658434,pct:26.1,color:'#2a78d6',sems:['Prom.Ene','Prom.Feb','S11','S12','S13','S14','S15','S16','S17','S18','S19','S20','S21','S22','S23','S24','S25','S26'],vals:[21235,20489,17749,13053,13940,16906,17779,16562,18621,14027,19889,17881,17567,17984,18681,13951,11107,16873]},
+ {id:'VB',n:'Vitch Bakery',ic:'🥐',pol:7,merma:13147,ventas:178845,pct:7.4,color:'#1baf7a',sems:['Maple Choco Chip','Rollo de Canela','Panqué de Plátano','Blondie GF'],vals:[4470,3045,2970,2662]},
+ {id:'INS',n:'Insumos',ic:'📦',pol:5,merma:115543.4,ventas:0,pct:0,color:'#7F77DD',sems:[],vals:[]}
+];
+
+
+// Merma GENERAL por sucursal (jugos+bakery+insumos+producción) — Semana 3 Jun real + acumulado mes
+var MERMA_GENERAL = {
+ 'Condesa': {s26:[{"n": "crotones tempeh", "v": 743.41}, {"n": "Frambuesa domo 170g", "v": 637.5}, {"n": "Don Pastito", "v": 397.1}, {"n": "Tempeh Gyro wrap", "v": 381.92}, {"n": "Zana Zana", "v": 327.0}, {"n": "Xolo Verde", "v": 293.79}, {"n": "El Místico", "v": 285.75}, {"n": "Rollo de canela Vitch Bakery 1", "v": 245.0}, {"n": "Betabella", "v": 233.68}, {"n": "Manzana verde", "v": 221.94}],acum:[{"n": "Frambuesa domo 170g", "v": 825.0}, {"n": "Xolo Verde", "v": 797.43}, {"n": "Don Pastito", "v": 794.2}, {"n": "Verde AF", "v": 765.72}, {"n": "Arroz con leche by MM 158g", "v": 764.4}, {"n": "Tempeh Gyro wrap", "v": 763.84}, {"n": "crotones tempeh", "v": 743.41}, {"n": "Betabella", "v": 671.83}, {"n": "Zana Zana", "v": 517.75}, {"n": "Habibi Protein", "v": 513.74}]},
+ 'Colima': {s26:[{"n": "Verde AF", "v": 595.56}, {"n": "Xolo Verde", "v": 587.58}, {"n": "Pasta", "v": 186.59}, {"n": "El Místico", "v": 158.75}, {"n": "Don Pastito", "v": 144.4}, {"n": "Raw oats by MM 280g", "v": 137.4}, {"n": "Frambuesa domo 170g", "v": 112.5}, {"n": "Hummus de betabel by MM 300g", "v": 107.68}, {"n": "Banana muffin", "v": 100.4}, {"n": "Green Warrior", "v": 97.68}],acum:[{"n": "Verde AF", "v": 1531.44}, {"n": "Xolo Verde", "v": 1301.07}, {"n": "Don Pastito", "v": 722.0}, {"n": "Pasta", "v": 704.24}, {"n": "Limón Partido", "v": 453.6}, {"n": "Rollo de canela Vitch Bakery 1", "v": 385.0}, {"n": "Betabella", "v": 350.52}, {"n": "Raw oats by MM 280g", "v": 343.5}, {"n": "Champiñones blancos", "v": 326.09}, {"n": "El Místico", "v": 317.5}]},
+ 'Santa Fe': {s26:[{"n": "chile de arbol", "v": 413.7}, {"n": "Verde AF", "v": 297.78}, {"n": "Betabella", "v": 116.84}, {"n": "Arroz con leche by MM 158g", "v": 109.2}, {"n": "aderezo cashew", "v": 105.42}, {"n": "Rollo de canela Vitch Bakery 1", "v": 105.0}, {"n": "Tahini Waffle", "v": 103.78}, {"n": "chile ancho", "v": 89.95}, {"n": "Tomate verde", "v": 72.81}, {"n": "Plátano Tabasco", "v": 68.39}],acum:[{"n": "Verde AF", "v": 680.64}, {"n": "Tahini Waffle", "v": 504.89}, {"n": "Rollo de canela Vitch Bakery 1", "v": 490.0}, {"n": "leche almendra by mm lt", "v": 483.0}, {"n": "setas cocidas", "v": 441.26}, {"n": "chile de arbol", "v": 413.7}, {"n": "Zana Zana", "v": 381.5}, {"n": "Raw oats by MM 280g", "v": 377.85}, {"n": "Fire Shot", "v": 312.11}, {"n": "Arroz con leche by MM 158g", "v": 254.8}]},
+ 'Liverpool': {s26:[{"n": "Raw oats by MM 280g", "v": 171.75}, {"n": "Limón Partido", "v": 170.1}, {"n": "Betabella", "v": 146.05}, {"n": "Arroz con leche by MM 158g", "v": 145.6}, {"n": "Don Pastito", "v": 144.4}, {"n": "El Místico", "v": 127.0}, {"n": "Fire Shot", "v": 108.56}, {"n": "Tempeh Gyro wrap", "v": 95.48}, {"n": "Green Warrior", "v": 73.26}, {"n": "Rawmesan by MM 180g", "v": 56.76}],acum:[{"n": "Don Pastito", "v": 433.2}, {"n": "Betabella", "v": 321.31}, {"n": "El Místico", "v": 317.5}, {"n": "Fire Shot", "v": 298.54}, {"n": "Xolo Verde", "v": 293.79}, {"n": "Verde AF", "v": 255.24}, {"n": "Tempeh Gyro wrap", "v": 238.7}, {"n": "Shot de Jengibre", "v": 237.82}, {"n": "Limón Partido", "v": 226.8}, {"n": "Arroz con leche by MM 158g", "v": 218.4}]},
+ 'Polanco': {s26:[{"n": "Espinaca baby 250gr Insumo", "v": 225.0}, {"n": "Xolo Verde", "v": 209.85}, {"n": "Aguacate Hass", "v": 200.0}, {"n": "Tempeh Gyro wrap", "v": 190.96}, {"n": "Verde AF", "v": 170.16}, {"n": "Champiñones blancos", "v": 168.0}, {"n": "Espárrago", "v": 164.5}, {"n": "Arúgula baby", "v": 160.0}, {"n": "Pera anjou", "v": 160.0}, {"n": "Blueberry domo 170g", "v": 150.0}],acum:[{"n": "Azúcar de coco ", "v": 1508.22}, {"n": "Levadura nutricional", "v": 875.74}, {"n": "Aguacate Hass", "v": 720.0}, {"n": "Proteina Insumo Habits vainill", "v": 685.63}, {"n": "Espinaca baby 250gr Insumo", "v": 675.0}, {"n": "Arúgula baby", "v": 640.0}, {"n": "Almendra fileteada ", "v": 606.48}, {"n": "Cebollín", "v": 560.0}, {"n": "Tempeh Gyro wrap", "v": 525.14}, {"n": "Fresa domo 450g", "v": 437.5}]},
+ 'Coapa': {s26:[{"n": "Xolo Verde", "v": 251.82}, {"n": "Fresa domo 450g", "v": 99.75}, {"n": "Guerrero", "v": 64.89}, {"n": "Espinaca baby 250gr Insumo", "v": 45.0}, {"n": "El Místico", "v": 31.75}, {"n": "Limón Partido", "v": 28.35}, {"n": "Super C+", "v": 27.93}, {"n": "Cebollín", "v": 20.0}, {"n": "Blueberry domo 170g", "v": 8.55}, {"n": "Jitomate Cherry CA", "v": 3.6}],acum:[{"n": "Xolo Verde", "v": 293.79}, {"n": "Super C+", "v": 223.44}, {"n": "Fresa domo 450g", "v": 159.07}, {"n": "Guerrero", "v": 151.41}, {"n": "El Místico", "v": 127.0}, {"n": "Plátano Tabasco", "v": 105.26}, {"n": "Fire Shot", "v": 54.28}, {"n": "Shot de Jengibre", "v": 54.05}, {"n": "Espinaca baby 250gr Insumo", "v": 45.0}, {"n": "Ajo criollo", "v": 29.7}]},
+ 'Insurgentes': {s26:[{"n": "Don Pastito", "v": 252.7}, {"n": "Verde AF", "v": 127.62}, {"n": "Tempeh Gyro wrap", "v": 95.48}, {"n": "Habibi Protein", "v": 90.66}, {"n": "Betabella", "v": 87.63}, {"n": "Golden Elixir Shot", "v": 85.76}, {"n": "Limón Partido", "v": 85.05}, {"n": "Xolo Verde", "v": 83.94}, {"n": "Zana Zana", "v": 81.75}, {"n": "Super C+", "v": 55.86}],acum:[{"n": "Don Pastito", "v": 794.2}, {"n": "Rollo de canela Vitch Bakery 1", "v": 420.0}, {"n": "Limón Partido", "v": 311.85}, {"n": "Verde AF", "v": 297.78}, {"n": "Xolo Verde", "v": 293.79}, {"n": "Golden Elixir Shot", "v": 289.44}, {"n": "El Místico", "v": 285.75}, {"n": "Jugo de Apio", "v": 267.6}, {"n": "Tempeh Gyro wrap", "v": 238.7}, {"n": "Kale", "v": 220.62}]},
+ 'Roma': {s26:[{"n": "Banana muffin ", "v": 160.0}, {"n": "Raw oats by MM 280g", "v": 137.4}, {"n": "El Místico", "v": 127.0}, {"n": "Limón Partido", "v": 113.4}, {"n": "Blondie gluten free Vitch Bake", "v": 110.0}, {"n": "Leche de almendra ", "v": 101.7}, {"n": "Xolo Verde", "v": 83.94}, {"n": "Jugo de Apio", "v": 66.9}, {"n": "Mora azul Campo Vivo 170g", "v": 59.0}, {"n": "Zana Zana", "v": 54.5}],acum:[{"n": "Raw oats by MM 280g", "v": 343.5}, {"n": "Don Pastito", "v": 288.8}, {"n": "Jugo de Apio", "v": 267.6}, {"n": "Guerrero", "v": 237.93}, {"n": "Limón Partido", "v": 198.45}, {"n": "Green Warrior", "v": 195.36}, {"n": "Zana Zana", "v": 190.75}, {"n": "El Místico", "v": 190.5}, {"n": "Leche de almendra ", "v": 186.45}, {"n": "Banana muffin ", "v": 160.0}]},
+ 'Kitchen Lab': {s26:[{"n": "Verde AF", "v": 170.16}, {"n": "El Místico", "v": 158.75}, {"n": "Don Pastito", "v": 108.3}, {"n": "Green Warrior", "v": 97.68}, {"n": "Jugo de Apio", "v": 89.2}, {"n": "zanahoria encurtida", "v": 88.79}, {"n": "Guerrero", "v": 86.52}, {"n": "Limón Partido", "v": 85.05}, {"n": "Xolo Verde", "v": 83.94}, {"n": "Super C+", "v": 83.79}],acum:[{"n": "El Místico", "v": 571.5}, {"n": "Verde AF", "v": 467.94}, {"n": "Betabella", "v": 379.73}, {"n": "Xolo Verde", "v": 377.73}, {"n": "Green Warrior", "v": 341.88}, {"n": "Don Pastito", "v": 324.9}, {"n": "Limón Partido", "v": 311.85}, {"n": "leche de almendra by mm Lt", "v": 278.56}, {"n": "Zana Zana", "v": 218.0}, {"n": "Jugo de Apio", "v": 200.7}]}
+};
+var MG_TOTALS = {"Condesa": 18490.9, "Colima": 12343.64, "Santa Fe": 10366.69, "Liverpool": 4327.8, "Polanco": 18828.18, "Coapa": 1349.82, "Insurgentes": 6048.2, "Roma": 3828.21, "Kitchen Lab": 5053.39};
+// Merma General — histórico JULIO 2026 (días 1 al 12, Sem1+Sem2) — Top 10 por sucursal, extraído de hojas CAM_JULIO
+var MG_TOTALS_JUL = {"Condesa": 4328.01, "Colima": 1988.76, "Santa Fe": 439.87, "Liverpool": 480.92, "Polanco": 3607.72, "Insurgentes": 572.86, "Roma": 315.71, "Kitchen Lab": 29.24};
+// Nota: Coapa sin datos en julio (no llegó hoja CAM). San Miguel es sucursal nueva, aún sin hoja CAM_JULIO cargada.
+
+
+
+
+var SUC_HIST_PCT={};
+BRANCHES.forEach(function(b){
+ SUC_HIST_PCT[b.n]=SEMS.map(function(sk){
+  var wk=parseInt(sk.replace('S',''),10);
+  return (b.pct_s && b.pct_s[wk]!=null) ? Math.round(b.pct_s[wk]*1000)/10 : null;
+ });
+});
+
+
+// ─── HELPERS ───
+var CHT={};
+function f$(v){return'$'+Math.abs(Math.round(v)).toLocaleString('es-MX');}
+function fp(v){return(v*1).toFixed(1)+'%';}
+function sc(p){return p>=30?'#B22222':p>=22?'#E67E22':'#27AE60';}
+function pillHtml(p){if(!p)return'<span class="pill pill-na">Sin datos</span>';var c=p>=30?'pill-crit':p>=22?'pill-mod':'pill-ok',l=p>=30?'Crítica':p>=22?'Moderada':'OK';return'<span class="pill '+c+'">'+l+'</span>';}
+function mkChart(id,cfg){var el=document.getElementById(id);if(!el)return;if(CHT[id])CHT[id].destroy();CHT[id]=new Chart(el,cfg);}
+var GC='rgba(0,0,0,.04)',TC='#718096';
+
+
+// ─── DASHBOARD ───
+function buildDashboard(){
+ buildWeekFilter();
+ var _fd=getDashData();
+ mkChart('ch-trend',{type:'line',data:{labels:_fd.sems,datasets:[{label:'% Merma',data:_fd.pct,borderColor:'#B22222',borderWidth:2.5,pointBackgroundColor:_fd.pct.map(function(v){return v>=30?'#B22222':v>=22?'#E67E22':'#27AE60';}),pointRadius:5,fill:{target:'origin',above:'rgba(178,34,34,.05)'},tension:.3},{label:'% s/ventas',data:_fd.pctv,borderColor:'#1565C0',borderWidth:2,pointRadius:3,tension:.3},{label:'Política 22%',data:_fd.sems.map(function(){return 22;}),borderColor:'#E67E22',borderDash:[5,3],borderWidth:1.5,pointRadius:0},{label:'Crítica 30%',data:_fd.sems.map(function(){return 30;}),borderColor:'#B22222',borderDash:[3,3],borderWidth:1,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10},boxWidth:9}}},scales:{x:{grid:{color:GC},ticks:{font:{size:9},color:TC}},y:{min:5,max:45,grid:{color:GC},ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
+ mkChart('ch-desv',{type:'bar',data:{labels:_fd.sems,datasets:[{label:'Var. Merma $',data:_fd.desv,backgroundColor:DESV.map(function(v){return v>0?'rgba(178,34,34,.7)':'rgba(39,174,96,.7)';}),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});
+ var al=[{cls:'mod',ico:'🟡',t:'S33 — 29.7% Moderada (empeora vs S32)',d:'Sube de 26.2% a 29.7%. Merma real $12,805 (+$1,721 vs S32). Ventas $91,629.'},{cls:'mod',ico:'🟡',t:'Desviación S33: $7,823 (61.1%)',d:'Merma real $12,805 vs reportada $4,982 — revisar capturas.'},{cls:'ok',ico:'✅',t:'Polanco y Santa Fe concentran la merma',d:'Polanco $2,952 · Santa Fe $2,327 · Liverpool $2,050.'}];
+ document.getElementById('dash-alerts').innerHTML=al.map(function(a){return'<div class="alert-item alert-'+a.cls+'"><div class="alert-ico">'+a.ico+'</div><div class="alert-body"><div class="alert-title">'+a.t+'</div><div class="alert-desc">'+a.d+'</div></div></div>';}).join('');
+ var ranked=BRANCHES.filter(function(b){return b.pct>0;}).sort(function(a,b){return a.pct-b.pct;});
+ var maxP=ranked[ranked.length-1].pct;
+ document.getElementById('dash-rank').innerHTML=ranked.map(function(b,i){var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name">'+b.n+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(b.pct/maxP*100)+'%;background:'+sc(b.pct)+'"></div></div><div class="rank-val" style="color:'+sc(b.pct)+'">'+fp(b.pct)+'</div></div>';}).join('');
+}
+
+
+// ─── MARGEN ───
+function buildMargen(){
+ setTimeout(function(){
+ mkChart('ch-util',{type:'line',data:{labels:SEMS,datasets:[{label:'Utilidad %',data:UTILIDAD_P,borderColor:'#00897B',borderWidth:2.5,pointRadius:4,fill:{target:'origin',above:'rgba(0,137,123,.07)'},tension:.3},{label:'% Merma',data:PCT,borderColor:'#B22222',borderWidth:1.5,pointRadius:3,borderDash:[4,3],tension:.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10},boxWidth:9}}},scales:{x:{grid:{color:GC},ticks:{font:{size:9},color:TC}},y:{min:20,max:70,grid:{color:GC},ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
+ mkChart('ch-merma-vtas',{data:{labels:SEMS,datasets:[{type:'bar',label:'Merma $',data:MRMA,backgroundColor:'rgba(178,34,34,.65)',borderRadius:3,yAxisID:'y'},{type:'line',label:'Ventas $',data:VTAS,borderColor:'#2a78d6',borderWidth:2,pointRadius:3,yAxisID:'y2',tension:.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10},boxWidth:9}}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}},y2:{position:'right',grid:{display:false},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});
+ mkChart('ch-meses',{type:'bar',data:{labels:MESES.map(function(m){return m.m;}),datasets:[{label:'Ventas $',data:MESES.map(function(m){return m.v;}),backgroundColor:'rgba(42,120,214,.7)',borderRadius:4},{label:'Merma $',data:MESES.map(function(m){return m.mr;}),backgroundColor:'rgba(178,34,34,.7)',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10},boxWidth:9}}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});
+ },80);
+ var t=document.getElementById('tbl-margen');
+ t.innerHTML='<thead><tr><th>Sem</th><th>Ventas $</th><th>Costo $</th><th>Margen $</th><th>Merma $</th><th>% Merma</th><th>Var. $</th><th>Utilidad %</th></tr></thead><tbody>'+SEMS.map(function(s,i){var dv=i>0?MRMA[i]-MRMA[i-1]:0;var last=i===SEMS.length-1;return'<tr style="'+(last?'background:#FFF8F0;font-weight:600':'')+'"><td class="mono">'+s+(last?' 🆕':'')+'</td><td class="mono">'+f$(VTAS[i])+'</td><td class="mono">'+f$(COSTO[i])+'</td><td class="mono" style="color:var(--verde2)">'+f$(MARGEN[i])+'</td><td class="mono" style="color:var(--rojo)">'+f$(MRMA[i])+'</td><td class="mono" style="font-weight:700;color:'+sc(PCT[i])+'">'+fp(PCT[i])+'</td><td class="mono" style="color:'+(i>0?(dv>0?'var(--rojo)':'var(--verde2)'):'var(--gris)')+'">'+( i>0?(dv>0?'+':'')+f$(dv):'—')+'</td><td class="mono" style="color:#00897B;font-weight:700">'+fp(UTILIDAD_P[i])+'</td></tr>';}).join('')+'</tbody>';
+}
+
+
+// ─── SUCURSALES ───
+function buildSucursales(){
+ var cr=BRANCHES.filter(function(b){return b.st==='crit';}).length;
+ var ok=BRANCHES.filter(function(b){return b.st==='ok';}).length;
+ var mo=BRANCHES.filter(function(b){return b.st==='mod';}).length;
+ document.getElementById('suc-status').innerHTML='<div class="status-chip">🏪 '+BRANCHES.length+' Sucursales</div><div class="status-chip" style="background:var(--verde3);color:var(--verde)">✅ '+ok+' OK</div><div class="status-chip" style="background:var(--ambar2);color:var(--ambar)">🟡 '+mo+' Mod.</div><div class="status-chip" style="background:var(--rojo2);color:var(--rojo)">🔴 '+cr+' Críticas</div>';
+ var chips='<button class="suc-chip active" onclick="filterSuc(null,this)">Todas</button>';
+ chips+=BRANCHES.filter(function(b){return b.pct>0;}).map(function(b){return'<button class="suc-chip" onclick="filterSuc(\''+b.n+'\',this)">'+b.n+'</button>';}).join('');
+ document.getElementById('suc-filter').innerHTML=chips;
+ renderBranchGrid();
+}
+function filterSuc(name,el){
+ document.querySelectorAll('.suc-chip').forEach(function(c){c.classList.remove('active');});
+ el.classList.add('active');
+ if(!name){document.getElementById('suc-detail-view').style.display='none';document.getElementById('suc-grid-view').style.display='';renderBranchGrid();}
+ else{var b=BRANCHES.find(function(x){return x.n===name;});if(b)showBranchFull(b);}
+}
+function renderBranchGrid(){
+ document.getElementById('branch-grid').innerHTML=BRANCHES.map(function(b,i){
+ var s26=b.s[29]||0,s25=b.s[28]||0,trend=s26>0&&s25>0?(s26>s25?'<span style="color:var(--rojo)">↑</span>':'<span style="color:var(--verde2)">↓</span>'):'—';
+ var pCls=b.pct>=30?'bc-pct-crit':b.pct>=22?'bc-pct-mod':'bc-pct-ok';
+ var insT=(b.ins[0]||0)+(b.ins[1]||0)+(b.ins[2]||0);
+ var p26=b.pct_s&&b.pct_s[29]?Math.round(b.pct_s[29]*1000)/10:null;
+ return'<div class="branch-card bc-'+b.s+'" onclick="showBranchFull(BRANCHES['+i+'])">'+'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="bc-name">'+b.n+'</div>'+pillHtml(b.pct)+'</div>'+'<div class="bc-pct '+pCls+'">'+(b.pct?fp(b.pct):'—')+'</div>'+'<div class="bc-meta">S29 Jugos: '+(s26?f$(s26):'—')+' '+trend+(p26?' · '+p26+'%':'')+'</div>'+'<div class="bc-meta" style="margin-top:2px">Insumos Jun acum: '+(insT?f$(insT):'—')+'</div>'+'<div class="bc-bar"><div class="bc-fill" style="width:'+Math.min(b.pct/50*100,100)+'%;background:'+sc(b.pct)+'"></div></div></div>';
+ }).join('');
+}
+function showBranchFull(b){
+ document.getElementById('suc-grid-view').style.display='none';
+ var dv=document.getElementById('suc-detail-view');dv.style.display='';
+ var hist=SUC_HIST_PCT[b.n]||[];
+ var insAcum=(b.ins[0]||0)+(b.ins[1]||0)+(b.ins[2]||0);
+ var s26=b.s[29]||0,s25=b.s[28]||0;
+ var p26=b.pct_s&&b.pct_s[29]?Math.round(b.pct_s[29]*1000)/10:null;
+
+
+ // Get top10 data for this branch
+ var top10d = TOP10_SUC[b.n] || null;
+
+
+ dv.innerHTML='<button onclick="resetSucView()" style="margin-bottom:13px;padding:7px 14px;border:1.5px solid var(--brd);border-radius:8px;background:#fff;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit">← Volver</button>'
+ +'<div class="kpi-grid" style="margin-bottom:13px">'
+ +'<div class="kpi blue"><div class="kpi-label">% Merma prom.</div><div class="kpi-val" style="color:'+sc(b.pct)+'">'+( b.pct?fp(b.pct):'—')+'</div><div class="kpi-sub">'+pillHtml(b.pct)+'</div></div>'
+ +'<div class="kpi red"><div class="kpi-label">S29 Merma $</div><div class="kpi-val">'+(s26?f$(s26):'—')+'</div><div class="kpi-sub">'+(p26?p26+'% merma':'')+'</div></div>'
+ +'<div class="kpi amber"><div class="kpi-label">S28 Merma $</div><div class="kpi-val">'+(s25?f$(s25):'—')+'</div><div class="kpi-sub">'+(s26&&s25?(s26>s25?'↑ Subió':'↓ Bajó'):'')+'</div></div>'
+ +'<div class="kpi purple"><div class="kpi-label">Insumos Jun acum.</div><div class="kpi-val">'+(insAcum?f$(insAcum):'—')+'</div><div class="kpi-sub">S1 → S2 → S3</div></div>'
+ +'</div>'
+ +'<div class="g2">'
+ +(hist.length>0?'<div class="card"><div class="card-head"><div><div class="card-title">🥤 Jugos — % Merma histórico</div><div class="card-sub">S11–S28 · línea roja = 22%</div></div></div><div style="position:relative;height:180px"><canvas id="ch-suc-det"></canvas></div></div>':'<div class="card" style="text-align:center;padding:24px;color:var(--gris)">Sin datos históricos por semana para esta sucursal.</div>')
+ +'<div class="card"><div class="card-head"><div><div class="card-title">📦 Insumos Jun 2026</div></div></div>'
+ +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">'+['Jun S1','Jun S2','Jun S3'].map(function(s,i){var v=b.ins[i]||0;var prev=i>0?(b.ins[i-1]||0):null;var trend=prev!==null?(v>prev?'<span style="color:var(--rojo)">↑</span>':'<span style="color:var(--verde2)">↓</span>'):'';return'<div style="background:var(--bg);border-radius:8px;padding:12px;text-align:center"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--gris);margin-bottom:4px">'+s+'</div><div style="font-size:16px;font-weight:700">'+(v?f$(v):'—')+' '+trend+'</div></div>';}).join('')+'</div>'
+ +'<div style="margin-top:12px">'+buildSucAnalysis(b)+'</div></div>'
+ +'</div>';
+
+
+ // Top 10 section
+ if(top10d){
+ var top10section = document.createElement('div');
+ top10section.className = 'g2';
+ top10section.style.marginTop = '13px';
+ function rankRowsSuc(data, colorHex){
+ var max = data[0].v;
+ return data.map(function(p,i){var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name" style="font-size:11px">'+p.n+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.v/max*100)+'%;background:'+colorHex+'"></div></div><div class="rank-val">'+f$(p.v)+'</div></div>';}).join('');
+ }
+ top10section.innerHTML =
+ '<div class="card" style="margin-bottom:0"><div class="card-head"><div><div class="card-title">📊 Top 10 — Semana 26</div><div class="card-sub">Mayor merma $ en la semana</div></div></div>'+rankRowsSuc(top10d.s26,'#B22222')+'</div>'
+ +'<div class="card" style="margin-bottom:0"><div class="card-head"><div><div class="card-title">📅 Top 10 — Acumulado Jun</div><div class="card-sub">Mayor merma $ acumulada en el mes</div></div></div>'+rankRowsSuc(top10d.acum,'#7F77DD')+'</div>';
+ document.getElementById('suc-detail-view').appendChild(top10section);
+ }
+
+
+ if(hist.length>0){
+ setTimeout(function(){
+ mkChart('ch-suc-det',{type:'line',data:{labels:SEMS,datasets:[{label:'% Merma',data:hist,borderColor:sc(b.pct),borderWidth:2,pointRadius:4,tension:.3,spanGaps:true},{label:'22%',data:SEMS.map(function(){return 22;}),borderColor:'#E67E22',borderDash:[4,3],borderWidth:1.5,pointRadius:0},{label:'30%',data:SEMS.map(function(){return 30;}),borderColor:'#B22222',borderDash:[3,3],borderWidth:1,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:9},boxWidth:8}}},scales:{x:{ticks:{font:{size:9},color:TC}},y:{min:0,max:60,ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
+ },80);
+ }
+}
+function buildSucAnalysis(b){
+ var hist=SUC_HIST_PCT[b.n]||[];
+ var items=[];
+ if(hist.length>0){
+ var vals=hist.filter(function(v){return v!==null&&v>0;});
+ var min=Math.min.apply(null,vals),max=Math.max.apply(null,vals);
+ var minIdx=hist.indexOf(min),maxIdx=hist.indexOf(max);
+ items.push('<div style="background:var(--verde3);border-radius:8px;padding:9px 11px;margin-bottom:6px"><div style="font-size:10px;font-weight:700;color:var(--verde)">✅ Mejor semana</div><div style="font-size:13px;font-weight:600">'+SEMS[minIdx]+' — '+fp(min)+'</div></div>');
+ items.push('<div style="background:var(--rojo2);border-radius:8px;padding:9px 11px"><div style="font-size:10px;font-weight:700;color:var(--rojo)">🔴 Peor semana</div><div style="font-size:13px;font-weight:600">'+SEMS[maxIdx]+' — '+fp(max)+'</div></div>');
+ }
+ return items.join('');
+}
+function resetSucView(){
+ document.getElementById('suc-detail-view').style.display='none';
+ document.getElementById('suc-grid-view').style.display='';
+ document.querySelectorAll('.suc-chip').forEach(function(c,i){c.classList.toggle('active',i===0);});
+}
+
+
+// ─── TOP 10 POR SUCURSAL ───
+var activeSucTop='Condesa';
+function buildTop10(){
+ var sucs=Object.keys(TOP10_SUC);
+ document.getElementById('top10-tabs').innerHTML=sucs.map(function(s){return'<button class="suc-tab'+(s===activeSucTop?' active':'')+'" onclick="setTop10(\''+s+'\')">'+s+'</button>';}).join('');
+ renderTop10(activeSucTop);
+}
+function setTop10(name){
+ activeSucTop=name;
+ document.querySelectorAll('.suc-tab').forEach(function(t){t.classList.toggle('active',t.textContent===name);});
+ renderTop10(name);
+}
+function renderTop10(name){
+ var d=TOP10_SUC[name];
+ if(!d){document.getElementById('top10-content').innerHTML='<div style="color:var(--gris);padding:20px">Sin datos para esta sucursal.</div>';return;}
+ function rankRows(data,colorHex){
+ var max=data[0].v;
+ return data.map(function(p,i){var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name">'+p.n+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.v/max*100)+'%;background:'+colorHex+'"></div></div><div class="rank-val">'+f$(p.v)+'</div></div>';}).join('');
+ }
+ var b=BRANCHES.find(function(x){return x.n===name;})||{};
+ var s26=b.s&&b.s[26]?f$(b.s[26]):'—';
+ var p26=b.pct_s&&b.pct_s[26]?Math.round(b.pct_s[26]*1000)/10+'%':'—';
+ document.getElementById('top10-content').innerHTML=
+ '<div class="card" style="margin-bottom:0">'
+ +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="card-title">🗓 Semana 26 — Top 10</div><div style="font-size:11px;color:var(--gris)">Total merma: '+f$(d.s26.reduce(function(a,p){return a+p.v;},0))+' · % merma: '+p26+'</div></div>'
+ +'<div class="card-sub" style="margin-bottom:12px">Merma $ S26 · '+name+'</div>'
+ +rankRows(d.s26,'#B22222')
+ +'</div>'
+ +'<div class="card" style="margin-bottom:0">'
+ +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="card-title">📅 Acumulado Jun 2026 — Top 10</div><div style="font-size:11px;color:var(--gris)">Total: '+f$(d.acum.reduce(function(a,p){return a+p.v;},0))+'</div></div>'
+ +'<div class="card-sub" style="margin-bottom:12px">Merma $ acumulada · '+name+'</div>'
+ +rankRows(d.acum,'#7F77DD')
+ +'</div>';
+}
+
+
+// ─── CATEGORÍAS ───
+var activeCat=0;
+
+
+
+
+// ─── PROTEÍNA INSUMO ───
+var PROT_PROD_CHOCO=[{"n": "Chocohongo", "g": 16140.0, "pz": 1076}, {"n": "The Protein Macchiato", "g": 11640.0, "pz": 776}, {"n": "Chocolate Shake", "g": 7590.0, "pz": 506}, {"n": "Smoothie del Día (Choco)", "g": 4930.7, "pz": 329}];
+var PROT_KPIS={choco_g:40300.7,vaini_g:60104.7,total_g:100405.4,choco_kg:40.3,vaini_kg:60.1,total_kg:100.41};
+
+
+// ─── SUPLEMENTOS DATA ───
+var SUP_SUCS=["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "Roma", "CDI"];
+// ─── VASOS PLA 16oz ───
+function renderVPJul(el){
+ var D=window.VP_TABLA_JUL||[];
+ var totC=D.reduce(function(a,d){return a+d.comp;},0),totV=D.reduce(function(a,d){return a+d.vta;},0),totM=D.reduce(function(a,d){return a+d.merma;},0);
+ var nFalta=D.filter(function(d){return d.estado.indexOf('FALTA')>-1;}).length;
+ var nOk=D.filter(function(d){return d.estado.indexOf('OK')>-1;}).length;
+ var html='<div class="kpi-grid">'
+  +'<div class="kpi blue"><div class="kpi-label">Vasos comprados Jul</div><div class="kpi-val">'+totC.toLocaleString()+'</div><div class="kpi-sub">piezas · '+D.length+' sucursales</div></div>'
+  +'<div class="kpi green"><div class="kpi-label">Vasos vendidos Jul</div><div class="kpi-val">'+totV.toLocaleString()+'</div><div class="kpi-sub">según ventas</div></div>'
+  +'<div class="kpi amber"><div class="kpi-label">Diferencia neta $</div><div class="kpi-val">'+f$(totM)+'</div><div class="kpi-sub">'+nFalta+' con falta de captura · '+nOk+' OK</div></div>'
+  +'<div class="kpi red"><div class="kpi-label">Mayor diferencia</div><div class="kpi-val" style="font-size:15px">Polanco</div><div class="kpi-sub">'+f$(-1690)+' · compra de vasos no capturada</div></div>'
+  +'</div>';
+ html+='<div class="card" style="background:#FFF8E1;border-left:4px solid var(--ambar)"><div style="font-size:12px;color:var(--txt)"><b>⚠️ Nota del corte:</b> Varias sucursales salen con diferencia negativa por <b>compras/traspasos de vasos no capturados</b> (falta de captura), no por pérdida real — ej. Condesa recibió 30 vasos de Roma, Colima 21 de Condesa. Revisar con compras.</div></div>';
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Reporte por sucursal — Vasos PLA 16oz</div><div class="card-sub">Inicial + Compras − Ventas = Teórico vs Final · Julio 2026</div></div></div><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Inicial</th><th>Compras</th><th>Ventas</th><th>Teórico</th><th>Final</th><th>Dif.</th><th>Merma $</th><th>Estado</th><th>Justificación</th></tr></thead><tbody>'
+  +D.map(function(d){
+    var col=d.merma<-50?'#E67E22':(d.merma>50?'var(--rojo)':'var(--verde2)');
+    var eb=d.estado.indexOf('OK')>-1?'#E8F5E9':(d.estado.indexOf('FALTA')>-1?'#FFF8E1':'#FDECEA');
+    var ec=d.estado.indexOf('OK')>-1?'#1B5E20':(d.estado.indexOf('FALTA')>-1?'#9a7d0a':'#c0392b');
+    return '<tr><td style="font-weight:700">'+d.suc+'</td><td class="mono">'+d.ini+'</td><td class="mono" style="color:var(--verde2)">+'+d.comp+'</td><td class="mono" style="color:#2a78d6">-'+d.vta+'</td><td class="mono">'+d.teo+'</td><td class="mono">'+d.fin+'</td><td class="mono" style="font-weight:700">'+d.dif+'</td><td class="mono" style="font-weight:700;color:'+col+'">'+f$(d.merma)+'</td><td><span class="badge" style="background:'+eb+';color:'+ec+'">'+d.estado+'</span></td><td style="font-size:10px;color:var(--gris)">'+(d.just||'—')+'</td></tr>';
+  }).join('')
+  +'<tr style="background:var(--rojo2);font-weight:700"><td>TOTAL</td><td></td><td class="mono" style="color:var(--verde2)">+'+totC+'</td><td class="mono" style="color:#2a78d6">-'+totV+'</td><td></td><td></td><td></td><td class="mono">'+f$(totM)+'</td><td></td><td></td></tr>'
+  +'</tbody></table></div></div>';
+ el.innerHTML=html;
+}
+function renderVP(el){
+ var total_vtas=VP_VENTAS_SUC.reduce(function(a,d){return a+d.v;},0);
+ var html='';
+ // KPIs
+ html+='<div class="kpi-grid">'
+ +'<div class="kpi blue"><div class="kpi-label">Vasos comprados Jun</div><div class="kpi-val">'+VP_KPIS.compras.toLocaleString()+'</div><div class="kpi-sub">piezas · todas las sucursales</div></div>'
+ +'<div class="kpi green"><div class="kpi-label">Vasos vendidos (SKUs)</div><div class="kpi-val">'+total_vtas.toLocaleString()+'</div><div class="kpi-sub">según ventas Looker</div></div>'
+ +'<div class="kpi red"><div class="kpi-label">Merma total Jun</div><div class="kpi-val">'+VP_KPIS.merma_pz.toLocaleString()+'</div><div class="kpi-sub">'+f$(VP_KPIS.merma_ps)+' · <span class="badge badge-crit">'+VP_KPIS.pct+'%</span></div></div>'
+ +'<div class="kpi amber"><div class="kpi-label">Sucursal con más merma %</div><div class="kpi-val">CDI</div><div class="kpi-sub">13.9% · Liverpool 7.7%</div></div>'
+ +'</div>';
+
+
+ // Tabla detalle por sucursal
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Reporte por sucursal — Vasos PLA 16oz</div><div class="card-sub">Inv. Inicial + Compras − Ventas − Inv. Final = Merma Real · Jun 2026</div></div></div>'
+ +'<div style="overflow-x:auto"><table class="tbl"><thead><tr>'
+ +'<th>Sucursal</th><th>Inv. Ini</th><th>Compras (+)</th><th>Ventas (−)</th><th>Inv. Final</th><th>Merma pz</th><th>Merma $</th><th>% Merma</th><th>Vtas Looker</th>'
+ +'</tr></thead><tbody>'
+ +VP_TABLA.map(function(d){
+ var col=d.pct>=50?'var(--rojo)':d.pct>=30?'var(--ambar)':d.pct>=15?'#E67E22':'var(--verde2)';
+ return'<tr><td style="font-weight:700">'+d.suc+'</td>'
+ +'<td class="mono">'+d.inv_ini+'</td>'
+ +'<td class="mono" style="color:var(--verde2)">+'+d.compras+'</td>'
+ +'<td class="mono" style="color:#2a78d6">'+d.ventas+'</td>'
+ +'<td class="mono">'+d.inv_fin+'</td>'
+ +'<td class="mono" style="font-weight:700;color:var(--rojo)">'+d.merma_pz+'</td>'
+ +'<td class="mono" style="font-weight:700;color:var(--rojo)">'+f$(d.merma_pesos)+'</td>'
+ +'<td class="mono" style="font-weight:700;color:'+col+'">'+d.pct+'%</td>'
+ +'<td class="mono" style="color:var(--gris)">'+d.vtas_sku.toLocaleString()+'</td>'
+ +'</tr>';
+ }).join('')
+ +'<tr style="background:var(--rojo2);font-weight:700"><td>TOTAL</td><td class="mono">'+VP_TABLA.reduce(function(a,d){return a+d.inv_ini;},0)+'</td>'
+ +'<td class="mono" style="color:var(--verde2)">+'+VP_KPIS.compras+'</td>'
+ +'<td class="mono" style="color:#2a78d6">'+VP_KPIS.ventas+'</td>'
+ +'<td class="mono">'+VP_TABLA.reduce(function(a,d){return a+d.inv_fin;},0)+'</td>'
+ +'<td class="mono" style="color:var(--rojo)">'+VP_KPIS.merma_pz+'</td>'
+ +'<td class="mono" style="color:var(--rojo)">'+f$(VP_KPIS.merma_ps)+'</td>'
+ +'<td class="mono" style="color:var(--rojo)">'+VP_KPIS.pct+'%</td>'
+ +'<td class="mono">'+total_vtas.toLocaleString()+'</td></tr>'
+ +'</tbody></table></div></div>';
+
+
+ // Gráficas
+ html+='<div class="g2">'
+ +'<div class="card"><div class="card-head"><div class="card-title">Merma % por sucursal</div></div><div style="position:relative;height:200px"><canvas id="ch-vp-pct"></canvas></div></div>'
+ +'<div class="card"><div class="card-head"><div class="card-title">Vasos vendidos por sucursal (Looker)</div></div><div style="position:relative;height:200px"><canvas id="ch-vp-suc"></canvas></div></div>'
+ +'</div>';
+
+
+ // Top SKUs
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">Top SKUs que más vasos consumen</div><div class="card-sub">Junio 2026 · todas las sucursales</div></div></div>'
+ +TOP_VASOS_SKU.map(function(p,i){var max=TOP_VASOS_SKU[0].v,rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+( i+1)+'</div><div class="rank-name">'+p.n+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.v/max*100)+'%;background:#2a78d6"></div></div><div class="rank-val">'+p.v.toLocaleString()+' pz</div></div>';}).join('')
+ +'</div>';
+
+
+ el.innerHTML=html;
+ setTimeout(function(){
+ var labels=VP_TABLA.map(function(d){return d.suc;});
+ var pcts=VP_TABLA.map(function(d){return d.pct;});
+ var pcolors=pcts.map(function(v){return v>=50?'rgba(178,34,34,.8)':v>=30?'rgba(230,126,34,.8)':'rgba(27,175,122,.7)';});
+ mkChart('ch-vp-pct',{type:'bar',data:{labels:labels,datasets:[{label:'% Merma',data:pcts,backgroundColor:pcolors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
+ var svtas=VP_VENTAS_SUC.map(function(d){return d.v;});
+ var scolors=VP_VENTAS_SUC.map(function(d,i){return i===0?'rgba(178,34,34,.8)':'rgba(42,120,214,.7)';});
+ mkChart('ch-vp-suc',{type:'bar',data:{labels:labels,datasets:[{label:'Vasos vendidos',data:svtas,backgroundColor:scolors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{font:{size:9},color:TC}}}}});
+ },80);
+}
+
+
+// ─── COLD BREW CONCENTRADO ───
+function renderCBC(el){
+ var html='';
+ var total_ml=CBC_KPIS.ml_total;
+ // KPIs
+ html+='<div class="kpi-grid">'
+ +'<div class="kpi blue"><div class="kpi-label">Compras Jun (litros)</div><div class="kpi-val">'+CBC_KPIS.compras_l+'L</div><div class="kpi-sub">concentrado cold brew</div></div>'
+ +'<div class="kpi green"><div class="kpi-label">Ventas estimadas</div><div class="kpi-val">'+CBC_KPIS.ventas_l+'L</div><div class="kpi-sub">según capturas por sucursal</div></div>'
+ +'<div class="kpi purple"><div class="kpi-label">Consumo calculado (SKUs)</div><div class="kpi-val">'+(total_ml/1000).toFixed(1)+'L</div><div class="kpi-sub">'+Math.round(total_ml/1000/5)+' bidones 5L aprox</div></div>'
+ +'<div class="kpi amber"><div class="kpi-label">Merma reportada</div><div class="kpi-val">'+CBC_KPIS.merma_l+'L</div><div class="kpi-sub">'+f$(CBC_KPIS.merma_ps)+' · bajo control</div></div>'
+ +'</div>';
+
+
+ // Tabla merma por sucursal
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Reporte por sucursal — Concentrado Cold Brew</div><div class="card-sub">Inv. Inicial + Compras − Ventas − Inv. Final = Merma Real · Jun 2026 · en litros</div></div></div>'
+ +'<div style="overflow-x:auto"><table class="tbl"><thead><tr>'
+ +'<th>Sucursal</th><th>Inv. Ini (L)</th><th>Compras (+)</th><th>Ventas cap. (−)</th><th>Inv. Final</th><th>Merma L</th><th>Merma $</th><th>% Merma</th><th>Consumo SKUs (L)</th>'
+ +'</tr></thead><tbody>'
+ +CBC_TABLA.map(function(d){
+ var col=d.pct>=10?'var(--rojo)':d.pct>=5?'var(--ambar)':'var(--verde2)';
+ return'<tr><td style="font-weight:700">'+d.suc+'</td>'
+ +'<td class="mono">'+d.inv_ini+'</td>'
+ +'<td class="mono" style="color:var(--verde2)">+'+d.compras+'</td>'
+ +'<td class="mono" style="color:#2a78d6">'+d.ventas+'</td>'
+ +'<td class="mono">'+d.inv_fin+'</td>'
+ +'<td class="mono" style="font-weight:700;color:var(--rojo)">'+d.merma_l+'</td>'
+ +'<td class="mono" style="font-weight:700;color:var(--rojo)">'+f$(d.merma_ps)+'</td>'
+ +'<td class="mono" style="font-weight:700;color:'+col+'">'+d.pct+'%</td>'
+ +'<td class="mono" style="color:#7F77DD">'+d.litros_vtas+'L</td>'
+ +'</tr>';
+ }).join('')
+ +'</tbody></table></div></div>';
+
+
+ // Gráfica consumo por sucursal
+ html+='<div class="g2">'
+ +'<div class="card"><div class="card-head"><div class="card-title">Consumo Cold Brew por sucursal (SKUs)</div><div class="card-sub">Litros calculados según recetas · Jun 2026</div></div><div style="position:relative;height:200px"><canvas id="ch-cbc-suc"></canvas></div></div>'
+ +'<div class="card"><div class="card-head"><div><div class="card-title">Top SKUs — consumo Cold Brew</div><div class="card-sub">ml totales por bebida</div></div></div>'
+ +TOP_CB_SKU.map(function(d,i){var max=TOP_CB_SKU[0].total,rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+( i+1)+'</div><div class="rank-name">'+d.n+' <span style="color:var(--gris);font-size:10px">('+d.ml+'ml)</span></div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(d.total/max*100)+'%;background:#4E342E"></div></div><div class="rank-val">'+Math.round(d.total/1000)+'L</div></div>';}).join('')
+ +'</div></div>';
+
+
+ el.innerHTML=html;
+ setTimeout(function(){
+ var labels=CBC_ML_SUC.map(function(d){return d.suc;});
+ var vals=CBC_ML_SUC.map(function(d){return d.ml;});
+ var cols=vals.map(function(v,i){return i===0?'rgba(178,34,34,.8)':'rgba(78,52,46,.7)';});
+ mkChart('ch-cbc-suc',{type:'bar',data:{labels:labels,datasets:[{label:'Litros Cold Brew',data:vals,backgroundColor:cols,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return v+'L';},font:{size:9},color:TC}}}}});
+ },80);
+}
+
+
+// ─── PROTEÍNA INSUMO ─── 
+function renderPI(el){
+ var html='';
+ // KPIs
+ html+='<div class="kpi-grid">'
+ +'<div class="kpi" style="border-top:3px solid #6D4C41"><div class="kpi-label">Proteína Chocolate Jun</div><div class="kpi-val">'+PROT_KPIS.choco_kg+'kg</div><div class="kpi-sub">'+PROT_KPIS.choco_g.toLocaleString()+'g · '+PROT_PROD_CHOCO.length+' SKUs</div></div>'
+ +'<div class="kpi" style="border-top:3px solid #7F77DD"><div class="kpi-label">Proteína Vainilla Jun</div><div class="kpi-val">'+PROT_KPIS.vaini_kg+'kg</div><div class="kpi-sub">'+PROT_KPIS.vaini_g.toLocaleString()+'g · '+PROT_PROD_VAINI.length+' SKUs</div></div>'
+ +'<div class="kpi blue"><div class="kpi-label">Total Proteína consumida</div><div class="kpi-val">'+PROT_KPIS.total_kg+'kg</div><div class="kpi-sub">'+PROT_KPIS.total_g.toLocaleString()+'g combinado</div></div>'
+ +'<div class="kpi green"><div class="kpi-label">Sucursal mayor consumo</div><div class="kpi-val">Condesa</div><div class="kpi-sub">'+(PROT_SUC.find(function(d){return d.suc==='Condesa';}).total_g/1000).toFixed(2)+'kg total</div></div>'
+ +'</div>';
+
+
+ // Tabla por sucursal
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📊 Consumo por sucursal — Junio 2026</div><div class="card-sub">Gramos calculados según recetas · Chocolate + Vainilla</div></div></div>'
+ +'<div style="overflow-x:auto"><table class="tbl"><thead><tr>'
+ +'<th>Sucursal</th><th>Chocolate (g)</th><th>Chocolate (kg)</th><th>Vainilla (g)</th><th>Vainilla (kg)</th><th>Total (g)</th><th>Total (kg)</th>'
+ +'</tr></thead><tbody>'
+ +PROT_SUC.filter(function(d){return d.total_g>0;}).map(function(d){
+ return'<tr><td style="font-weight:700">'+d.suc+'</td>'
+ +'<td class="mono">'+d.choco_g.toLocaleString()+'</td>'
+ +'<td class="mono" style="color:#6D4C41;font-weight:700">'+( d.choco_g/1000).toFixed(3)+'kg</td>'
+ +'<td class="mono">'+d.vaini_g.toLocaleString()+'</td>'
+ +'<td class="mono" style="color:#7F77DD;font-weight:700">'+( d.vaini_g/1000).toFixed(3)+'kg</td>'
+ +'<td class="mono" style="font-weight:700">'+d.total_g.toLocaleString()+'</td>'
+ +'<td class="mono" style="font-weight:700;color:#2a78d6">'+( d.total_g/1000).toFixed(3)+'kg</td>'
+ +'</tr>';
+ }).join('')
+ +'<tr style="background:var(--verde3);font-weight:700">'
+ +'<td>TOTAL</td>'
+ +'<td class="mono">'+PROT_KPIS.choco_g.toLocaleString()+'</td><td class="mono" style="color:#6D4C41">'+PROT_KPIS.choco_kg+'kg</td>'
+ +'<td class="mono">'+PROT_KPIS.vaini_g.toLocaleString()+'</td><td class="mono" style="color:#7F77DD">'+PROT_KPIS.vaini_kg+'kg</td>'
+ +'<td class="mono">'+PROT_KPIS.total_g.toLocaleString()+'</td><td class="mono" style="color:#2a78d6">'+PROT_KPIS.total_kg+'kg</td>'
+ +'</tr></tbody></table></div></div>';
+
+
+ // Gráficas lado a lado
+ html+='<div class="g2">'
+ +'<div class="card"><div class="card-head"><div class="card-title">Consumo por sucursal (g)</div></div><div style="position:relative;height:220px"><canvas id="ch-pi-suc"></canvas></div></div>'
+ +'<div class="card"><div class="card-head"><div class="card-title">Chocolate vs Vainilla global</div></div><div style="position:relative;height:220px"><canvas id="ch-pi-sabor"></canvas></div></div>'
+ +'</div>';
+
+
+ // Rankings por producto
+ html+='<div class="g2">'
+ +'<div class="card"><div class="card-head"><div><div class="card-title">🍫 Top productos — Chocolate</div><div class="card-sub">g consumidos Jun 2026</div></div></div>'
+ +PROT_PROD_CHOCO.map(function(p,i){var max=PROT_PROD_CHOCO[0].g,rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+( i+1)+'</div><div class="rank-name">'+p.n+' <span style="color:var(--gris);font-size:10px">('+p.pz+'pz)</span></div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.g/max*100)+'%;background:#6D4C41"></div></div><div class="rank-val">'+p.g.toLocaleString()+'g</div></div>';}).join('')
+ +'</div>'
+ +'<div class="card"><div class="card-head"><div><div class="card-title">🍦 Top productos — Vainilla</div><div class="card-sub">g consumidos Jun 2026</div></div></div>'
+ +PROT_PROD_VAINI.map(function(p,i){var max=PROT_PROD_VAINI[0].g,rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+( i+1)+'</div><div class="rank-name">'+p.n+' <span style="color:var(--gris);font-size:10px">('+p.pz+'pz)</span></div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.g/max*100)+'%;background:#7F77DD"></div></div><div class="rank-val">'+p.g.toLocaleString()+'g</div></div>';}).join('')
+ +'</div></div>';
+
+
+ el.innerHTML=html;
+
+
+ setTimeout(function(){
+ var labels=PROT_SUC.filter(function(d){return d.total_g>0;}).map(function(d){return d.suc;});
+ var chocos=PROT_SUC.filter(function(d){return d.total_g>0;}).map(function(d){return d.choco_g;});
+ var vainis=PROT_SUC.filter(function(d){return d.total_g>0;}).map(function(d){return d.vaini_g;});
+ mkChart('ch-pi-suc',{type:'bar',data:{labels:labels,datasets:[
+ {label:'Chocolate',data:chocos,backgroundColor:'rgba(109,76,65,.8)',borderRadius:3},
+ {label:'Vainilla', data:vainis,backgroundColor:'rgba(127,119,221,.8)',borderRadius:3}
+ ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:9},boxWidth:8}}},scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:9},color:TC}},y:{stacked:true,grid:{color:GC},ticks:{callback:function(v){return Math.round(v/1000)+'kg';},font:{size:9},color:TC}}}}});
+ mkChart('ch-pi-sabor',{type:'doughnut',data:{labels:['Chocolate '+PROT_KPIS.choco_kg+'kg','Vainilla '+PROT_KPIS.vaini_kg+'kg'],datasets:[{data:[PROT_KPIS.choco_g,PROT_KPIS.vaini_g],backgroundColor:['rgba(109,76,65,.8)','rgba(127,119,221,.8)'],borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10}}}}});
+ },80);
+}
+
+
+// ─── SUPLEMENTOS ───
+var activeSupTab='1-9ago';
+function renderSUP(el){
+ var tabs=[
+ {id:'1-19jul', label:'1–19 Jul'},
+ {id:'semanal', label:'📋 Semanal 22–26 Jul'},
+ {id:'1-9ago', label:'🆕 Semanal 1–9 Ago'}
+ ];
+ var tabsHtml='<div class="suc-tabs" style="margin-bottom:16px">'
+ +tabs.map(function(t){
+ return'<button class="suc-tab'+(t.id===activeSupTab?' active':'')+('" onclick="setSupTab(&apos;'+t.id+'&apos;,this)">')+t.label+'</button>';
+ }).join('')+'</div>';
+ el.innerHTML=tabsHtml+'<div id="sup-tab-content"></div>';
+ renderSupTab(activeSupTab);
+}
+function setSupTab(id, btn){
+ activeSupTab=id;
+ document.querySelectorAll('.suc-tab').forEach(function(t){t.classList.remove('active');});
+ if(btn) btn.classList.add('active');
+ renderSupTab(id);
+}
+function renderSupTab(id){
+ var el=document.getElementById('sup-tab-content');
+ if(!el) return;
+ else if(id==='1-19jul') renderSup1_19Jul(el);
+ else if(id==='1-9ago') renderSupSem19(el);
+ else if(id==='semanal') renderSupSemanal(el);
+}
+
+
+var CURRENT_SUP_DETALLE = null;
+
+
+function setSupSuc(suc){
+ document.querySelectorAll('#sup-suc-tabs .suc-tab').forEach(function(t){t.classList.toggle('active',t.textContent.trim()===suc);});
+ renderSupSucTable(suc);
+}
+
+
+function renderSup21Jul(el){
+ CURRENT_SUP_DETALLE = SUP_DETALLE_21JUL;
+ var html='';
+ var tot_fal=SUP_RESUMEN_21JUL.reduce(function(a,d){return a+d.faltantes;},0);
+ var tot_sob=SUP_RESUMEN_21JUL.reduce(function(a,d){return a+d.sobrantes;},0);
+ var max_diff=SUP_RESUMEN_21JUL.reduce(function(a,d){return Math.abs(d.diff_ps)>Math.abs(a.diff_ps)?d:a;},{suc:'—',diff_ps:0});
+ html+='<div class="kpi-grid">'
+ +'<div class="kpi" style="border-top:3px solid #1565C0"><div class="kpi-label">Corte diario</div><div class="kpi-val" style="font-size:15px">21 Jul 2026 🆕</div><div class="kpi-sub">'+SUP_SUCS_21JUL.length+' sucursales · '+SUP_DETALLE_21JUL.length+' productos con movimiento</div></div>'
+ +'<div class="kpi red"><div class="kpi-label">Productos faltantes</div><div class="kpi-val">'+tot_fal+'</div><div class="kpi-sub">Inv. Teórico > Inv. Real</div></div>'
+ +'<div class="kpi amber"><div class="kpi-label">Productos sobrantes</div><div class="kpi-val">'+tot_sob+'</div><div class="kpi-sub">Inv. Real > Inv. Teórico</div></div>'
+ +'<div class="kpi purple"><div class="kpi-label">Mayor impacto $</div><div class="kpi-val">'+max_diff.suc+'</div><div class="kpi-sub">'+f$(max_diff.diff_ps)+' neto</div></div>'
+ +'</div>';
+
+ html+='<div class="card" style="background:#FFF8E1;border-left:4px solid var(--ambar)"><div style="font-size:12px;color:var(--txt)"><b>⚠️ Notas del corte diario:</b> <b>Condesa</b> queda fuera — su inventario final del 21 jul no trae sección de Suplementos (en revisión). <b>Liverpool</b>: ventas del día reportadas incompletas por el equipo — su diferencia puede estar sobreestimada. Compras del día: 4 órdenes (3687 Condesa, 3688 Insurgentes, 3699 Colima, 3700 Santa Fe) — Odoo las marca con fecha 22 jul, pero se confirmó que llegaron el 21 y así se están considerando. Una de ellas trae el SKU nuevo <b>MMKTSUP38</b> (Proteína vainilla Fitmingo Birdman 1.7kg) sin costo registrado en catálogo.</div></div>';
+
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📍 Diferencia por sucursal</div><div class="card-sub">Fórmula: Inv.Ini (cierre 20 jul) + Compras (21 jul) − Ventas (21 jul) = Teórico  |  Diff = Teórico − Inv.Final (21 jul)</div></div></div>'
+ +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Diferencia $</th><th>Faltantes</th><th>Sobrantes</th><th>Estado</th></tr></thead><tbody>'
+ +SUP_RESUMEN_21JUL.map(function(r){
+ var col=r.diff_ps>200?'var(--rojo)':r.diff_ps<-200?'#1B5E20':'var(--ambar)';
+ var bg=r.diff_ps>200?'#FFEBEE':r.diff_ps<-200?'#E8F5E9':'#FFFDE7';
+ var est=r.diff_ps>200?'🔴 Faltante':r.diff_ps<-200?'🟢 Sobrante':'🟡 Estable';
+ var note=r.suc==='Liverpool'?' <span style="font-size:10px;color:var(--gris)">(ventas incompletas)</span>':'';
+ return'<tr><td style="font-weight:700">'+r.suc+note+'</td>'
+ +'<td class="mono" style="font-weight:700;color:'+col+';background:'+bg+'">'+f$(r.diff_ps)+' '+est+'</td>'
+ +'<td class="mono" style="color:var(--rojo)">'+r.faltantes+'</td>'
+ +'<td class="mono" style="color:#1B5E20">'+r.sobrantes+'</td>'
+ +'<td><span style="font-size:12px">'+est+'</span></td>'
+ +'</tr>';
+ }).join('')
+ +'</tbody></table></div><div style="font-size:10px;color:var(--gris);margin-top:6px">Condesa sin conteo físico de suplementos este día — excluida del corte.</div></div>';
+
+ html+='<div class="card"><div class="card-head"><div class="card-title">Diferencia neta por sucursal ($)</div><div class="card-sub">↑ sobrante · ↓ faltante</div></div><div style="position:relative;height:180px"><canvas id="ch-sup-diff-21jul"></canvas></div></div>';
+
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">Top diferencias por producto</div><div class="card-sub">Ordenado por impacto $</div></div></div>'
+ +SUP_TOP_DIFFS_21JUL.slice(0,12).map(function(p,i){
+ var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';
+ var col=p.dps>0?'var(--rojo)':'#1B5E20';
+ var icon=p.dps>0?'🔴':'🟡';
+ return'<div class="rank-row"><div class="rank-num '+rk+'">'+( i+1)+'</div>'
+ +'<div class="rank-name" style="flex:1">'+icon+' '+p.prod+' <span style="color:var(--gris);font-size:10px">('+p.sucs.join(', ')+')</span></div>'
+ +'<div class="rank-val" style="color:'+col+'">'+f$(p.dps)+'</div></div>';
+ }).join('')
+ +'</div>';
+
+ var activeSuc21=SUP_SUCS_21JUL[0];
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Detalle por sucursal</div><div class="card-sub">Inv.Ini (20 jul) + Compras − Ventas = Teórico vs Inv.Final (21 jul)</div></div></div>'
+ +'<div class="suc-tabs" id="sup-suc-tabs" style="margin-bottom:12px">'
+ +SUP_SUCS_21JUL.map(function(s){
+ var r=SUP_RESUMEN_21JUL.find(function(x){return x.suc===s;});
+ var cls=r&&r.diff_ps>200?' suc-tab-crit':r&&r.diff_ps<-200?' suc-tab-ok':''
+ return'<button class="suc-tab'+cls+(s===activeSuc21?' active':'')+('" onclick="setSupSuc(&apos;'+s+'&apos;)">')
+ +s+'</button>';
+ }).join('')
+ +'</div><div id="sup-det-content" style="overflow-x:auto"></div></div>';
+
+ html+=renderIncidenciasSection('21jul', INCIDENCIAS_21JUL);
+
+
+ el.innerHTML=html;
+
+ setTimeout(function(){
+ var labels=SUP_RESUMEN_21JUL.map(function(r){return r.suc;});
+ var vals=SUP_RESUMEN_21JUL.map(function(r){return -r.diff_ps;});
+ var colors=vals.map(function(v){return v<-200?'rgba(178,34,34,.8)':v>200?'rgba(27,94,32,.8)':'rgba(230,126,34,.8)';});
+ mkChart('ch-sup-diff-21jul',{type:'bar',data:{labels:labels,datasets:[{label:'Diff $',data:vals,backgroundColor:colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.abs(v);},font:{size:9},color:TC}}}}});
+ renderSupSucTable(activeSuc21);
+ },80);
+}
+
+
+function renderIncidenciasSection(dayId, incidencias){
+ var status = DAY_STATUS[dayId] || {cerrado:false, fecha_cierre:null, validado_por:null};
+ var nPend = incidencias.filter(function(i){return i.estado==='Pendiente';}).length;
+ var nConf = incidencias.filter(function(i){return i.estado==='Confirmado';}).length;
+ var nRes = incidencias.filter(function(i){return i.estado==='Resuelto';}).length;
+
+ var banner = status.cerrado
+ ? '<div class="card" style="background:#E8F5E9;border-left:4px solid #1B5E20"><div style="font-size:13px;font-weight:700;color:#1B5E20">🟢 Día cerrado</div><div style="font-size:11px;color:var(--txt);margin-top:2px">Validado por '+(status.validado_por||'—')+' · '+(status.fecha_cierre||'—')+'</div></div>'
+ : '<div class="card" style="background:#FFF8E1;border-left:4px solid var(--ambar)"><div style="font-size:13px;font-weight:700;color:#9a7d0a">🟡 Pendiente de validación</div><div style="font-size:11px;color:var(--txt);margin-top:2px">A las 12:00 se notifica al gerente regional para validar con cada unidad. Este día se marcará "cerrado" cuando llegue su reporte de confirmación.</div></div>';
+
+ var html = '<div class="card">'
+ + '<div class="card-head"><div><div class="card-title">🧾 Incidencias del día</div><div class="card-sub">'+incidencias.length+' diferencias detectadas · 🟡 '+nPend+' pendientes · 🔵 '+nConf+' confirmadas · 🟢 '+nRes+' resueltas</div></div></div>'
+ + banner
+ + '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Producto</th><th>Diferencia</th><th>Causa</th><th>Estado</th><th>Nota</th></tr></thead><tbody>'
+ + incidencias.map(function(inc){
+ var tipo = inc.diff_pz>0?'🔴 Falta':'🟢 Sobra';
+ var estColor = inc.estado==='Resuelto'?'#1B5E20':inc.estado==='Confirmado'?'#1565C0':'#9a7d0a';
+ var estBg = inc.estado==='Resuelto'?'#E8F5E9':inc.estado==='Confirmado'?'#E3F2FD':'#FFF8E1';
+ return '<tr><td style="font-weight:600">'+inc.suc+'</td>'
+ +'<td>'+inc.prod+'</td>'
+ +'<td class="mono">'+tipo+' '+Math.abs(inc.diff_pz)+' pz ('+f$(inc.diff_ps)+')</td>'
+ +'<td style="font-size:11px">'+(inc.causa||'<span style="color:var(--gris)">Sin confirmar</span>')+'</td>'
+ +'<td><span class="badge" style="background:'+estBg+';color:'+estColor+'">'+inc.estado+'</span></td>'
+ +'<td style="font-size:11px;color:var(--gris)">'+(inc.nota||'—')+'</td>'
+ +'</tr>';
+ }).join('')
+ + '</tbody></table></div>'
+ + '<div style="font-size:10px;color:var(--gris);margin-top:8px">Categorías de causa: Error de captura/conteo · Venta no registrada · Merma no reportada · Transferencia/compra no registrada · Faltante real (posible pérdida) · Sobrante real (por confirmar origen)</div>'
+ + '</div>';
+ return html;
+}
+
+
+function renderSup22Jul(el){
+ CURRENT_SUP_DETALLE = SUP_DETALLE_22JUL;
+ var html='';
+ var tot_fal=SUP_RESUMEN_22JUL.reduce(function(a,d){return a+d.faltantes;},0);
+ var tot_sob=SUP_RESUMEN_22JUL.reduce(function(a,d){return a+d.sobrantes;},0);
+ var max_diff=SUP_RESUMEN_22JUL.reduce(function(a,d){return Math.abs(d.diff_ps)>Math.abs(a.diff_ps)?d:a;},{suc:'—',diff_ps:0});
+ html+='<div class="kpi-grid">'
+ +'<div class="kpi" style="border-top:3px solid #1565C0"><div class="kpi-label">Corte diario</div><div class="kpi-val" style="font-size:15px">22 Jul 2026 🆕</div><div class="kpi-sub">'+SUP_SUCS_22JUL.length+' sucursales · '+SUP_DETALLE_22JUL.length+' productos con movimiento</div></div>'
+ +'<div class="kpi red"><div class="kpi-label">Productos faltantes</div><div class="kpi-val">'+tot_fal+'</div><div class="kpi-sub">Inv. Teórico > Inv. Real</div></div>'
+ +'<div class="kpi amber"><div class="kpi-label">Productos sobrantes</div><div class="kpi-val">'+tot_sob+'</div><div class="kpi-sub">Inv. Real > Inv. Teórico</div></div>'
+ +'<div class="kpi purple"><div class="kpi-label">Mayor impacto $</div><div class="kpi-val">'+max_diff.suc+'</div><div class="kpi-sub">'+f$(max_diff.diff_ps)+' neto</div></div>'
+ +'</div>';
+
+ html+='<div class="card" style="background:#FFF8E1;border-left:4px solid var(--ambar)"><div style="font-size:12px;color:var(--txt)"><b>⚠️ Notas del corte diario:</b> <b>Condesa</b> no tuvo conteo físico el 21 jul, así que su cálculo encadena el cierre del 20 jul + compras y ventas acumuladas de 21+22, comparado contra el final del 22 — trátalo como un corte de 2 días para esa sucursal. <b>Liverpool</b> etiquetada "Jue 23 jul" en la captura, pero se está considerando como cierre del 22 (confirmado). 3 de las 8 órdenes de compra del día (Comisariato, San Miguel, Kitchen Lab/Lomas, Roma, Insurgentes) no traían productos de Suplementos, o siguen en estatus "Cotización" en Odoo — validar con compras si ya se confirmaron.</div></div>';
+
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📍 Diferencia por sucursal</div><div class="card-sub">Fórmula: Inv.Ini (cierre 21 jul*) + Compras (22 jul) − Ventas (22 jul) = Teórico  |  Diff = Teórico − Inv.Final (22 jul)</div></div></div>'
+ +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Diferencia $</th><th>Faltantes</th><th>Sobrantes</th><th>Estado</th></tr></thead><tbody>'
+ +SUP_RESUMEN_22JUL.map(function(r){
+ var col=r.diff_ps>200?'var(--rojo)':r.diff_ps<-200?'#1B5E20':'var(--ambar)';
+ var bg=r.diff_ps>200?'#FFEBEE':r.diff_ps<-200?'#E8F5E9':'#FFFDE7';
+ var est=r.diff_ps>200?'🔴 Faltante':r.diff_ps<-200?'🟢 Sobrante':'🟡 Estable';
+ var note=r.suc==='Condesa'?' <span style="font-size:10px;color:var(--gris)">(corte de 2 días)</span>':'';
+ return'<tr><td style="font-weight:700">'+r.suc+note+'</td>'
+ +'<td class="mono" style="font-weight:700;color:'+col+';background:'+bg+'">'+f$(r.diff_ps)+' '+est+'</td>'
+ +'<td class="mono" style="color:var(--rojo)">'+r.faltantes+'</td>'
+ +'<td class="mono" style="color:#1B5E20">'+r.sobrantes+'</td>'
+ +'<td><span style="font-size:12px">'+est+'</span></td>'
+ +'</tr>';
+ }).join('')
+ +'</tbody></table></div><div style="font-size:10px;color:var(--gris);margin-top:6px">*Condesa usa cierre del 20 jul como base (ver nota arriba).</div></div>';
+
+ html+='<div class="card"><div class="card-head"><div class="card-title">Diferencia neta por sucursal ($)</div><div class="card-sub">↑ sobrante · ↓ faltante</div></div><div style="position:relative;height:180px"><canvas id="ch-sup-diff-22jul"></canvas></div></div>';
+
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">Top diferencias por producto</div><div class="card-sub">Ordenado por impacto $</div></div></div>'
+ +SUP_TOP_DIFFS_22JUL.slice(0,12).map(function(p,i){
+ var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';
+ var col=p.dps>0?'var(--rojo)':'#1B5E20';
+ var icon=p.dps>0?'🔴':'🟡';
+ return'<div class="rank-row"><div class="rank-num '+rk+'">'+( i+1)+'</div>'
+ +'<div class="rank-name" style="flex:1">'+icon+' '+p.prod+' <span style="color:var(--gris);font-size:10px">('+p.sucs.join(', ')+')</span></div>'
+ +'<div class="rank-val" style="color:'+col+'">'+f$(p.dps)+'</div></div>';
+ }).join('')
+ +'</div>';
+
+ var activeSuc22=SUP_SUCS_22JUL[0];
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Detalle por sucursal</div><div class="card-sub">Inv.Ini + Compras − Ventas = Teórico vs Inv.Final (22 jul)</div></div></div>'
+ +'<div class="suc-tabs" id="sup-suc-tabs" style="margin-bottom:12px">'
+ +SUP_SUCS_22JUL.map(function(s){
+ var r=SUP_RESUMEN_22JUL.find(function(x){return x.suc===s;});
+ var cls=r&&r.diff_ps>200?' suc-tab-crit':r&&r.diff_ps<-200?' suc-tab-ok':''
+ return'<button class="suc-tab'+cls+(s===activeSuc22?' active':'')+('" onclick="setSupSuc(&apos;'+s+'&apos;)">')
+ +s+'</button>';
+ }).join('')
+ +'</div><div id="sup-det-content" style="overflow-x:auto"></div></div>';
+
+ html+=renderIncidenciasSection('22jul', INCIDENCIAS_22JUL);
+
+ el.innerHTML=html;
+
+ setTimeout(function(){
+ var labels=SUP_RESUMEN_22JUL.map(function(r){return r.suc;});
+ var vals=SUP_RESUMEN_22JUL.map(function(r){return -r.diff_ps;});
+ var colors=vals.map(function(v){return v<-200?'rgba(178,34,34,.8)':v>200?'rgba(27,94,32,.8)':'rgba(230,126,34,.8)';});
+ mkChart('ch-sup-diff-22jul',{type:'bar',data:{labels:labels,datasets:[{label:'Diff $',data:vals,backgroundColor:colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.abs(v);},font:{size:9},color:TC}}}}});
+ renderSupSucTable(activeSuc22);
+ },80);
+}
+
+
+function renderSup23Jul(el){
+ CURRENT_SUP_DETALLE = SUP_DETALLE_23JUL;
+ var html='';
+ var tot_fal=SUP_RESUMEN_23JUL.reduce(function(a,d){return a+d.faltantes;},0);
+ var tot_sob=SUP_RESUMEN_23JUL.reduce(function(a,d){return a+d.sobrantes;},0);
+ var max_diff=SUP_RESUMEN_23JUL.reduce(function(a,d){return Math.abs(d.diff_ps)>Math.abs(a.diff_ps)?d:a;},{suc:'—',diff_ps:0});
+ html+='<div class="kpi-grid">'
+ +'<div class="kpi" style="border-top:3px solid #1565C0"><div class="kpi-label">Corte diario</div><div class="kpi-val" style="font-size:15px">23 Jul 2026 🆕</div><div class="kpi-sub">'+SUP_SUCS_23JUL.length+' sucursales · '+SUP_DETALLE_23JUL.length+' productos con movimiento</div></div>'
+ +'<div class="kpi red"><div class="kpi-label">Productos faltantes</div><div class="kpi-val">'+tot_fal+'</div><div class="kpi-sub">Inv. Teórico > Inv. Real</div></div>'
+ +'<div class="kpi amber"><div class="kpi-label">Productos sobrantes</div><div class="kpi-val">'+tot_sob+'</div><div class="kpi-sub">Inv. Real > Inv. Teórico</div></div>'
+ +'<div class="kpi purple"><div class="kpi-label">Mayor impacto $</div><div class="kpi-val">'+max_diff.suc+'</div><div class="kpi-sub">'+f$(max_diff.diff_ps)+' neto</div></div>'
+ +'</div>';
+
+ html+='<div class="card" style="background:#FDECEA;border-left:4px solid var(--rojo)"><div style="font-size:12px;color:var(--txt)"><b>🚨 Alerta — San Miguel:</b> Sachet cacao Habits 30g cayó de 105 a 11 piezas (-94 pz, $2,956) y Sachet vainilla Habits 30g de 60 a 11 (-49 pz, $1,541) en un solo día, sin ventas ni compras que lo expliquen. Es una caída inusualmente grande — antes de reportarla como pérdida, vale la pena confirmar si no fue un error de captura (posible transposición de dígitos, ej. anotar "11" en vez de "111").</div></div>';
+ html+='<div class="card" style="background:#FFF8E1;border-left:4px solid var(--ambar)"><div style="font-size:12px;color:var(--txt)"><b>⚠️ Otras notas:</b> Se corrigió un hueco de continuidad en <b>Liverpool</b> — su captura del 22 jul omitió por completo la Proteína vainilla Isopure 558g (no aparecía en la lista), así que se usó su último conteo real (21 jul: 25 pz) como inicial en vez de asumir cero. Compras del día: solo 1 pieza confirmada (Insurgentes, MMKTSUP38).</div></div>';
+
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📍 Diferencia por sucursal</div><div class="card-sub">Fórmula: Inv.Ini (cierre 22 jul) + Compras (23 jul) − Ventas (23 jul) = Teórico  |  Diff = Teórico − Inv.Final (23 jul)</div></div></div>'
+ +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Diferencia $</th><th>Faltantes</th><th>Sobrantes</th><th>Estado</th></tr></thead><tbody>'
+ +SUP_RESUMEN_23JUL.map(function(r){
+ var col=r.diff_ps>200?'var(--rojo)':r.diff_ps<-200?'#1B5E20':'var(--ambar)';
+ var bg=r.diff_ps>200?'#FFEBEE':r.diff_ps<-200?'#E8F5E9':'#FFFDE7';
+ var est=r.diff_ps>200?'🔴 Faltante':r.diff_ps<-200?'🟢 Sobrante':'🟡 Estable';
+ var note=r.suc==='San Miguel'?' <span style="font-size:10px;color:var(--gris)">(ver alerta arriba)</span>':'';
+ return'<tr><td style="font-weight:700">'+r.suc+note+'</td>'
+ +'<td class="mono" style="font-weight:700;color:'+col+';background:'+bg+'">'+f$(r.diff_ps)+' '+est+'</td>'
+ +'<td class="mono" style="color:var(--rojo)">'+r.faltantes+'</td>'
+ +'<td class="mono" style="color:#1B5E20">'+r.sobrantes+'</td>'
+ +'<td><span style="font-size:12px">'+est+'</span></td>'
+ +'</tr>';
+ }).join('')
+ +'</tbody></table></div></div>';
+
+ html+='<div class="card"><div class="card-head"><div class="card-title">Diferencia neta por sucursal ($)</div><div class="card-sub">↑ sobrante · ↓ faltante</div></div><div style="position:relative;height:180px"><canvas id="ch-sup-diff-23jul"></canvas></div></div>';
+
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">Top diferencias por producto</div><div class="card-sub">Ordenado por impacto $</div></div></div>'
+ +SUP_TOP_DIFFS_23JUL.slice(0,12).map(function(p,i){
+ var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';
+ var col=p.dps>0?'var(--rojo)':'#1B5E20';
+ var icon=p.dps>0?'🔴':'🟡';
+ return'<div class="rank-row"><div class="rank-num '+rk+'">'+( i+1)+'</div>'
+ +'<div class="rank-name" style="flex:1">'+icon+' '+p.prod+' <span style="color:var(--gris);font-size:10px">('+p.sucs.join(', ')+')</span></div>'
+ +'<div class="rank-val" style="color:'+col+'">'+f$(p.dps)+'</div></div>';
+ }).join('')
+ +'</div>';
+
+ var activeSuc23=SUP_SUCS_23JUL[0];
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Detalle por sucursal</div><div class="card-sub">Inv.Ini + Compras − Ventas = Teórico vs Inv.Final (23 jul)</div></div></div>'
+ +'<div class="suc-tabs" id="sup-suc-tabs" style="margin-bottom:12px">'
+ +SUP_SUCS_23JUL.map(function(s){
+ var r=SUP_RESUMEN_23JUL.find(function(x){return x.suc===s;});
+ var cls=r&&r.diff_ps>200?' suc-tab-crit':r&&r.diff_ps<-200?' suc-tab-ok':''
+ return'<button class="suc-tab'+cls+(s===activeSuc23?' active':'')+('" onclick="setSupSuc(&apos;'+s+'&apos;)">')
+ +s+'</button>';
+ }).join('')
+ +'</div><div id="sup-det-content" style="overflow-x:auto"></div></div>';
+
+ html+=renderIncidenciasSection('23jul', INCIDENCIAS_23JUL);
+
+ el.innerHTML=html;
+
+ setTimeout(function(){
+ var labels=SUP_RESUMEN_23JUL.map(function(r){return r.suc;});
+ var vals=SUP_RESUMEN_23JUL.map(function(r){return -r.diff_ps;});
+ var colors=vals.map(function(v){return v<-200?'rgba(178,34,34,.8)':v>200?'rgba(27,94,32,.8)':'rgba(230,126,34,.8)';});
+ mkChart('ch-sup-diff-23jul',{type:'bar',data:{labels:labels,datasets:[{label:'Diff $',data:vals,backgroundColor:colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.abs(v);},font:{size:9},color:TC}}}}});
+ renderSupSucTable(activeSuc23);
+ },80);
+}
+
+
+var SUP_CFG_1_9AGO={dayId:'1-9ago',fecha:'Semana 1–9 Ago 🟢',sucs_var:'SUP_SUCS_1_9AGO',R:'SUP_RESUMEN_1_9AGO',D:'SUP_DETALLE_1_9AGO',T:'SUP_TOP_DIFFS_1_9AGO',I:'INCIDENCIAS_1_9AGO',
+ notas:'<div class="card" style="background:#E8F5E9;border-left:4px solid #1B5E20"><div style="font-size:12px;color:var(--txt)"><b>🟢 Semana cerrada y validada.</b> Inicial = inventario final julio (31 jul), sin traspasos. De las diferencias, solo <b>$172</b> fue <b>merma real</b> (3 sachets, faltante confirmado en Roma y San Miguel). El resto: consumo de insumo (proteína a bebidas), errores de conteo y traspasos/compras no capturadas. Se aplicaron correcciones de físico según los comentarios de gerentes.</div></div>'};
+var SUP_CFG_4AGO={dayId:'4ago',fecha:'4 Ago 2026 🟢',sucs_var:'SUP_SUCS_4AGO',R:'SUP_RESUMEN_4AGO',D:'SUP_DETALLE_4AGO',T:'SUP_TOP_DIFFS_4AGO',I:'INCIDENCIAS_4AGO',
+ notas:'<div class="card" style="background:#E8F5E9;border-left:4px solid #1B5E20"><div style="font-size:12px;color:var(--txt)"><b>🟢 Día cerrado y validado (Gerentes + Distrital).</b> De ~$31k en diferencias brutas, solo <b>$531</b> (1 faltante confirmado en San Miguel: Sachet vainilla Fitmingo) fue <b>merma real</b> — 0.29% s/inventario. El resto se justificó: error de conteo, traspasos entre sucursales y sobrantes reales.</div></div>'};
+var SUP_CFG_5AGO={dayId:'5ago',fecha:'5 Ago 2026 🆕',sucs_var:'SUP_SUCS_5AGO',R:'SUP_RESUMEN_5AGO',D:'SUP_DETALLE_5AGO',T:'SUP_TOP_DIFFS_5AGO',I:'INCIDENCIAS_5AGO',
+ notas:'<div class="card" style="background:#E3F2FD;border-left:4px solid #1565C0"><div style="font-size:12px;color:var(--txt)"><b>ℹ️ Inicial = existencia real corregida del 4</b> (con los comentarios de gerentes), no el físico crudo — así no se arrastran errores de conteo. Resultado: neto casi limpio (<b>+$346</b> vs −$6,842 con el método anterior). <b>Polanco</b> conserva un sobrante residual (−$3,215): productos no contados el 4 (Creatina Golden Peach, etc.) por su conteo incompleto de ese día — pendiente validar. <b>Insurgentes y Santa Fe</b> cuadran exacto.</div></div>'};
+function renderSupSem19(el){
+ var D=window.SUP_SEM19||{faltantes:[],insumo_rows:[],insumo_suc:{},merma_real:0,insumo_total:0};
+ var html='<div class="kpi-grid">'
+  +'<div class="kpi" style="border-top:3px solid #1565C0"><div class="kpi-label">Corte semanal</div><div class="kpi-val" style="font-size:15px">1–9 Ago 2026 🟢</div><div class="kpi-sub">Inicial = inv. final julio · validado</div></div>'
+  +'<div class="kpi red"><div class="kpi-label">Merma real</div><div class="kpi-val">'+f$(D.merma_real)+'</div><div class="kpi-sub">'+D.faltantes.length+' faltantes confirmados</div></div>'
+  +'<div class="kpi" style="border-top:3px solid #1565C0"><div class="kpi-label">Consumo insumo</div><div class="kpi-val" style="color:#1565C0">'+f$(D.insumo_total)+'</div><div class="kpi-sub">proteína a bebidas · no es pérdida</div></div>'
+  +'<div class="kpi green"><div class="kpi-label">Estado</div><div class="kpi-val" style="font-size:15px">🟢 Cerrado</div><div class="kpi-sub">gerentes + distrital</div></div>'
+  +'</div>';
+ html+='<div class="card" style="background:#E8F5E9;border-left:4px solid #1B5E20"><div style="font-size:12px;color:var(--txt)">Solo se muestran los <b>faltantes confirmados</b> (merma real, rojo) y el <b>consumo de insumo</b> (azul, para ver su costo). El resto de diferencias (errores de conteo, traspasos, sobrantes, se cobró una por otra) se justificó en el documento de incidencias y no representa pérdida.</div></div>';
+ html+='<div class="card"><div class="card-head"><div><div class="card-title" style="color:var(--rojo)">🔴 Faltantes confirmados — merma real</div><div class="card-sub">Semana 1–9 ago · '+f$(D.merma_real)+' total</div></div></div><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Producto</th><th>Piezas</th><th>Merma $</th></tr></thead><tbody>'
+  +D.faltantes.map(function(f){return '<tr><td style="font-weight:600">'+f[0]+'</td><td>'+f[1]+'</td><td class="mono" style="color:var(--rojo)">'+f[2]+'</td><td class="mono" style="font-weight:700;color:var(--rojo)">'+f$(f[3])+'</td></tr>';}).join('')
+  +'<tr style="background:var(--rojo2);font-weight:700"><td colspan="3">TOTAL MERMA REAL</td><td class="mono" style="color:var(--rojo)">'+f$(D.merma_real)+'</td></tr>'
+  +'</tbody></table></div></div>';
+ html+='<div class="card"><div class="card-head"><div><div class="card-title" style="color:#1565C0">🔵 Consumo de insumo — no es pérdida</div><div class="card-sub">Proteína a granel (Birdman vainilla 1.8 · Habits vainilla · Birdman chocolate 1.8) usada en bebidas · '+f$(D.insumo_total)+' total</div></div></div><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Producto</th><th>Consumo $</th></tr></thead><tbody>'
+  +D.insumo_rows.map(function(r){return '<tr><td style="font-weight:600">'+r[0]+'</td><td>'+r[1]+'</td><td class="mono" style="font-weight:700;color:#1565C0">'+f$(r[2])+'</td></tr>';}).join('')
+  +'<tr style="background:#E3F2FD;font-weight:700"><td colspan="2">TOTAL CONSUMO INSUMO</td><td class="mono" style="color:#1565C0">'+f$(D.insumo_total)+'</td></tr>'
+  +'</tbody></table></div></div>';
+ el.innerHTML=html;
+}
+function renderSupDayAgo(el,cfg){
+ var SUCS=window[cfg.sucs_var], RES=window[cfg.R], DET=window[cfg.D], TOP=window[cfg.T], INC=window[cfg.I];
+ if(!RES){el.innerHTML='<div class="card">Cargando…</div>';return;}
+ CURRENT_SUP_DETALLE=DET;
+ var html='';
+ var tot_fal=RES.reduce(function(a,d){return a+d.faltantes;},0);
+ var tot_sob=RES.reduce(function(a,d){return a+d.sobrantes;},0);
+ var max_diff=RES.reduce(function(a,d){return Math.abs(d.diff_ps)>Math.abs(a.diff_ps)?d:a;},{suc:'—',diff_ps:0});
+ html+='<div class="kpi-grid">'
+ +'<div class="kpi" style="border-top:3px solid #1565C0"><div class="kpi-label">Corte diario</div><div class="kpi-val" style="font-size:15px">'+cfg.fecha+'</div><div class="kpi-sub">'+SUCS.length+' sucursales · '+DET.length+' productos con movimiento</div></div>'
+ +'<div class="kpi red"><div class="kpi-label">Productos faltantes</div><div class="kpi-val">'+tot_fal+'</div><div class="kpi-sub">Inv. Teórico > Inv. Real</div></div>'
+ +'<div class="kpi amber"><div class="kpi-label">Productos sobrantes</div><div class="kpi-val">'+tot_sob+'</div><div class="kpi-sub">Inv. Real > Inv. Teórico</div></div>'
+ +'<div class="kpi purple"><div class="kpi-label">Mayor impacto $</div><div class="kpi-val">'+max_diff.suc+'</div><div class="kpi-sub">'+f$(max_diff.diff_ps)+' neto</div></div>'
+ +'</div>';
+ html+=cfg.notas;
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📍 Diferencia por sucursal</div><div class="card-sub">Inv.Ini + Compras − Ventas = Teórico  |  Diff = Teórico − Inv.Final</div></div></div>'
+ +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Diferencia $</th><th>Faltantes</th><th>Sobrantes</th><th>Estado</th></tr></thead><tbody>'
+ +RES.map(function(r){
+  var col=r.diff_ps>200?'var(--rojo)':r.diff_ps<-200?'#1B5E20':'var(--ambar)';
+  var bg=r.diff_ps>200?'#FFEBEE':r.diff_ps<-200?'#E8F5E9':'#FFFDE7';
+  var est=r.diff_ps>200?'🔴 Faltante':r.diff_ps<-200?'🟢 Sobrante':'🟡 Estable';
+  return'<tr><td style="font-weight:700">'+r.suc+'</td><td class="mono" style="font-weight:700;color:'+col+';background:'+bg+'">'+f$(r.diff_ps)+' '+est+'</td><td class="mono" style="color:var(--rojo)">'+r.faltantes+'</td><td class="mono" style="color:#1B5E20">'+r.sobrantes+'</td><td><span style="font-size:12px">'+est+'</span></td></tr>';
+ }).join('')
+ +'</tbody></table></div></div>';
+ html+='<div class="card"><div class="card-head"><div class="card-title">Diferencia neta por sucursal ($)</div><div class="card-sub">↑ sobrante · ↓ faltante</div></div><div style="position:relative;height:180px"><canvas id="ch-sup-diff-'+cfg.dayId+'"></canvas></div></div>';
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">Top diferencias por producto</div><div class="card-sub">Ordenado por impacto $</div></div></div>'
+ +TOP.slice(0,12).map(function(p,i){
+  var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';
+  var col=p.dps>0?'var(--rojo)':'#1B5E20'; var icon=p.dps>0?'🔴':'🟢';
+  return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name" style="flex:1">'+icon+' '+p.prod+' <span style="color:var(--gris);font-size:10px">('+p.sucs.join(', ')+')</span></div><div class="rank-val" style="color:'+col+'">'+f$(p.dps)+'</div></div>';
+ }).join('')
+ +'</div>';
+ var activeSuc=SUCS[0];
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Detalle por sucursal</div><div class="card-sub">Inv.Ini + Compras − Ventas = Teórico vs Inv.Final</div></div></div>'
+ +'<div class="suc-tabs" id="sup-suc-tabs" style="margin-bottom:12px">'
+ +SUCS.map(function(s){
+  var r=RES.find(function(x){return x.suc===s;});
+  var cls=r&&r.diff_ps>200?' suc-tab-crit':r&&r.diff_ps<-200?' suc-tab-ok':'';
+  return'<button class="suc-tab'+cls+(s===activeSuc?' active':'')+('" onclick="setSupSuc(&apos;'+s+'&apos;)">')+s+'</button>';
+ }).join('')
+ +'</div><div id="sup-det-content" style="overflow-x:auto"></div></div>';
+ html+=renderIncidenciasSection(cfg.dayId, INC);
+ el.innerHTML=html;
+ setTimeout(function(){
+  var labels=RES.map(function(r){return r.suc;});
+  var vals=RES.map(function(r){return -r.diff_ps;});
+  var colors=vals.map(function(v){return v<-200?'rgba(178,34,34,.8)':v>200?'rgba(27,94,32,.8)':'rgba(230,126,34,.8)';});
+  mkChart('ch-sup-diff-'+cfg.dayId,{type:'bar',data:{labels:labels,datasets:[{label:'Diff $',data:vals,backgroundColor:colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.abs(v);},font:{size:9},color:TC}}}}});
+  renderSupSucTable(activeSuc);
+ },80);
+}
+function renderSup1_19Jul(el){
+ CURRENT_SUP_DETALLE = SUP_DETALLE_1_19JUL;
+ var html='';
+ var tot_fal=SUP_RESUMEN_1_19JUL.reduce(function(a,d){return a+d.faltantes;},0);
+ var tot_sob=SUP_RESUMEN_1_19JUL.reduce(function(a,d){return a+d.sobrantes;},0);
+ var max_diff=SUP_RESUMEN_1_19JUL.reduce(function(a,d){return Math.abs(d.diff_ps)>Math.abs(a.diff_ps)?d:a;},{suc:'—',diff_ps:0});
+ html+='<div class="kpi-grid">'
+ +'<div class="kpi" style="border-top:3px solid #1565C0"><div class="kpi-label">Período</div><div class="kpi-val" style="font-size:15px">1–19 Jul 2026 🆕</div><div class="kpi-sub">'+SUP_SUCS_1_19JUL.length+' sucursales · '+SUP_DETALLE_1_19JUL.length+' productos con movimiento</div></div>'
+ +'<div class="kpi red"><div class="kpi-label">Productos faltantes</div><div class="kpi-val">'+tot_fal+'</div><div class="kpi-sub">Inv. Teórico > Inv. Real</div></div>'
+ +'<div class="kpi amber"><div class="kpi-label">Productos sobrantes</div><div class="kpi-val">'+tot_sob+'</div><div class="kpi-sub">Inv. Real > Inv. Teórico</div></div>'
+ +'<div class="kpi purple"><div class="kpi-label">Mayor impacto $</div><div class="kpi-val">'+max_diff.suc+'</div><div class="kpi-sub">'+f$(max_diff.diff_ps)+' neto</div></div>'
+ +'</div>';
+
+ html+='<div class="card" style="background:#FFF8E1;border-left:4px solid var(--ambar)"><div style="font-size:12px;color:var(--txt)"><b>⚠️ Notas de esta actualización:</b> Kitchen Lab (registrada como "Lomas" en Odoo) tiene compras y ventas, pero aún sin conteo físico del 19 jul — se excluye de este corte hasta tenerlo. Se excluyeron ~39 piezas vendidas de productos nuevos sin SKU en catálogo (marca LMNT y variantes "Falcon Performance") — pendiente de alta en catálogo. <b>Polanco y San Miguel muestran grandes "sobrantes"</b> que probablemente reflejan transferencias de apertura/restock no capturadas como compra en Odoo — en investigación, no accionar todavía.</div></div>';
+
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📍 Diferencia por sucursal</div><div class="card-sub">Fórmula: Inv.Ini (cierre Jun) + Compras − Ventas = Teórico  |  Diff = Teórico − Inv.Final (19 jul)</div></div></div>'
+ +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Diferencia $</th><th>Faltantes</th><th>Sobrantes</th><th>Estado</th></tr></thead><tbody>'
+ +SUP_RESUMEN_1_19JUL.map(function(r){
+ var col=r.diff_ps>200?'var(--rojo)':r.diff_ps<-200?'#1B5E20':'var(--ambar)';
+ var bg=r.diff_ps>200?'#FFEBEE':r.diff_ps<-200?'#E8F5E9':'#FFFDE7';
+ var est=r.diff_ps>200?'🔴 Faltante':r.diff_ps<-200?'🟢 Sobrante*':'🟡 Estable';
+ return'<tr><td style="font-weight:700">'+r.suc+'</td>'
+ +'<td class="mono" style="font-weight:700;color:'+col+';background:'+bg+'">'+f$(r.diff_ps)+' '+est+'</td>'
+ +'<td class="mono" style="color:var(--rojo)">'+r.faltantes+'</td>'
+ +'<td class="mono" style="color:#1B5E20">'+r.sobrantes+'</td>'
+ +'<td><span style="font-size:12px">'+est+'</span></td>'
+ +'</tr>';
+ }).join('')
+ +'</tbody></table></div><div style="font-size:10px;color:var(--gris);margin-top:6px">*Sobrante en Polanco/San Miguel bajo revisión — ver nota arriba.</div></div>';
+
+ html+='<div class="card"><div class="card-head"><div class="card-title">Diferencia neta por sucursal ($)</div><div class="card-sub">↑ sobrante · ↓ faltante</div></div><div style="position:relative;height:180px"><canvas id="ch-sup-diff-1-19"></canvas></div></div>';
+
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">Top diferencias por producto</div><div class="card-sub">Ordenado por impacto $</div></div></div>'
+ +SUP_TOP_DIFFS_1_19JUL.slice(0,12).map(function(p,i){
+ var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';
+ var col=p.dps>0?'var(--rojo)':'#1B5E20';
+ var icon=p.dps>0?'🔴':'🟡';
+ return'<div class="rank-row"><div class="rank-num '+rk+'">'+( i+1)+'</div>'
+ +'<div class="rank-name" style="flex:1">'+icon+' '+p.prod+' <span style="color:var(--gris);font-size:10px">('+p.sucs.join(', ')+')</span></div>'
+ +'<div class="rank-val" style="color:'+col+'">'+f$(p.dps)+'</div></div>';
+ }).join('')
+ +'</div>';
+
+ var activeSucSup19=SUP_SUCS_1_19JUL[0];
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Detalle por sucursal</div><div class="card-sub">Inv.Ini + Compras − Ventas = Teórico vs Inv.Final (19 jul)</div></div></div>'
+ +'<div class="suc-tabs" id="sup-suc-tabs" style="margin-bottom:12px">'
+ +SUP_SUCS_1_19JUL.map(function(s){
+ var r=SUP_RESUMEN_1_19JUL.find(function(x){return x.suc===s;});
+ var cls=r&&r.diff_ps>200?' suc-tab-crit':r&&r.diff_ps<-200?' suc-tab-ok':''
+ return'<button class="suc-tab'+cls+(s===activeSucSup19?' active':'')+('" onclick="setSupSuc(&apos;'+s+'&apos;)">')
+ +s+'</button>';
+ }).join('')
+ +'</div><div id="sup-det-content" style="overflow-x:auto"></div></div>';
+
+ el.innerHTML=html;
+
+ setTimeout(function(){
+ var labels=SUP_RESUMEN_1_19JUL.map(function(r){return r.suc;});
+ var vals=SUP_RESUMEN_1_19JUL.map(function(r){return -r.diff_ps;});
+ var colors=vals.map(function(v){return v<-200?'rgba(178,34,34,.8)':v>200?'rgba(27,94,32,.8)':'rgba(230,126,34,.8)';});
+ mkChart('ch-sup-diff-1-19',{type:'bar',data:{labels:labels,datasets:[{label:'Diff $',data:vals,backgroundColor:colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.abs(v);},font:{size:9},color:TC}}}}});
+ renderSupSucTable('Condesa');
+ },80);
+}
+
+
+
+
+
+
+function renderSupSucTable(suc){
+ var el=document.getElementById('sup-det-content');
+ if(!el) return;
+ var rows=CURRENT_SUP_DETALLE.filter(function(r){
+ var d=r.sucs[suc];
+ return d&&(d.ini||d.comp||d.vta||d.fin||d.diff);
+ });
+ var html='<table class="tbl"><thead><tr><th>Producto</th><th>Inv. Ini</th><th>Compras (+)</th><th>Ventas (−)</th><th>Teórico</th><th>Inv. Final</th><th>Diferencia</th></tr></thead><tbody>';
+ rows.forEach(function(r){
+ var d=r.sucs[suc];
+ var diff=d.diff;
+ var bg=diff>0.1?'#FFEBEE':diff<-0.1?'#E8F5E9':'';
+ var col=diff>0.1?'var(--rojo)':diff<-0.1?'#1B5E20':'var(--gris)';
+ html+='<tr><td style="font-size:11px;font-weight:600">'+ r.prod+'</td>'
+ +'<td class="mono">'+(d.ini||'—')+'</td>'
+ +'<td class="mono" style="color:#1565C0">'+(d.comp?'+'+d.comp:'—')+'</td>'
+ +'<td class="mono" style="color:#6A1B9A">'+(d.vta?'-'+d.vta:'—')+'</td>'
+ +'<td class="mono" style="font-weight:700">'+(d.teo||0)+'</td>'
+ +'<td class="mono" style="background:#E8F5E9;color:#1B5E20;font-weight:700">'+(d.fin||'—')+'</td>'
+ +'<td class="mono" style="background:'+bg+';color:'+col+';font-weight:700">'+(diff>0.1?('−'+diff):diff<-0.1?('+'+Math.abs(diff)):(diff||'—'))+'</td>'
+ +'</tr>';
+ });
+ html+='</tbody></table>';
+ el.innerHTML=html;
+}
+
+
+function renderSupDiario(el){
+ el.innerHTML='<div class="card" style="text-align:center;padding:48px;color:var(--gris)">'
+ +'<div style="font-size:40px;margin-bottom:12px">📅</div>'
+ +'<div style="font-size:15px;font-weight:700;margin-bottom:8px">Reporte Diario</div>'
+ +'<div>Disponible próximamente — se activará cuando compartas el inventario diario de suplementos.</div>'
+ +'</div>';
+}
+
+
+function renderSupSemanal(el){
+ var DET={
+  'Liverpool':[['Proteína vainilla Habits 488g',2,956],['Proteína cacao Performance Habits 578g',2,951],['Proteína vainilla Performance Habits 578g',2,951],['Sachet vainilla Habits 30g',16,503],['Proteína cacao Habits 488g',1,478],['Sachet chocolate Birdman 30g',3,71],['Sachet cacao Habits 30g',1,31],['Sachet Macchiato Habits 30g',2,0]],
+  'Polanco':[['Sachet cacao Habits 30g',16,503],['Sachet vainilla Habits 30g',16,503],['Proteína cacao Habits 488g',1,478],['Proteína vainilla Habits 488g',1,478],['Sachet vainilla Trulife 31g',8,216],['Sachet vainilla Birdman 30g',2,53],['Sachet moka Fitmingo Birdman 30g',1,27],['Sachet chocolate Birdman 30g',1,24]],
+  'Condesa':[['Proteína vainilla ON 740g',3,1686],['Sachet moka Fitmingo Birdman 30g',10,265],['Sachet cacao Habits 30g',2,63],['Sachet chocolate Birdman 30g',1,24]],
+  'San Miguel':[['Creatina ON 300g',4,1206]],
+  'Santa Fe':[['Proteína vainilla Habits 488g',1,478],['Sachet vainilla Habits 30g',3,94]],
+  'Roma':[['Sachet vainilla Habits 30g',1,31]],
+  'Insurgentes':[['Proteína vainilla Birdman 1.8kg',1,0]]
+ };
+ var ORDER=['Liverpool','Polanco','Condesa','San Miguel','Santa Fe','Roma','Insurgentes'];
+ var TOTPZ=101, TOTD=10071;
+ var html='';
+ html+='<div class="kpi-grid">'
+ +'<div class="kpi" style="border-top:3px solid #1565C0"><div class="kpi-label">Reporte semanal</div><div class="kpi-val" style="font-size:15px">22–26 Jul 2026</div><div class="kpi-sub">Pérdidas confirmadas de la semana</div></div>'
+ +'<div class="kpi red"><div class="kpi-label">Pérdida total $</div><div class="kpi-val">'+f$(TOTD)+'</div><div class="kpi-sub">Faltantes no justificados</div></div>'
+ +'<div class="kpi amber"><div class="kpi-label">Pérdida total pz</div><div class="kpi-val">'+TOTPZ+'</div><div class="kpi-sub">Piezas perdidas</div></div>'
+ +'<div class="kpi purple"><div class="kpi-label">Sucursales con pérdida</div><div class="kpi-val">6</div><div class="kpi-sub">de 8 activas</div></div>'
+ +'</div>';
+ html+='<div class="card" style="background:#FFF8E1;border-left:4px solid var(--ambar)"><div style="font-size:12px;color:var(--txt)"><b>Criterio:</b> Pérdida = faltantes NO justificados. Se excluyen traspasos, errores de conteo e insumo/cocina. Faltantes de <b>Liverpool y Polanco</b> contados por no justificar en tiempo. Polanco con su registro. No incluye $2,068 de Colima ("Venta Market Condesa" = ventas).</div></div>';
+ // Resumen por sucursal
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📍 Resumen por sucursal</div><div class="card-sub">Semana 22–26 jul</div></div></div>'
+ +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Piezas</th><th>Pérdida $</th></tr></thead><tbody>';
+ ORDER.forEach(function(s){
+   var tpz=DET[s].reduce(function(a,r){return a+r[1];},0), td=DET[s].reduce(function(a,r){return a+r[2];},0);
+   var col=td>=2000?'var(--rojo)':td>=800?'var(--ambar)':'var(--gris)';
+   html+='<tr><td style="font-weight:700">'+s+'</td><td class="mono">'+tpz+'</td><td class="mono" style="font-weight:700;color:'+col+'">'+f$(td)+'</td></tr>';
+ });
+ html+='<tr style="border-top:2px solid var(--brd)"><td style="font-weight:800">TOTAL</td><td class="mono" style="font-weight:800">'+TOTPZ+'</td><td class="mono" style="font-weight:800;color:var(--rojo)">'+f$(TOTD)+'</td></tr>'
+ +'</tbody></table></div></div>';
+ // Detalle por sucursal: qué productos
+ html+='<div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--gris);margin:16px 0 8px">Detalle por sucursal — productos con pérdida</div>';
+ ORDER.forEach(function(s){
+   var tpz=DET[s].reduce(function(a,r){return a+r[1];},0), td=DET[s].reduce(function(a,r){return a+r[2];},0);
+   html+='<div class="card"><div class="card-head"><div><div class="card-title">'+s+'</div><div class="card-sub">'+tpz+' pz · '+f$(td)+' en pérdida</div></div></div>'
+   +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Producto</th><th>Piezas</th><th>Pérdida $</th></tr></thead><tbody>'
+   +DET[s].map(function(r){
+     return '<tr><td style="font-weight:600;font-size:12px">'+r[0]+'</td><td class="mono">'+r[1]+'</td><td class="mono" style="font-weight:700;color:var(--rojo)">'+f$(r[2])+'</td></tr>';
+   }).join('')
+   +'</tbody></table></div></div>';
+ });
+ el.innerHTML=html;
+}
+// ─── VITCH BAKERY SUCURSAL DETALLE (global scope) ───
+var VB_SUCS_ALL=['Condesa','Colima','Santa Fe','Liverpool','Polanco','San Miguel','Insurgentes','Roma','Kitchen Lab'];
+var activeSucVB='Condesa';
+function buildVBSucTabs(){
+ var el=document.getElementById('vb-suc-tabs');
+ if(!el)return;
+ el.innerHTML=VB_SUCS_ALL.map(function(s){
+ var tot=VB_CAPTURA.reduce(function(a,p){return a+(p.suc[s]?p.suc[s].merma_pesos:0);},0);
+ var cls=tot>2000?' suc-tab-crit':tot>1000?' suc-tab-mod':'';
+ var isActive=s===activeSucVB?' active':'';
+ return '<button class="suc-tab'+cls+isActive+'" onclick="setVBSuc(&apos;'+s+'&apos;)">'+s+'</button>';
+ }).join('');
+ renderVBSuc(activeSucVB);
+}
+function setVBSuc(s){
+ activeSucVB=s;
+ document.querySelectorAll('#vb-suc-tabs .suc-tab').forEach(function(t){
+ t.classList.toggle('active',t.textContent.trim()===s);
+ });
+ renderVBSuc(s);
+}
+function renderVBSuc(suc){
+ var prods=VB_CAPTURA.filter(function(p){return p.suc[suc]&&p.suc[suc].compras>0;});
+ var tot_ini=0,tot_comp=0,tot_vta=0,tot_fin=0,tot_mpz=0,tot_mpesos=0;
+ var rows=prods.map(function(p){
+ var d=p.suc[suc];
+ tot_ini+=d.inv_ini; tot_comp+=d.compras; tot_vta+=d.ventas; tot_fin+=d.inv_fin;
+ tot_mpz+=d.merma_pz; tot_mpesos+=d.merma_pesos;
+ var col=d.pct_merma>=30?'var(--rojo)':d.pct_merma>=15?'var(--ambar)':d.pct_merma>=7?'#E67E22':'var(--verde2)';
+ return '<tr>'
+ +'<td style="font-weight:600">'+p.n+'</td>'
+ +'<td class="mono" style="color:var(--text-secondary)">$'+p.costo+'</td>'
+ +'<td class="mono">'+d.inv_ini+'</td>'
+ +'<td class="mono" style="color:var(--verde2)">+'+d.compras+'</td>'
+ +'<td class="mono" style="color:#2a78d6">'+d.ventas+'</td>'
+ +'<td class="mono" style="color:var(--gris)">'+d.inv_fin+'</td>'
+ +'<td class="mono" style="font-weight:700;color:var(--rojo)">'+d.merma_pz+'</td>'
+ +'<td class="mono" style="font-weight:700;color:var(--rojo)">'+f$(d.merma_pesos)+'</td>'
+ +'<td class="mono" style="font-weight:700;color:'+col+'">'+d.pct_merma+'%</td>'
+ +'</tr>';
+ }).join('');
+ var tot_pct=tot_comp>0?Math.round(tot_mpz/(tot_comp+tot_ini-tot_fin)*1000)/10:0;
+ var tot_col=tot_pct>=30?'var(--rojo)':tot_pct>=15?'var(--ambar)':tot_pct>=7?'#E67E22':'var(--verde2)';
+ rows+='<tr style="background:var(--rojo2);font-weight:700">'
+ +'<td>TOTAL '+suc+'</td><td></td>'
+ +'<td class="mono">'+tot_ini+'</td>'
+ +'<td class="mono" style="color:var(--verde2)">+'+tot_comp+'</td>'
+ +'<td class="mono" style="color:#2a78d6">'+tot_vta+'</td>'
+ +'<td class="mono">'+tot_fin+'</td>'
+ +'<td class="mono" style="color:var(--rojo)">'+tot_mpz+'</td>'
+ +'<td class="mono" style="color:var(--rojo)">'+f$(tot_mpesos)+'</td>'
+ +'<td class="mono" style="color:'+tot_col+'">'+tot_pct+'%</td>'
+ +'</tr>';
+ var el=document.getElementById('vb-suc-content');
+ if(!el)return;
+ el.innerHTML=
+ '<table class="tbl" style="margin-bottom:16px"><thead><tr>'
+ +'<th>Producto</th><th>Costo</th><th>Inv. Ini</th><th>Compras (+)</th><th>Ventas (-)</th><th>Inv. Final</th><th>Merma pz</th><th>Merma $</th><th>% Merma</th>'
+ +'</tr></thead><tbody>'+rows+'</tbody></table>'
+ +'<div style="position:relative;height:160px"><canvas id="ch-vb-suc-det"></canvas></div>';
+ setTimeout(function(){
+ var pnames=prods.map(function(p){return p.n;});
+ var mvals=prods.map(function(p){return p.suc[suc].merma_pesos;});
+ var pcts=prods.map(function(p){return p.suc[suc].pct_merma;});
+ var mcolors=mvals.map(function(v){return v>1000?'rgba(178,34,34,.8)':v>500?'rgba(230,126,34,.8)':'rgba(27,175,122,.7)';});
+ mkChart('ch-vb-suc-det',{type:'bar',data:{labels:pnames,datasets:[
+ {label:'Merma $',data:mvals,backgroundColor:mcolors,borderRadius:4,yAxisID:'y'},
+ {type:'line',label:'% Merma',data:pcts,borderColor:'#7F77DD',borderWidth:2,pointRadius:5,yAxisID:'y2'}
+ ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10},boxWidth:9}}},scales:{
+ x:{grid:{display:false},ticks:{font:{size:10},color:TC}},
+ y:{grid:{color:GC},ticks:{callback:function(v){return'$'+v;},font:{size:9},color:TC}},
+ y2:{position:'right',grid:{display:false},ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}
+ }}});
+ },60);
+}
+function buildCategorias(){
+ document.getElementById('cat-tabs').innerHTML=CATS.map(function(c,i){return'<button class="cat-tab'+(i===0?' active':'')+('" onclick="setCat('+i+')">'+c.ic+' '+c.n+'</button>');}).join('');
+ renderCat(0);
+}
+function setCat(i){activeCat=i;document.querySelectorAll('.cat-tab').forEach(function(t,j){t.classList.toggle('active',j===i);});renderCat(i);}
+function renderCat(i){
+ var c=CATS[i],el=document.getElementById('cat-content');
+ if(c.id==='VB'){renderVB(el);return;}
+ if(c.id==='INS'){renderINSMerged(el);return;}
+ if(c.id==='SUP'){renderSUP(el);return;}
+ var bCls=c.pct>=c.pol*1.5?'badge-crit':c.pct>c.pol?'badge-mod':c.pct>0?'badge-ok':'badge-ok';
+ var bTxt=c.pct>=c.pol*1.5?'Crítica':c.pct>c.pol?'Moderada':c.pct>0?'OK':'Sin datos';
+ var html='<div class="kpi-grid"><div class="kpi red"><div class="kpi-label">Merma total</div><div class="kpi-val">'+(c.merma?f$(c.merma):'—')+'</div></div><div class="kpi blue"><div class="kpi-label">Ventas total</div><div class="kpi-val">'+(c.ventas?f$(c.ventas):'—')+'</div></div><div class="kpi amber"><div class="kpi-label">% Merma prom.</div><div class="kpi-val">'+(c.pct?fp(c.pct):'—')+'</div><div class="kpi-sub">Política ≤'+c.pol+'%</div></div><div class="kpi green"><div class="kpi-label">Status</div><div class="kpi-val" style="font-size:14px"><span class="badge '+bCls+'">'+bTxt+'</span></div></div></div>';
+ if(c.vals.length>0){html+='<div class="card"><div class="card-head"><div class="card-title">'+c.ic+' '+c.n+' — Merma $ por periodo</div></div><div style="position:relative;height:200px"><canvas id="ch-cat-'+i+'"></canvas></div></div>';}
+ else{html+='<div class="card" style="text-align:center;padding:48px;color:var(--gris)"><div style="font-size:40px;margin-bottom:12px">'+c.ic+'</div><div style="font-size:15px;font-weight:700;margin-bottom:8px">'+c.n+'</div><div>Los datos aparecerán cuando proceses la primera semana.</div></div>';}
+ el.innerHTML=html;
+ if(c.vals.length>0)setTimeout(function(){mkChart('ch-cat-'+i,{type:'bar',data:{labels:c.sems,datasets:[{label:'Merma $',data:c.vals,backgroundColor:c.color+'bb',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});},60);
+}
+
+
+var activeInsTab='VPJ';
+function renderINSMerged(el){
+ var tabs=[{id:'VPJ',label:'🥤 Vasos PLA Julio'},{id:'VP',label:'🥤 Vasos PLA Junio'},{id:'CB',label:'☕ Cold Brew Concentrado'},{id:'PI',label:'💪 Proteína Insumo'}];
+ var html='<div class="suc-tabs" id="ins-tabs">'
+ +tabs.map(function(t){return '<button class="suc-tab'+(t.id===activeInsTab?' active':'')+'" onclick="setInsTab(\''+t.id+'\')">'+t.label+'</button>';}).join('')
+ +'</div><div id="ins-tab-content"></div>';
+ el.innerHTML=html;
+ renderInsTab(activeInsTab);
+}
+function setInsTab(id){
+ activeInsTab=id;
+ renderINSMerged(document.getElementById('cat-content'));
+}
+function renderInsTab(id){
+ var el=document.getElementById('ins-tab-content');
+ if(!el) return;
+ if(id==='VPJ') renderVPJul(el);
+ else if(id==='VP') renderVP(el);
+ else if(id==='CB') renderCBC(el);
+ else if(id==='PI') renderPI(el);
+}
+
+
+// ─── VITCH BAKERY completo ───
+function renderVB(el){
+ var TOTAL_PESOS=13147,TOTAL_PZ=423,POL=3;
+ var suc_sorted=Object.keys(VB_SUC_TOTALS).sort(function(a,b){return VB_SUC_TOTALS[b].pesos-VB_SUC_TOTALS[a].pesos;});
+ var top_suc_pct=Object.keys(VB_SUC_TOTALS).map(function(s){
+ var tot_pz=VB_PRODS_DATA.reduce(function(a,p){return a+(p.suc[s]?p.suc[s].pz:0);},0);
+ var pct_vals=VB_PRODS_DATA.filter(function(p){return p.suc[s]&&p.suc[s].pct_m>0;}).map(function(p){return p.suc[s].pct_m;});
+ var avg_pct=pct_vals.length?pct_vals.reduce(function(a,b){return a+b;},0)/pct_vals.length:0;
+ return {s:s,pct:Math.round(avg_pct*10)/10};
+ }).sort(function(a,b){return b.pct-a.pct;});
+
+
+ var html='';
+ // KPIs
+ html+='<div class="kpi-grid">'
+ +'<div class="kpi red"><div class="kpi-label">Merma total Jul</div><div class="kpi-val">'+f$(TOTAL_PESOS)+'</div><div class="kpi-sub">'+TOTAL_PZ+'pz · 9 sucursales</div></div>'
+ +'<div class="kpi amber"><div class="kpi-label">% Merma s/ventas</div><div class="kpi-val" style="color:var(--rojo)">7.4%</div><div class="kpi-sub">Objetivo ≤3% <span class="badge badge-crit">Sobre política</span></div></div>'
+ +'<div class="kpi purple"><div class="kpi-label">Sucursal líder</div><div class="kpi-val">'+suc_sorted[0]+'</div><div class="kpi-sub">'+f$(VB_SUC_TOTALS[suc_sorted[0]].pesos)+' · '+VB_SUC_TOTALS[suc_sorted[0]].pz+' pz</div></div>'
+ +'<div class="kpi green"><div class="kpi-label">Mayor pérdida $</div><div class="kpi-val">'+VB_ALERTAS[0].suc+'</div><div class="kpi-sub">'+f$(VB_ALERTAS[0].m)+' · '+VB_ALERTAS[0].prod+' ('+VB_ALERTAS[0].pct+'%)</div></div>'
+ +'</div>';
+
+
+ // Alertas críticas VB
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">🚨 Alertas por producto y sucursal</div><div class="card-sub">% merma sobre ventas · política ≤3% · 🔴 crítica ≥3% y ≥$800</div></div></div>'
+ +'<div style="display:flex;flex-wrap:wrap;gap:8px;padding:8px 0">'
+ +VB_ALERTAS.map(function(a){
+ var cls=a.m>=800?'badge-crit':'badge-mod';
+ return '<span class="badge '+cls+'" style="font-size:12px;padding:4px 10px">'+a.suc+' · '+a.prod+' · '+f$(a.m)+' ('+a.pct+'%)</span>';
+ }).join('')
+ +'</div></div>';
+
+
+ // Gráfica merma $ por sucursal + % por producto
+ html+='<div class="g2">'
+ +'<div class="card"><div class="card-head"><div class="card-title">Merma $ por sucursal</div></div><div style="position:relative;height:200px"><canvas id="ch-vb-suc"></canvas></div></div>'
+ +'<div class="card"><div class="card-head"><div class="card-title">Merma $ por producto</div></div><div style="position:relative;height:200px"><canvas id="ch-vb-prod"></canvas></div></div>'
+ +'</div>';
+
+
+ // Gráfica % merma promedio por sucursal
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">Ventas vs Merma por sucursal — Jul 2026</div><div class="card-sub">Barras: Ventas $ y Merma $ · línea: % merma sobre ventas (política 3%)</div></div></div><div style="position:relative;height:240px"><canvas id="ch-vb-pct"></canvas></div></div>';
+
+
+ // Top por sucursal en $ y en %
+ html+='<div class="g2">'
+ +'<div class="card"><div class="card-head"><div><div class="card-title">Top sucursales — Merma $</div></div></div>'
+ +suc_sorted.map(function(s,i){var d=VB_SUC_TOTALS[s],max=VB_SUC_TOTALS[suc_sorted[0]].pesos,rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name">'+s+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(d.pesos/max*100)+'%;background:#1baf7a"></div></div><div class="rank-val">'+f$(d.pesos)+'</div></div>';}).join('')
+ +'</div>'
+ +'<div class="card"><div class="card-head"><div><div class="card-title">Top sucursales — % Merma</div></div></div>'
+ +top_suc_pct.map(function(d,i){var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn',col=d.pct>=30?'#B22222':d.pct>=15?'#E67E22':'#1baf7a';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name">'+d.s+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.min(d.pct/60*100,100)+'%;background:'+col+'"></div></div><div class="rank-val" style="color:'+col+'">'+d.pct+'%</div></div>';}).join('')
+ +'</div>'
+ +'</div>';
+
+
+ // Top productos
+ html+='<div class="g2">'
+ +'<div class="card"><div class="card-head"><div class="card-title">Top productos — Merma $</div></div>'
+ +VB_PROD_TOTALS.map(function(p,i){var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name">'+p.n+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.pesos/VB_PROD_TOTALS[0].pesos*100)+'%;background:#1baf7a"></div></div><div class="rank-val">'+f$(p.pesos)+'</div></div>';}).join('')
+ +'</div>'
+ +'<div class="card"><div class="card-head"><div class="card-title">Top productos — piezas</div></div>'
+ +VB_PROD_TOTALS.slice().sort(function(a,b){return b.pz-a.pz;}).map(function(p,i){var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name">'+p.n+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.pz/VB_PROD_TOTALS[0].pz*100)+'%;background:#7F77DD"></div></div><div class="rank-val">'+p.pz+'pz</div></div>';}).join('')
+ +'</div>'
+ +'</div>';
+
+
+ // Tabla completa producto x sucursal
+ var SUCS_VB=['Condesa','Colima','Santa Fe','Liverpool','Polanco','San Miguel','Insurgentes','Roma','Kitchen Lab'];
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">Tabla completa — producto × sucursal</div><div class="card-sub">Junio 2026 · pz / $ / % merma</div></div></div>'
+ +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Producto</th>'
+ +SUCS_VB.map(function(s){return'<th colspan="2" style="text-align:center">'+s+'</th>';}).join('')
+ +'<th>Total $</th><th>Total pz</th></tr>'
+ +'<tr><th></th>'+SUCS_VB.map(function(){return'<th style="font-size:10px;color:var(--gris)">$</th><th style="font-size:10px;color:var(--gris)">%</th>';}).join('')+'<th></th><th></th></tr></thead><tbody>'
+ +VB_PRODS_DATA.map(function(p){
+ var tot=Object.values(p.suc).reduce(function(a,d){return a+d.pesos;},0);
+ var totpz=Object.values(p.suc).reduce(function(a,d){return a+d.pz;},0);
+ return'<tr><td style="font-weight:600;white-space:nowrap">'+p.n+'</td>'
+ +SUCS_VB.map(function(s){var d=p.suc[s];if(!d)return'<td class="mono" style="color:var(--gris)">—</td><td>—</td>';var pc=d.pct_m,col=pc>=30?'var(--rojo)':pc>=15?'var(--ambar)':'var(--verde2)';return'<td class="mono">'+f$(d.pesos)+'</td><td class="mono" style="font-weight:700;color:'+col+'">'+pc+'%</td>';}).join('')
+ +'<td class="mono" style="font-weight:700">'+f$(tot)+'</td><td class="mono">'+totpz+'pz</td></tr>';
+ }).join('')
+ +'<tr style="background:var(--verde3);font-weight:700"><td>TOTAL</td>'
+ +SUCS_VB.map(function(s){var d=VB_SUC_TOTALS[s]||{pesos:0,pz:0};return'<td class="mono" colspan="2">'+f$(d.pesos)+'<br><span style="font-size:10px;color:var(--gris)">'+d.pz+'pz</span></td>';}).join('')
+ +'<td class="mono">'+f$(TOTAL_PESOS)+'</td><td class="mono">'+TOTAL_PZ+'pz</td></tr>'
+ +'</tbody></table></div></div>';
+
+
+
+
+ // === REPORTE POR SUCURSAL ===
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📍 Reporte por sucursal — detalle completo</div><div class="card-sub">Inv. Inicial + Compras − Ventas − Inv. Final = Merma Real</div></div></div>'
+ +'<div class="suc-tabs" id="vb-suc-tabs" style="margin-bottom:12px"></div>'
+ +'<div style="overflow-x:auto" id="vb-suc-content"></div>'
+ +'</div>';
+
+
+ el.innerHTML=html;
+
+
+ setTimeout(function(){buildVBSucTabs();},10);
+
+
+ setTimeout(function(){
+ var suc_labels=suc_sorted;
+ var suc_vals=suc_labels.map(function(s){return VB_SUC_TOTALS[s].pesos;});
+ var suc_colors=suc_labels.map(function(s,i){return i===0?'rgba(178,34,34,.8)':'rgba(27,175,122,.7)';});
+ mkChart('ch-vb-suc',{type:'bar',data:{labels:suc_labels,datasets:[{label:'Merma $',data:suc_vals,backgroundColor:suc_colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});
+ mkChart('ch-vb-prod',{type:'bar',data:{labels:VB_PROD_TOTALS.map(function(p){return p.n;}),datasets:[{label:'Merma $',data:VB_PROD_TOTALS.map(function(p){return p.pesos;}),backgroundColor:['rgba(178,34,34,.8)','rgba(230,126,34,.8)','rgba(27,175,122,.8)','rgba(127,119,221,.8)'],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});
+ var vv_labs=suc_sorted;
+ var vv_ventas=vv_labs.map(function(s){return VB_SUC_VENTAS[s]||0;});
+ var vv_merma=vv_labs.map(function(s){return VB_SUC_TOTALS[s].pesos;});
+ var vv_pct=vv_labs.map(function(s){var v=VB_SUC_VENTAS[s]||0;return v?Math.round(VB_SUC_TOTALS[s].pesos/v*1000)/10:0;});
+ mkChart('ch-vb-pct',{type:'bar',data:{labels:vv_labs,datasets:[{label:'Ventas $',data:vv_ventas,backgroundColor:'rgba(27,175,122,.5)',borderRadius:4,yAxisID:'y'},{label:'Merma $',data:vv_merma,backgroundColor:'rgba(178,34,34,.85)',borderRadius:4,yAxisID:'y'},{type:'line',label:'% Merma s/ventas',data:vv_pct,borderColor:'#E67E22',backgroundColor:'#E67E22',borderWidth:2,tension:.3,pointRadius:3,yAxisID:'y1'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{font:{size:9},boxWidth:9}},annotation:{annotations:{line1:{type:'line',yMin:3,yMax:3,yScaleID:'y1',borderColor:'rgba(178,34,34,.7)',borderWidth:1.5,borderDash:[4,3]}}}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{position:'left',grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}},y1:{position:'right',min:0,grid:{display:false},ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
+ },80);
+}
+
+
+// ─── MERMA GENERAL ───
+var activeMG='Polanco';
+function buildInsumos(){
+ var sucs=Object.keys(MERMA_GENERAL);
+ document.getElementById('mg-tabs').innerHTML=sucs.map(function(s){return'<button class="suc-tab'+(s===activeMG?' active':'')+'" onclick="setMG(\''+s+'\')">'+s+'</button>';}).join('');
+ renderMG(activeMG);
+ setTimeout(function(){
+ var labels=Object.keys(MG_TOTALS_JUL);
+ var valsJul=labels.map(function(l){return MG_TOTALS_JUL[l];});
+ var colors=labels.map(function(l){return l==='Polanco'?'rgba(178,34,34,.8)':'rgba(127,119,221,.7)';});
+ mkChart('ch-ins-suc',{type:'bar',data:{labels:labels,datasets:[{label:'Merma General Julio',data:valsJul,backgroundColor:'rgba(230,126,34,.9)',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{font:{size:9},boxWidth:9}}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});
+ },80);
+}
+function setMG(name){activeMG=name;document.querySelectorAll('#mg-tabs .suc-tab').forEach(function(t){t.classList.toggle('active',t.textContent===name);});renderMG(name);}
+function renderMG(name){
+ var d=MERMA_GENERAL[name];
+ function mgRows(data,colorHex){var max=data[0].v;return data.map(function(p,i){var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name" style="font-size:11px">'+p.n+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.v/max*100)+'%;background:'+colorHex+'"></div></div><div class="rank-val">'+f$(p.v)+'</div></div>';}).join('');}
+
+ var s1Data=MERMA_GENERAL_JUL_S1[name], s2Data=MERMA_GENERAL_JUL_S2[name];
+ var julData=MERMA_GENERAL_JUL[name];
+ var s1tot=MG_TOTALS_JUL_S1[name]||0, s2tot=MG_TOTALS_JUL_S2[name]||0;
+ var acumtot=(MG_TOTALS_JUL[name]!=null)?MG_TOTALS_JUL[name]:(s1tot+s2tot);
+
+ var julBlock='<div style="grid-column:1/-1;font-size:10px;font-weight:700;text-transform:uppercase;color:#E67E22;margin:2px 0 4px 2px">🆕 Julio 2026</div>';
+ julBlock += '<div class="card" style="margin-bottom:0;border-left:4px solid #E67E22"><div class="card-head"><div><div class="card-title">🗓 Semana 1 (1–5 jul) — '+name+'</div><div class="card-sub">Total: '+f$(s1tot)+'</div></div></div>'
+ + (s1Data&&s1Data.length?mgRows(s1Data,'#E67E22'):'<div style="color:var(--gris);padding:12px;text-align:center;font-size:12px">Sin merma registrada</div>') + '</div>';
+ julBlock += '<div class="card" style="margin-bottom:0;border-left:4px solid #E67E22"><div class="card-head"><div><div class="card-title">🗓 Semana 2 (6–12 jul) — '+name+'</div><div class="card-sub">Total: '+f$(s2tot)+'</div></div></div>'
+ + (s2Data&&s2Data.length?mgRows(s2Data,'#d35400'):'<div style="color:var(--gris);padding:12px;text-align:center;font-size:12px">Sin merma registrada</div>') + '</div>';
+ julBlock += '<div class="card" style="margin-bottom:0;grid-column:1/-1;border-left:4px solid #E67E22;background:#FFF8F0"><div class="card-head"><div><div class="card-title">📅 Acumulado Julio (1–12) — '+name+'</div><div class="card-sub">Total acumulado: <b>'+f$(acumtot)+'</b></div></div></div>'
+ + (julData&&julData.length?mgRows(julData,'#B22222'):'<div style="color:var(--gris);padding:12px;text-align:center;font-size:12px">Sin datos</div>') + '</div>';
+
+ document.getElementById('mg-content').innerHTML=julBlock;
+}
+
+
+// ─── HISTÓRICO ───
+function buildHistorico(){
+ setTimeout(function(){
+ mkChart('ch-hist-main',{data:{labels:SEMS,datasets:[{type:'bar',label:'Merma $',data:MRMA,backgroundColor:MRMA.map(function(v,i){return i===SEMS.length-1?'rgba(178,34,34,.9)':'rgba(178,34,34,.55)';}),borderRadius:3,yAxisID:'y'},{type:'line',label:'% Merma',data:PCT,borderColor:'#E67E22',borderWidth:2.5,pointRadius:4,yAxisID:'y2',tension:.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10},boxWidth:9}}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}},y2:{position:'right',grid:{display:false},min:10,max:40,ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
+ var sucKeys=Object.keys(SUC_HIST_PCT),colors=['#2a78d6','#e34948','#1baf7a','#eda100','#4a3aa7','#eb6834','#e87ba4'];
+ mkChart('ch-hist-suc',{type:'line',data:{labels:SEMS,datasets:sucKeys.map(function(s,i){return{label:s,data:SUC_HIST_PCT[s],borderColor:colors[i%colors.length],borderWidth:1.8,pointRadius:3,tension:.3,spanGaps:true};})},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:9},boxWidth:8}}},scales:{x:{ticks:{font:{size:9},color:TC}},y:{min:0,max:65,ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
+ },80);
+ var t=document.getElementById('hist-table');
+ t.innerHTML='<thead><tr><th>Sem</th><th>Ventas $</th><th>Merma $</th><th>% Merma</th><th>Var. $</th><th>Utilidad %</th><th>Status</th></tr></thead><tbody>'+SEMS.map(function(s,i){var dv=i>0?MRMA[i]-MRMA[i-1]:0,last=i===SEMS.length-1;return'<tr style="'+(last?'background:#FFF8F0;font-weight:600':'')+'"><td class="mono">'+s+(last?' 🆕':'')+'</td><td class="mono">'+f$(VTAS[i])+'</td><td class="mono" style="color:var(--rojo)">'+f$(MRMA[i])+'</td><td class="mono" style="font-weight:700;color:'+sc(PCT[i])+'">'+fp(PCT[i])+'</td><td class="mono" style="color:'+(i>0?(dv>0?'var(--rojo)':'var(--verde2)'):'var(--gris)')+'">'+( i>0?(dv>0?'+':'')+f$(dv):'—')+'</td><td class="mono" style="color:#00897B;font-weight:700">'+fp(UTILIDAD_P[i])+'</td><td>'+pillHtml(PCT[i])+'</td></tr>';}).join('')+'</tbody>';
+}
+
+
+// ─── INIT ───
+
+
+
+var _activeSem = -1; // -1 = todo
+
+function buildWeekFilter(){
+  var el = document.getElementById('dash-week-filter');
+  if(!el) return;
+  var opts = '<option value="-1"' + (_activeSem===-1?' selected':'') + '>📅 Todo S11–S33</option>'
+    + SEMS.map(function(s,i){
+        var p = PCT[i];
+        return '<option value="'+i+'"'+(_activeSem===i?' selected':'')+'>'+
+               (p>=30?'🔴':p>=22?'🟡':'🟢')+' '+s+' ('+p.toFixed(1)+'%)</option>';
+      }).join('');
+  el.innerHTML = '<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;'
+    +'background:var(--card);border-radius:10px;border:1px solid var(--brd);margin-bottom:4px">'
+    +'<span style="font-size:11px;font-weight:700;color:#718096;text-transform:uppercase">Semana:</span>'
+    +'<select id="week-sel" style="font-size:12px;padding:5px 10px;border-radius:8px;'
+    +'border:1.5px solid #e2e8f0;background:#fff;cursor:pointer;min-width:180px">'
+    +opts+'</select></div>';
+  document.getElementById('week-sel').onchange = function(){
+    _activeSem = parseInt(this.value);
+    buildDashboard();
+  };
+}
+
+function getDashData(){
+  if(_activeSem >= 0){
+    // Semana individual: mostrar las últimas 8 para contexto
+    var f = Math.max(0, _activeSem - 7), t = _activeSem + 1;
+    return {sems:SEMS.slice(f,t), pct:PCT.slice(f,t), pctv:PCT_VTAS.slice(f,t), vtas:VTAS.slice(f,t),
+            mrma:MRMA.slice(f,t), desv:DESV.slice(f,t), selI:_activeSem-f};
+  }
+  return {sems:SEMS, pct:PCT, pctv:PCT_VTAS, vtas:VTAS, mrma:MRMA, desv:DESV, selI:SEMS.length-1};
+}
+function switchDashTab(id, btn){
+  document.querySelectorAll('#dash-main-tabs .suc-tab').forEach(function(b){b.classList.remove('active');});
+  if(btn) btn.classList.add('active');
+  var resEl = document.getElementById('dash-tab-resumen');
+  var sucEl = document.getElementById('dash-tab-sucursales');
+  if(resEl) resEl.style.display = id==='resumen' ? 'block' : 'none';
+  if(sucEl) sucEl.style.display = id==='sucursales' ? 'block' : 'none';
+  if(id==='sucursales') buildDashSucTab();
+}
+
+function buildDashSucTab(){
+  var el = document.getElementById('dash-tab-sucursales');
+  if(!el) return;
+
+  // Selector de sucursal con estado semáforo
+  var activeSuc = window._dashActiveSuc || BRANCHES.filter(function(b){return b.pct>0;})[0].n;
+  window._dashActiveSuc = activeSuc;
+
+  var btnHtml = BRANCHES.filter(function(b){return b.pct>0;}).map(function(b){
+    var hist = SUC_HIST_PCT[b.n]||[];
+    var s27pct = hist[hist.length-1];
+    var p = s27pct ? (s27pct < 1 ? s27pct*100 : s27pct) : b.pct;
+    var cls = p>=30?'suc-tab-crit':p>=22?'suc-tab-mod':'';
+    return '<button class="suc-tab '+cls+(b.n===activeSuc?' active':'')+('" onclick="selectDashSuc(&apos;'+b.n+'&apos;)">'+b.n+'</button>');
+  }).join('');
+
+  el.innerHTML = '<div class="suc-tabs" id="dash-suc-btns" style="margin-bottom:14px">'+btnHtml+'</div>'
+    + '<div id="dash-suc-report"></div>';
+
+  renderDashSucReport(activeSuc);
+}
+
+function selectDashSuc(name){
+  window._dashActiveSuc = name;
+  document.querySelectorAll('#dash-suc-btns .suc-tab').forEach(function(b){
+    b.classList.toggle('active', b.textContent.trim()===name);
+  });
+  renderDashSucReport(name);
+}
+
+function renderDashSucReport(name){
+  var el = document.getElementById('dash-suc-report');
+  if(!el) return;
+
+  var b = BRANCHES.find(function(x){return x.n===name;});
+  if(!b){el.innerHTML='<p>Sin datos</p>';return;}
+
+  var hist = SUC_HIST_PCT[name]||[];
+  var semKeys = [11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29];
+  // Convertir hist a valores legibles
+  var histVals = hist.map(function(v){
+    if(v===null) return null;
+    return v < 1 ? Math.round(v*1000)/10 : v;
+  });
+
+  // KPIs clave
+  var p27 = histVals[histVals.length-1]||0;
+  var p26 = histVals[histVals.length-2]||0;
+  var nonNull = histVals.filter(function(v){return v!==null;});
+  var avgPct = nonNull.length ? Math.round(nonNull.reduce(function(a,v){return a+v;},0)/nonNull.length*10)/10 : 0;
+  var minPct = nonNull.length ? Math.min.apply(null,nonNull) : 0;
+  var maxPct = nonNull.length ? Math.max.apply(null,nonNull) : 0;
+  var delta27 = Math.round((p27-p26)*10)/10;
+  var semsCrit = nonNull.filter(function(v){return v>=30;}).length;
+  var semsOk = nonNull.filter(function(v){return v<22;}).length;
+  var totalMerma = semKeys.reduce(function(a,k){return a+(b.s[k]||0);},0);
+  var s27merma = b.s[29]||0;
+  var insAcum = (b.ins[0]||0)+(b.ins[1]||0)+(b.ins[2]||0);
+  var top10d = TOP10_SUC[name]||null;
+  var camData = MERMA_GENERAL[name]||null;
+
+  // ── Generar recomendaciones basadas en datos ──
+  var recos = [];
+  if(p27>=30){
+    recos.push({ico:'🚨',cls:'alert-crit',t:'Merma crítica S29 ('+p27.toFixed(1)+'%)',d:'Supera 30%. Acción inmediata: revisar recetas, porciones y merma en producción esta semana.'});
+  } else if(p27>=22){
+    recos.push({ico:'⚠️',cls:'alert-mod',t:'Merma moderada S29 ('+p27.toFixed(1)+'%)',d:'Sobre política del 22%. Monitorear de cerca y revisar los top productos con mayor merma.'});
+  } else {
+    recos.push({ico:'✅',cls:'alert-ok',t:'Merma bajo control S29 ('+p27.toFixed(1)+'%)',d:'Dentro de política. Mantener procesos actuales y documentar buenas prácticas.'});
+  }
+  if(delta27>5){
+    recos.push({ico:'📈',cls:'alert-crit',t:'Aumento de '+delta27.toFixed(1)+'pp vs S28',d:'Incremento significativo. Identificar qué cambió esta semana: pedido, producción o inventario.'});
+  } else if(delta27<-5){
+    recos.push({ico:'📉',cls:'alert-ok',t:'Mejora de '+Math.abs(delta27).toFixed(1)+'pp vs S28',d:'Tendencia positiva. Identificar qué acción funcionó y replicarla.'});
+  }
+  if(semsCrit>=3){
+    recos.push({ico:'🔴',cls:'alert-crit',t:semsCrit+' semanas críticas (≥30%) acumuladas',d:'Patrón recurrente. Revisar causas raíz estructurales: rotación de producto, tamaño de pedido, receta.'});
+  }
+  if(avgPct>26){
+    recos.push({ico:'📊',cls:'alert-mod',t:'Promedio histórico elevado ('+avgPct.toFixed(1)+'%)',d:'El promedio supera 26%. Evaluar ajuste de pedido semanal y revisión de SKUs de mayor merma.'});
+  }
+  if(insAcum>3000){
+    recos.push({ico:'📦',cls:'alert-mod',t:'Insumos acumulados alto ($'+Math.round(insAcum).toLocaleString()+')',d:'Merma de insumos considerable en junio. Revisar los 3 productos más repetidos en el top CAM.'});
+  }
+  if(top10d && top10d.s26[0] && top10d.s26[0].v > 500){
+    recos.push({ico:'🏆',cls:'alert-mod',t:'Top producto: '+top10d.s26[0].n+' ($'+top10d.s26[0].v+')',d:'Este producto concentra la mayor merma. Verificar receta, porciones y manejo en cocina.'});
+  }
+
+  // ── Tabla histórica ──
+  var histRows = semKeys.map(function(k,i){
+    var p = histVals[i];
+    var m = b.s[k]||0;
+    if(p===null && !m) return '';
+    var pShow = p!==null ? p.toFixed(1)+'%' : '—';
+    var bg = p!==null?(p>=30?'#FFEBEE':p>=22?'#FFF8E1':'#E8F5E9'):'';
+    var fg = p!==null?(p>=30?'#B71C1C':p>=22?'#E65100':'#1B5E20'):'#999';
+    var est = p!==null?(p>=30?'🔴':p>=22?'🟡':'🟢'):'—';
+    return '<tr><td style="font-weight:700">S'+k+'</td>'
+      +'<td class="mono" style="background:'+bg+';color:'+fg+';font-weight:700">'+pShow+'</td>'
+      +'<td class="mono">$'+(m?Math.round(m).toLocaleString():'—')+'</td>'
+      +'<td style="font-size:12px">'+est+'</td></tr>';
+  }).join('');
+
+  // ── HTML del reporte ──
+  var html2 = ''
+    // KPIs
+    +'<div class="kpi-grid" style="margin-bottom:12px">'
+    +'<div class="kpi '+(p27>=30?'red':p27>=22?'amber':'green')+'"><div class="kpi-label">% Merma S29</div>'
+    +'<div class="kpi-val">'+p27.toFixed(1)+'%</div>'
+    +'<div class="kpi-sub"><span style="color:'+(delta27>0?'var(--rojo)':'#27AE60')+'">'+(delta27>0?'▲+':'▼')+Math.abs(delta27).toFixed(1)+'pp vs S28</span></div></div>'
+
+    +'<div class="kpi red"><div class="kpi-label">Merma $ S29</div>'
+    +'<div class="kpi-val">$'+Math.round(s27merma).toLocaleString()+'</div>'
+    +'<div class="kpi-sub">semana actual</div></div>'
+
+    +'<div class="kpi blue"><div class="kpi-label">Promedio S11–S33</div>'
+    +'<div class="kpi-val">'+avgPct.toFixed(1)+'%</div>'
+    +'<div class="kpi-sub">histórico acumulado</div></div>'
+
+    +'<div class="kpi purple"><div class="kpi-label">Merma $ acumulada</div>'
+    +'<div class="kpi-val">$'+Math.round(totalMerma).toLocaleString()+'</div>'
+    +'<div class="kpi-sub">S11–S33 total</div></div>'
+
+    +'<div class="kpi amber"><div class="kpi-label">Rango histórico</div>'
+    +'<div class="kpi-val">'+minPct.toFixed(1)+'%–'+maxPct.toFixed(1)+'%</div>'
+    +'<div class="kpi-sub">'+semsCrit+' sem. críticas · '+semsOk+' en verde</div></div>'
+    +'</div>'
+
+    // Gráfica + Tabla histórica
+    +'<div class="g2" style="margin-bottom:12px">'
+    +'<div class="card"><div class="card-head"><div><div class="card-title">📈 Tendencia % Merma S11–S33</div>'
+    +'<div class="card-sub">Línea naranja = política 22% · Rojo = 30%</div></div>'
+    +'<span class="badge '+(p27>=30?'badge-crit':p27>=22?'badge-mod':'badge-ok')+'">S29: '+p27.toFixed(1)+'%</span></div>'
+    +'<div style="position:relative;height:200px"><canvas id="ch-suc-dash-'+name.replace(/ /g,'_')+'"></canvas></div></div>'
+
+    +'<div class="card"><div class="card-head"><div class="card-title">📋 Histórico detallado</div></div>'
+    +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sem.</th><th>% Merma</th><th>Merma $</th><th>Estado</th></tr></thead>'
+    +'<tbody>'+histRows+'</tbody></table></div></div>'
+    +'</div>'
+
+    // Recomendaciones
+    +'<div class="card" style="margin-bottom:12px"><div class="card-head"><div><div class="card-title">💡 Recomendaciones — '+name+'</div>'
+    +'<div class="card-sub">Basadas en datos S11–S33</div></div></div>'
+    +recos.map(function(r){
+      return '<div class="alert-item alert-'+(r.cls==='alert-crit'?'crit':r.cls==='alert-ok'?'ok':'mod')+'">'
+        +'<div class="alert-ico">'+r.ico+'</div>'
+        +'<div class="alert-body"><div class="alert-title">'+r.t+'</div><div class="alert-desc">'+r.d+'</div></div></div>';
+    }).join('')
+    +'</div>';
+
+  // Top 10 S26 + Acumulado (antes en Top 10 por sucursal / Merma General CAM)
+  if(top10d){
+    html2 += '<div class="g2" style="margin-bottom:12px">'
+      +'<div class="card"><div class="card-head"><div><div class="card-title">🏆 Top 10 merma — S26</div>'
+      +'<div class="card-sub">Mayor impacto $ en la semana</div></div></div>'
+      +top10d.s26.map(function(p,i){
+        var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';
+        var max=top10d.s26[0].v;
+        return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div>'
+          +'<div class="rank-name" style="font-size:11px">'+p.n+'</div>'
+          +'<div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.v/max*100)+'%;background:#B22222"></div></div>'
+          +'<div class="rank-val">$'+p.v.toLocaleString()+'</div></div>';
+      }).join('')+'</div>'
+      +'<div class="card"><div class="card-head"><div><div class="card-title">📅 Top 10 — Acumulado Jun</div>'
+      +'<div class="card-sub">Mayor merma $ acumulada en el mes</div></div></div>'
+      +top10d.acum.map(function(p,i){
+        var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';
+        var max=top10d.acum[0].v;
+        return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div>'
+          +'<div class="rank-name" style="font-size:11px">'+p.n+'</div>'
+          +'<div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.v/max*100)+'%;background:#7F77DD"></div></div>'
+          +'<div class="rank-val">$'+p.v.toLocaleString()+'</div></div>';
+      }).join('')+'</div>'
+      +'</div>';
+  }
+
+  // Merma General CAM (insumos) para esta sucursal
+  if(camData){
+    html2 += '<div class="g2" style="margin-bottom:12px">'
+      +'<div class="card"><div class="card-head"><div><div class="card-title">🌿 CAM — Top merma S26</div>'
+      +'<div class="card-sub">Registros gerenciales · todas las categorías</div></div></div>'
+      +(camData.s26||[]).slice(0,8).map(function(p,i){
+        var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';
+        var max=(camData.s26[0]||{v:1}).v;
+        return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div>'
+          +'<div class="rank-name" style="font-size:11px">'+p.n+'</div>'
+          +'<div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.v/max*100)+'%;background:#27AE60"></div></div>'
+          +'<div class="rank-val">$'+p.v.toFixed(2)+'</div></div>';
+      }).join('')+'</div>'
+      +'<div class="card"><div class="card-head"><div><div class="card-title">📊 CAM — Acumulado Jun</div>'
+      +'<div class="card-sub">Total mes: $'+(MG_TOTALS[name]||0).toLocaleString()+'</div></div></div>'
+      +(camData.acum||[]).slice(0,8).map(function(p,i){
+        var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';
+        var max=(camData.acum[0]||{v:1}).v;
+        return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div>'
+          +'<div class="rank-name" style="font-size:11px">'+p.n+'</div>'
+          +'<div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.v/max*100)+'%;background:#1565C0"></div></div>'
+          +'<div class="rank-val">$'+p.v.toFixed(2)+'</div></div>';
+      }).join('')+'</div>'
+      +'</div>';
+  }
+
+  // Insumos Jugos por semana
+  html2 += '<div class="card" style="margin-bottom:12px"><div class="card-head"><div class="card-title">📦 Insumos Jugos — Jun 2026</div>'
+    +'<div class="card-sub">Merma de insumos por período</div></div>'
+    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px">'
+    +['Jun S1','Jun S2','Jun S3'].map(function(s,i){
+      var v = b.ins[i]||0;
+      var prev = i>0?(b.ins[i-1]||0):null;
+      var trend = prev!==null?(v>prev?'<span style="color:var(--rojo)">↑</span>':'<span style="color:#27AE60">↓</span>'):'';
+      return '<div style="background:var(--fondo);border-radius:10px;padding:14px;text-align:center;border:1px solid var(--brd)">'
+        +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gris);margin-bottom:6px">'+s+'</div>'
+        +'<div style="font-size:18px;font-weight:800">'+(v?'$'+Math.round(v).toLocaleString():'—')+' '+trend+'</div></div>';
+    }).join('')
+    +'</div></div>';
+
+  el.innerHTML = html2;
+
+  // Renderizar gráfica histórica
+  if(histVals.some(function(v){return v!==null;})){
+    setTimeout(function(){
+      var canvasId = 'ch-suc-dash-'+name.replace(/ /g,'_');
+      mkChart(canvasId,{type:'line',data:{labels:SEMS,datasets:[
+        {label:'% Merma',data:histVals,borderColor:p27>=30?'#B22222':p27>=22?'#E67E22':'#27AE60',
+         borderWidth:2.5,pointRadius:4,tension:.3,spanGaps:true,
+         pointBackgroundColor:histVals.map(function(v){return v===null?'transparent':v>=30?'#B22222':v>=22?'#E67E22':'#27AE60';})},
+        {label:'22% política',data:SEMS.map(function(){return 22;}),borderColor:'#E67E22',borderDash:[5,3],borderWidth:1.5,pointRadius:0},
+        {label:'30% crítica',data:SEMS.map(function(){return 30;}),borderColor:'#B22222',borderDash:[3,3],borderWidth:1,pointRadius:0}
+      ]},options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{labels:{font:{size:9},boxWidth:8}}},
+        scales:{x:{grid:{color:GC},ticks:{font:{size:9},color:TC}},
+                y:{min:0,max:65,grid:{color:GC},ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
+    },80);
+  }
+}
+
+function showCatDirect(catId){
+  // Navegar a la página de categorías
+  showPage('categorias');
+  // Esperar a que buildCategorias corra y luego forzar la categoría
+  setTimeout(function(){
+    var el = document.getElementById('cat-content');
+    var NAMES = {VB:'Vitch Bakery',INS:'Insumos',SUP:'Suplementos'};
+    // Actualizar título
+    document.getElementById('page-title').textContent = NAMES[catId] || catId;
+    // Marcar tab correcto
+    document.querySelectorAll('.cat-tab').forEach(function(b){
+      b.classList.toggle('active', b.dataset.cat === catId);
+    });
+    // Ocultar los tabs de categoría (ya viene directo del sidebar)
+    var tabsEl = document.getElementById('cat-tabs');
+    if(tabsEl) tabsEl.style.display = 'none';
+    // Renderizar
+    if(el){
+      if(catId==='VB') renderVB(el);
+      else if(catId==='INS') renderINSMerged(el);
+      else if(catId==='SUP') renderSUP(el);
+    }
+  }, 100);
+}
+function buildAll(){
+ try{buildDashboard();}catch(e){console.error('dash',e);}
+ try{buildMargen();}catch(e){console.error('margen',e);}
+ try{buildSucursales();}catch(e){console.error('suc',e);}
+ try{buildTop10();}catch(e){console.error('top10',e);}
+ try{buildCategorias();}catch(e){console.error('cats',e);}
+ try{buildInsumos();}catch(e){console.error('ins',e);}
+ try{buildHistorico();}catch(e){console.error('hist',e);}
+ try{buildGestion();}catch(e){console.error('gestion',e);}
+ try{buildGestionDetalle();}catch(e){console.error('gdet',e);}
+ try{buildBenchmark();}catch(e){console.error('benchmark',e);}
+}
+var GDET_SUC=null;
+function buildGestionDetalle(){
+ var D=window.GESTION_DETALLE||{}; var sucs=Object.keys(D);
+ if(!sucs.length) return;
+ if(!GDET_SUC||sucs.indexOf(GDET_SUC)<0) GDET_SUC=sucs[0];
+ var tabsEl=document.getElementById('gdet-tabs'); if(!tabsEl) return;
+ tabsEl.innerHTML=sucs.map(function(s){return '<button class="suc-tab'+(s===GDET_SUC?' active':'')+('" onclick="setGdetSuc(&apos;'+s+'&apos;)">')+s+'</button>';}).join('');
+ renderGdet(GDET_SUC);
+}
+function setGdetSuc(s){GDET_SUC=s;document.querySelectorAll('#gdet-tabs .suc-tab').forEach(function(t){t.classList.toggle('active',t.textContent.trim()===s);});renderGdet(s);}
+function renderGdet(s){
+ var el=document.getElementById('gdet-content'); if(!el) return;
+ var rows=(window.GESTION_DETALLE||{})[s]||[];
+ var h='<table class="tbl"><thead><tr><th>Producto</th><th>Inicial</th><th>Compras</th><th>Trasp.entra</th><th>Trasp.sale</th><th>Ventas</th><th>Teórico</th><th>Físico</th><th>Dif pz</th><th>Dif $</th><th>Tipo</th></tr></thead><tbody>';
+ var merma=0,ins=0;
+ rows.forEach(function(r){
+  var nm=r[0],ini=r[1],comp=r[2],tin=r[3],tout=r[4],vta=r[5],teo=r[6],fin=r[7],mdol=r[9],isins=r[10];
+  var difpz=Math.round((fin-teo)*10)/10, difdol=-mdol;
+  var tipo,bg,col;
+  if(isins){tipo='🔵 Insumo';bg='#E3F2FD';col='#1565C0';ins+=mdol;}
+  else{tipo=difpz<0?'🔴 Falta':(difpz>0?'🟢 Sobra':'—');bg=difpz<0?'#FFEBEE':(difpz>0?'#E8F5E9':'');col=difpz<0?'var(--rojo)':(difpz>0?'#1B5E20':'var(--gris)');merma+=mdol;}
+  h+='<tr><td style="font-size:11px'+(isins?';font-weight:700':'')+'">'+nm+'</td>'
+   +'<td class="mono">'+(ini||'—')+'</td><td class="mono" style="color:#1565C0">'+(comp?'+'+comp:'—')+'</td>'
+   +'<td class="mono" style="color:#1B5E20">'+(tin?'+'+tin:'—')+'</td><td class="mono" style="color:#6A1B9A">'+(tout?'-'+tout:'—')+'</td>'
+   +'<td class="mono" style="color:#6A1B9A">'+(vta?'-'+vta:'—')+'</td><td class="mono" style="font-weight:700">'+teo+'</td>'
+   +'<td class="mono" style="background:#E8F5E9;font-weight:700">'+fin+'</td>'
+   +'<td class="mono" style="background:'+bg+';color:'+col+';font-weight:700">'+(difpz>0?'+'+difpz:difpz)+'</td>'
+   +'<td class="mono" style="background:'+bg+';color:'+col+';font-weight:700">'+f$(difdol)+'</td>'
+   +'<td style="font-size:11px">'+tipo+'</td></tr>';
+ });
+ h+='</tbody></table>';
+ h+='<div style="margin-top:8px;font-size:12px;padding:8px;background:#F5F7FA;border-radius:8px"><b style="color:#C0392B">Merma neta retail: '+f$(merma)+'</b> &nbsp;·&nbsp; <b style="color:#1565C0">Consumo insumo: '+f$(ins)+'</b></div>';
+ el.innerHTML=h;
+}
+function buildGestion(){
+ var maxRot = Math.max.apply(null, GESTION_SUC.map(function(r){return r.rotacion||0;}));
+ var tableHtml = '<table class="tbl"><thead><tr><th>Sucursal</th><th>Inv. Inicial</th><th>Compras</th><th>Ventas (unid.)</th><th>Ventas $</th><th>Inv. Final</th><th>Inv. Promedio</th><th>Rotación</th><th>Días inv.</th><th>Diff. Neta $</th><th>Pérdida $</th><th>% Pérdida/Ventas</th></tr></thead><tbody>'
+ + GESTION_SUC.map(function(r){
+ var pctCol = r.pct_perdida>50?'var(--rojo)':r.pct_perdida>20?'var(--ambar)':'#1B5E20';
+ var note = r.pct_perdida>100?' <span style="color:var(--gris);font-size:10px">(base de venta muy chica)</span>':'';
+ var diffCol = r.diff_ps>200?'var(--rojo)':r.diff_ps<-200?'#1B5E20':'var(--ambar)';
+ var diffNote = r.diff_ps<-200?' <span style="color:var(--gris);font-size:10px">(sobrante en revisión)</span>':'';
+ return '<tr><td style="font-weight:700">'+r.suc+'</td>'
+ +'<td class="mono">'+r.ini+'</td>'
+ +'<td class="mono">'+r.comp+'</td>'
+ +'<td class="mono">'+r.ventas_unid+'</td>'
+ +'<td class="mono">'+f$(r.ventas_ps)+'</td>'
+ +'<td class="mono">'+r.fin+'</td>'
+ +'<td class="mono">'+r.inv_prom+'</td>'
+ +'<td class="mono">'+r.rotacion+'x</td>'
+ +'<td class="mono">'+r.dias_inv+' d</td>'
+ +'<td class="mono" style="color:'+diffCol+';font-weight:700">'+f$(r.diff_ps)+diffNote+'</td>'
+ +'<td class="mono" style="color:var(--rojo)">'+f$(r.perdida_ps)+'</td>'
+ +'<td class="mono" style="color:'+pctCol+';font-weight:700">'+r.pct_perdida+'%'+note+'</td>'
+ +'</tr>';
+ }).join('') + '</tbody></table>';
+ document.getElementById('gestion-suc-table').innerHTML = tableHtml;
+
+ function prodRows(list, colorHex){
+ var maxV = Math.max.apply(null, list.map(function(p){return p.rotacion;}));
+ return list.map(function(p,i){
+ var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';
+ return '<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div>'
+ +'<div class="rank-name" style="flex:1;font-size:11px">'+p.prod+' <span style="color:var(--gris);font-size:10px">(vta '+p.vta+' · inv prom '+p.inv_prom+')</span></div>'
+ +'<div class="rank-val" style="color:'+colorHex+'">'+p.rotacion+'x</div></div>';
+ }).join('');
+ }
+ document.getElementById('gestion-slow').innerHTML = prodRows(GESTION_SLOW, 'var(--ambar)');
+ document.getElementById('gestion-fast').innerHTML = prodRows(GESTION_FAST, 'var(--rojo)');
+
+ document.getElementById('gestion-accionables').innerHTML = GESTION_SUC.map(function(r){
+ var acc = GESTION_ACCIONABLES[r.suc];
+ if(!acc) return '';
+ var estColor = acc.estado.indexOf('Urgente')>-1?'var(--rojo)':acc.estado.indexOf('investigación')>-1?'var(--ambar)':acc.estado.indexOf('Cerrado')>-1?'#1B5E20':'var(--gris)';
+ var estBg = acc.estado.indexOf('Urgente')>-1?'#FFEBEE':acc.estado.indexOf('investigación')>-1?'#FFF8E1':acc.estado.indexOf('Cerrado')>-1?'#E8F5E9':'#F5F5F5';
+ var topHtml = acc.top.length? '<div style="margin:8px 0"><div style="font-size:10px;font-weight:700;color:var(--gris);text-transform:uppercase;margin-bottom:4px">Top diferencias</div>'
+ + acc.top.map(function(t){return '<div style="font-size:11px;padding:2px 0">• '+t+'</div>';}).join('') + '</div>' : '';
+ var accHtml = '<div style="margin:8px 0"><div style="font-size:10px;font-weight:700;color:var(--gris);text-transform:uppercase;margin-bottom:4px">Accionables</div>'
+ + acc.accion.map(function(a){return '<div style="font-size:11px;padding:2px 0">☐ '+a+'</div>';}).join('') + '</div>';
+ return '<div class="card" style="margin-bottom:10px;border-left:4px solid '+estColor+'">'
+ + '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">'
+ + '<div style="font-weight:700;font-size:14px">'+r.suc+'</div>'
+ + '<span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:'+estBg+';color:'+estColor+'">'+acc.estado+'</span>'
+ + '</div>'
+ + '<div style="font-size:12px;margin:8px 0;color:var(--txt)">'+acc.diag+'</div>'
+ + topHtml + accHtml
+ + '<div style="display:flex;gap:16px;margin-top:10px;padding-top:8px;border-top:1px solid var(--brd);font-size:11px;color:var(--gris)">'
+ + '<div><b>Responsable:</b> '+acc.resp+'</div>'
+ + '<div><b>Compromiso:</b> 31 jul (fin de mes)</div>'
+ + '</div>'
+ + '</div>';
+ }).join('');
+
+ setTimeout(function(){
+ var labels = GESTION_SUC.map(function(r){return r.suc;});
+ var vals = GESTION_SUC.map(function(r){return r.rotacion;});
+ var colors = vals.map(function(v){return v>1?'rgba(178,34,34,.8)':v>0.4?'rgba(230,126,34,.8)':'rgba(21,101,192,.8)';});
+ mkChart('ch-gestion-rot',{type:'bar',data:{labels:labels,datasets:[{label:'Rotación',data:vals,backgroundColor:colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{font:{size:9},color:TC}}}}});
+ },80);
+}
+var BM_FILTER_SUC=null, BM_FILTER_TAG=null, BM_SEARCH='', BM_FILTER_COMP=null;
+function buildBenchmark(){
+ var el=document.getElementById('benchmark-content');
+ if(!el || !window.BENCHMARK_ROWS) return;
+
+ var html='<div class="kpi-grid">'
+ + BENCHMARK_KPIS.map(function(k){
+ var cls = k.lbl==='Mora Mora más barato'?'green':k.lbl==='Mora Mora más caro'?'red':k.lbl==='en línea (±5%)'?'amber':k.lbl==='sin comparable'?'':k.lbl==='precios comparados'?'blue':'purple';
+ return '<div class="kpi '+cls+'"><div class="kpi-label">'+k.lbl+'</div><div class="kpi-val">'+k.num+'</div></div>';
+ }).join('')
+ + '</div>';
+
+ html += '<div style="font-size:10px;color:var(--gris);margin-bottom:12px">Corrida del '+BENCHMARK_FECHA+' · delta &gt; 0 = Mora Mora más caro que el competidor · comparación contra precio efectivo (promo si existe)</div>';
+
+ // Filter bar: sucursal chips
+ var sucs=[];
+ BENCHMARK_ROWS.forEach(function(r){if(sucs.indexOf(r.suc)===-1) sucs.push(r.suc);});
+ html += '<div style="margin-bottom:8px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--gris);margin-bottom:5px">Sucursal</div><div class="suc-tabs" id="bm-suc-chips">'
+ + '<button class="suc-tab active" onclick="setBmSuc(null,this)">Todas</button>'
+ + sucs.map(function(s){return '<button class="suc-tab" onclick="setBmSuc(\''+s+'\',this)">'+s+'</button>';}).join('')
+ + '</div></div>';
+
+ // Filter bar: competidor chips
+ var comps=[];
+ BENCHMARK_ROWS.forEach(function(r){if(comps.indexOf(r.competidor)===-1) comps.push(r.competidor);});
+ html += '<div style="margin-bottom:8px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--gris);margin-bottom:5px">Competidor</div><div class="suc-tabs" id="bm-comp-chips">'
+ + '<button class="suc-tab active" onclick="setBmComp(null,this)">Todos</button>'
+ + comps.map(function(s){return '<button class="suc-tab" onclick="setBmComp(\''+s+'\',this)">'+s+'</button>';}).join('')
+ + '</div></div>';
+
+ // Filter bar: estado chips
+ var tagDefs=[['más barato','🟢 Más barato'],['en línea','🟡 En línea'],['más caro','🔴 Más caro'],['sin comparable','⚪ Sin comparable']];
+ html += '<div style="margin-bottom:10px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--gris);margin-bottom:5px">Estado</div><div class="suc-tabs" id="bm-tag-chips">'
+ + '<button class="suc-tab active" onclick="setBmTag(null,this)">Todos</button>'
+ + tagDefs.map(function(t){return '<button class="suc-tab" onclick="setBmTag(\''+t[0]+'\',this)">'+t[1]+'</button>';}).join('')
+ + '</div></div>';
+
+ // Search box
+ html += '<div style="margin-bottom:12px"><input id="bm-search" type="text" placeholder="🔎 Buscar producto, SKU o competidor..." oninput="setBmSearch(this.value)" style="width:100%;box-sizing:border-box;padding:8px 12px;border:1px solid var(--brd);border-radius:8px;font-size:13px;font-family:inherit"></div>';
+
+ html += '<div id="bm-count" style="font-size:11px;color:var(--gris);margin-bottom:6px"></div>';
+ html += '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Producto Mora Mora</th><th>Precio MM</th><th>Competidor</th><th>Producto competidor</th><th>Precio comp.</th><th>Delta</th><th></th></tr></thead><tbody id="bm-tbody"></tbody></table></div>';
+
+ html += '<div style="font-size:10px;color:var(--gris);margin-top:8px">Generado automáticamente. Precios de competidores tomados de sitios públicos el día de la corrida; los "sin comparable" se re-verifican en la siguiente calibración.</div>';
+
+ el.innerHTML = html;
+ renderBmRows();
+}
+function setBmSuc(suc,elm){
+ BM_FILTER_SUC=suc;
+ document.querySelectorAll('#bm-suc-chips .suc-tab').forEach(function(c){c.classList.remove('active');});
+ elm.classList.add('active');
+ renderBmRows();
+}
+function setBmComp(comp,elm){
+ BM_FILTER_COMP=comp;
+ document.querySelectorAll('#bm-comp-chips .suc-tab').forEach(function(c){c.classList.remove('active');});
+ elm.classList.add('active');
+ renderBmRows();
+}
+function setBmTag(tag,elm){
+ BM_FILTER_TAG=tag;
+ document.querySelectorAll('#bm-tag-chips .suc-tab').forEach(function(c){c.classList.remove('active');});
+ elm.classList.add('active');
+ renderBmRows();
+}
+function setBmSearch(v){
+ BM_SEARCH=(v||'').toLowerCase();
+ renderBmRows();
+}
+function renderBmRows(){
+ var rows=BENCHMARK_ROWS.filter(function(r){
+ if(BM_FILTER_SUC && r.suc!==BM_FILTER_SUC) return false;
+ if(BM_FILTER_COMP && r.competidor!==BM_FILTER_COMP) return false;
+ if(BM_FILTER_TAG && r.tag.indexOf(BM_FILTER_TAG)===-1) return false;
+ if(BM_SEARCH){
+ var hay=(r.prod+' '+r.sku+' '+r.competidor+' '+r.prod_comp).toLowerCase();
+ if(hay.indexOf(BM_SEARCH)===-1) return false;
+ }
+ return true;
+ });
+ var countEl=document.getElementById('bm-count');
+ if(countEl) countEl.textContent=rows.length+' de '+BENCHMARK_ROWS.length+' comparaciones';
+ var tbody=document.getElementById('bm-tbody');
+ if(!tbody) return;
+ if(!rows.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--gris);padding:20px">Sin resultados para este filtro.</td></tr>';return;}
+ tbody.innerHTML = rows.map(function(r){
+ var tagColor = r.tag.indexOf('más barato')>-1?{bg:'#eafaf1',c:'#1e8449'}:r.tag.indexOf('más caro')>-1?{bg:'#fdecea',c:'#c0392b'}:r.tag.indexOf('línea')>-1?{bg:'#fef9e7',c:'#9a7d0a'}:{bg:'#f4f4f4',c:'#7f8c8d'};
+ var compCell = r.prod_comp==='—'?'—':(r.prod_comp+(r.agotado?' <span style="color:#c0392b;font-size:10px;border:1px solid #c0392b;border-radius:4px;padding:0 4px;margin-left:4px">agotado</span>':''));
+ var precioComp = r.precio_comp + (r.promo?' <span style="color:#c0392b;font-size:10px;display:block">'+r.promo+'</span>':'') + (r.cambio?' <span style="color:var(--gris);font-size:10px;display:block">'+r.cambio+'</span>':'');
+ return '<tr><td style="font-weight:600;font-size:11px">'+r.suc+'</td>'
+ +'<td>'+r.prod+'<div style="color:#aab4bd;font-size:10px">'+r.sku+'</div></td>'
+ +'<td class="mono">'+r.precio_mm+'</td>'
+ +'<td>'+r.competidor+'</td>'
+ +'<td>'+compCell+'</td>'
+ +'<td class="mono">'+precioComp+'</td>'
+ +'<td class="mono" style="background:'+tagColor.bg+';color:'+tagColor.c+';font-weight:700">'+r.delta+'</td>'
+ +'<td><span class="badge" style="background:'+tagColor.bg+';color:'+tagColor.c+'">'+r.tag+'</span></td>'
+ +'</tr>';
+ }).join('');
+}
+
+function renderEficiencia(el){
+ if(!el) return;
+ var meses=['Ene','Feb','Mar','Abr','Jul'];
+ var cats=[
+  {n:'Jugos',color:'#B22222',pct:[13.6,11.2,11.8,11.6,10.8]},
+  {n:'Vitch Bakery',color:'#1baf7a',pct:[8.7,null,10.6,7.4,7.4]},
+  {n:'Suplementos',color:'#7F77DD',pct:[null,null,null,null,0]}
+ ];
+ var html='<div class="kpi-grid">';
+ cats.forEach(function(c){
+  var vals=c.pct.filter(function(x){return x!==null;});
+  var last=vals[vals.length-1], first=vals[0], delta=(vals.length>=2)?(last-first):null;
+  html+='<div class="kpi" style="border-top:3px solid '+c.color+'"><div class="kpi-label">'+c.n+'</div><div class="kpi-val">'+(c.n==='Suplementos'?'~0%':last+'%')+'</div><div class="kpi-sub">'+(c.n==='Suplementos'?'Ago · corte 4: $531 real (0.29%)':('Jul · % merma s/ventas'+(delta!=null?' · '+(delta<0?'↓':'↑')+Math.abs(delta).toFixed(1)+'pp vs Ene':'')))+'</div></div>';
+ });
+ html+='</div>';
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">Eficiencia por categoría — % merma sobre ventas</div><div class="card-sub">Mensual 2026 · métrica comparable entre categorías · menor = más eficiente</div></div></div><div style="position:relative;height:250px"><canvas id="ch-efic"></canvas></div></div>';
+ html+='<div class="card"><div class="card-head"><div class="card-title">Comparativo mensual</div></div><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Categoría</th>'+meses.map(function(m){return '<th>'+m+'</th>';}).join('')+'<th>Tendencia</th></tr></thead><tbody>';
+ cats.forEach(function(c){
+  var vals=c.pct.filter(function(x){return x!==null;});
+  var tr=vals.length>=2?(vals[vals.length-1]<vals[0]?'<span style="color:var(--verde2)">↓ mejora</span>':'<span style="color:var(--gris)">→ estable</span>'):'nuevo';
+  html+='<tr><td style="font-weight:700">'+c.n+'</td>'+c.pct.map(function(x){
+   if(x===null)return '<td class="mono" style="color:var(--gris)">—</td>';
+   if(c.n==='Suplementos'&&x===0)return '<td class="mono">~0%</td>';
+   var col=x<8?'#1B5E20':x<12?'var(--ambar)':'var(--rojo)';
+   return '<td class="mono" style="color:'+col+';font-weight:600">'+x+'%</td>';
+  }).join('')+'<td>'+tr+'</td></tr>';
+ });
+ html+='</tbody></table></div></div>';
+ html+='<div class="card" style="background:#E3F2FD;border-left:4px solid #1565C0"><div style="font-size:12px;color:var(--txt);line-height:1.7"><b>Hallazgos tras los cambios:</b><br>• <b>Jugos:</b> baja de 13.6% (Ene) a 10.8% (Jul) — la visibilidad semanal acompaña la mejora. Mayor merma $ absoluta por volumen.<br>• <b>Vitch Bakery:</b> ~7.4% real; el 23% de antes estaba inflado por medir en unidades. La categoría más eficiente.<br>• <b>Suplementos:</b> merma real ~0. Confirmado en el <b>corte del 4 ago</b>: de ~$31k en diferencias brutas, solo <b>$531</b> (1 faltante confirmado en San Miguel) fue merma real — <b>0.29%</b> s/inventario; el resto se justificó como error de conteo, traspasos y sobrantes reales.</div></div>';
+ el.innerHTML=html;
+ setTimeout(function(){
+  mkChart('ch-efic',{type:'line',data:{labels:meses,datasets:cats.map(function(c){return {label:c.n,data:c.pct,borderColor:c.color,backgroundColor:c.color,borderWidth:2,tension:.3,spanGaps:true,pointRadius:3};})},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{font:{size:10},boxWidth:10}}},scales:{x:{grid:{display:false},ticks:{color:TC}},y:{grid:{color:GC},min:0,ticks:{callback:function(v){return v+'%';},color:TC}}}}});
+ },60);
+}
+
+function startClock(){setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});},1000);}
+</script>
+</body>
+</html>
