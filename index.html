@@ -390,6 +390,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <!-- JUGOS -->
   <div class="card">
    <div class="card-head"><div><div class="card-title">🧃 Jugos Cold Pressed</div><div class="card-sub">Categoría con el proceso más maduro — dashboard semanal continuo desde S11</div></div></div>
+   <div style="position:relative;height:200px;margin-bottom:14px"><canvas id="ch-rj-jugos"></canvas></div>
    <div style="font-size:12.5px;line-height:1.8">
     <b>Qué encontramos:</b>
     <ul style="margin:6px 0 12px 18px;padding:0">
@@ -422,28 +423,40 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
   <!-- SUPLEMENTOS -->
   <div class="card">
-   <div class="card-head"><div><div class="card-title">💊 Suplementos</div><div class="card-sub">Reporte mensual julio (Gestión Integral, 8 sucursales, ya depurado) + 3 cortes semanales de seguimiento (ago)</div></div></div>
-   <div style="font-size:12.5px;line-height:1.8">
-    <b>Qué encontramos (julio, mes completo):</b>
+   <div class="card-head"><div><div class="card-title">💊 Suplementos</div><div class="card-sub">Ejercicio mensual — Gestión Integral, julio 2026 (corregido)</div></div></div>
+   <div style="font-size:11px;color:var(--gris);margin-bottom:8px">Inicial + Compras + Traspasos − Ventas = Teórico vs. Físico, por sucursal</div>
+   <div style="overflow-x:auto">
+    <table class="tbl" style="font-size:11.5px">
+     <thead><tr><th>Sucursal</th><th>Inicial</th><th>Compras</th><th>Trasp. in</th><th>Trasp. out</th><th>Ventas $</th><th>Físico</th><th>Dif $</th><th>Dif %</th></tr></thead>
+     <tbody>
+      <tr><td style="font-weight:700">Santa Fe</td><td>73</td><td>258</td><td>0</td><td>1</td><td>$21,188</td><td>208</td><td style="color:#1BAF7A;font-weight:600">−$4,311</td><td style="color:#1BAF7A;font-weight:600">−20.3%</td></tr>
+      <tr><td style="font-weight:700">Polanco</td><td>31</td><td>116</td><td>0</td><td>0</td><td>$4,221</td><td>63</td><td style="color:#B22222;font-weight:600">$3,497</td><td style="color:#B22222;font-weight:600">82.9%</td></tr>
+      <tr><td style="font-weight:700">Insurgentes</td><td>4</td><td>3</td><td>20</td><td>0</td><td>$1,399</td><td>32</td><td style="color:#B22222;font-weight:600">$2,151</td><td style="color:#B22222;font-weight:600">153.7%</td></tr>
+      <tr><td style="font-weight:700">Colima</td><td>162</td><td>293</td><td>55</td><td>12</td><td>$30,780</td><td>253</td><td style="color:#7F77DD;font-weight:600">$2,018</td><td style="color:#7F77DD;font-weight:600">6.6%</td></tr>
+      <tr><td style="font-weight:700">Roma</td><td>14</td><td>112</td><td>0</td><td>0</td><td>$2,887</td><td>74</td><td style="color:#B22222;font-weight:600">$1,808</td><td style="color:#B22222;font-weight:600">62.6%</td></tr>
+      <tr><td style="font-weight:700">Liverpool</td><td>120</td><td>296</td><td>22</td><td>0</td><td>$25,781</td><td>242</td><td style="color:#7F77DD;font-weight:600">$1,754</td><td style="color:#7F77DD;font-weight:600">6.8%</td></tr>
+      <tr><td style="font-weight:700">San Miguel</td><td>11</td><td>256</td><td>37</td><td>42</td><td>$5,014</td><td>207</td><td style="color:#B22222;font-weight:600">$1,534</td><td style="color:#B22222;font-weight:600">30.6%</td></tr>
+      <tr><td style="font-weight:700">Lomas</td><td>2</td><td>33</td><td>1</td><td>0</td><td>$1,750</td><td>32</td><td style="color:#7F77DD;font-weight:600">$40</td><td style="color:#7F77DD;font-weight:600">2.3%</td></tr>
+     </tbody>
+     <tfoot><tr style="border-top:2px solid var(--txt);font-weight:700">
+      <td>TOTAL</td><td>417</td><td>1,367</td><td>135</td><td>55</td><td>$93,020</td><td>1,113</td><td>$8,491</td><td>9.1%</td>
+     </tr></tfoot>
+    </table>
+   </div>
+   <div style="font-size:12.5px;line-height:1.8;margin-top:14px">
+    <b>Qué encontramos:</b>
     <ul style="margin:6px 0 12px 18px;padding:0">
-     <li>Ventas de suplementos en julio: <b>$93,020</b>. Pérdida bruta corregida: <b>$8,491 (9.1%)</b> — cifra ya depurada de 2 problemas de captura confirmados: en Santa Fe, 2 productos que no correspondían a su catálogo real, y en Liverpool, 3 productos "Superfoods Bloom" con cantidades altas que ya se aclararon como error de captura, no faltante real (Liverpool bajó de $13,138/51% a solo $1,754/6.8%).</li>
+     <li>Pérdida bruta corregida: <b>$8,491 (9.1%)</b> sobre $93,020 en ventas — ya depurada de 2 problemas de captura confirmados: en Santa Fe, 2 productos que no correspondían a su catálogo real, y en Liverpool, 3 productos "Superfoods Bloom" con cantidades altas que ya se aclararon como error de captura (Liverpool bajó de $13,138/51% a solo $1,754/6.8%).</li>
      <li>Con la corrección, <b>9.1% queda comparable con Vitch Bakery (7.4%)</b> — mejor de lo que parecía originalmente.</li>
-     <li><b>Polanco</b> ($3,497, 82.9%) e <b>Insurgentes</b> ($2,151, 154%) son ahora los focos más altos en %, aunque sobre montos de venta pequeños ($4,221 y $1,399) — hay que confirmar si son reales o si aplica el mismo tipo de depuración que ya hicimos en Santa Fe/Liverpool.</li>
-     <li><b>Santa Fe</b> sigue cerrando julio en sobrante (−20.3%, ya corregido) — pendiente de confirmar si es real o error de conteo.</li>
-    </ul>
-    <b>Qué hicimos (seguimiento semanal, agosto + depuración de julio):</b>
-    <ul style="margin:6px 0 12px 18px;padding:0">
-     <li>Depuramos el reporte mensual de julio quitando productos que no correspondían al inventario real de cada sucursal (Santa Fe, Liverpool) — el % bajó de 20.9% a 9.1% solo con esas 2 correcciones.</li>
-     <li>Empezamos cortes semanales más granulares (1-9, 10-16, 17-23 ago) para dar seguimiento más frecuente que el reporte mensual.</li>
-     <li>En un análisis a detalle de un solo corte (4-ago) confirmamos que la mayoría de la "pérdida bruta" no es merma real: de ~$31,000 en diferencias encontradas ese día, solo $531 fue faltante confirmado.</li>
-     <li>Definimos oficialmente los 3 SKUs de "insumo" y excluimos LMNT de todo el cálculo.</li>
+     <li><b>Polanco</b> (82.9%) e <b>Insurgentes</b> (153.7%) son ahora los focos más altos en %, aunque sobre montos de venta pequeños — hay que confirmar si aplica el mismo tipo de depuración que ya hicimos en Santa Fe/Liverpool.</li>
+     <li><b>Santa Fe</b> cierra en sobrante (−20.3%, ya corregido) — pendiente de confirmar si es real o error de conteo.</li>
     </ul>
     <b>Próximos pasos:</b>
     <ol style="margin:6px 0 0 18px;padding:0">
-     <li>Revisar Polanco e Insurgentes con el mismo criterio de depuración usado en Santa Fe/Liverpool — confirmar si sus % altos son reales o error de captura.</li>
-     <li>Confirmar con Santa Fe si el sobrante de julio es real o de conteo.</li>
-     <li>Replicar el desglose "bruto vs. real" del corte 4-ago a nivel de mes completo, ya sobre la base corregida (9.1%).</li>
-     <li>Validar el Conteo Real pendiente en San Miguel, Insurgentes, Polanco y Roma en los cortes semanales de agosto.</li>
+     <li>Revisar Polanco e Insurgentes con el mismo criterio de depuración usado en Santa Fe/Liverpool.</li>
+     <li>Confirmar con Santa Fe si el sobrante es real o de conteo.</li>
+     <li>Extender este ejercicio mensual a un seguimiento semanal recurrente, igual que Jugos.</li>
+     <li>Validar el Conteo Real pendiente en San Miguel, Insurgentes, Polanco y Roma.</li>
     </ol>
    </div>
   </div>
@@ -451,6 +464,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <!-- VITCH BAKERY -->
   <div class="card">
    <div class="card-head"><div><div class="card-title">🥐 Vitch Bakery</div><div class="card-sub">6 mediciones puntuales (ene, mar, abr, may, jun, jul) — sin corte semanal recurrente</div></div></div>
+   <div style="position:relative;height:200px;margin-bottom:14px"><canvas id="ch-rj-vb"></canvas></div>
    <div style="font-size:12.5px;line-height:1.8">
     <b>Qué sabemos hoy:</b>
     <ul style="margin:6px 0 12px 18px;padding:0">
@@ -464,6 +478,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
      <li><b>Recomendación:</b> replicar el mismo esqueleto de conciliación semanal que ya funciona en Jugos/Suplementos, y llenar febrero si hay datos crudos disponibles para reconstruirlo.</li>
     </ul>
    </div>
+  </div>
+
+  <!-- RESUMEN COMPARATIVO -->
+  <div class="card">
+   <div class="card-head"><div><div class="card-title">📊 Resumen comparativo</div><div class="card-sub">% Merma / % Pérdida más reciente por categoría</div></div></div>
+   <div style="position:relative;height:220px"><canvas id="ch-rj-resumen"></canvas></div>
   </div>
 
   <div class="card" style="background:#E3F2FD;border-left:4px solid #1565C0">
@@ -518,7 +538,7 @@ function logout(){document.getElementById('app').style.display='none';document.g
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
 var PAGE_META={dashboard:{title:'Dashboard — Jugos Cold Pressed',sub:'S11–S35 · 2026'},margen:{title:'Margen & Utilidad — Jugos Cold Pressed',sub:'Utilidad · Margen · Ventas vs Merma S11–S35'},alertas:{title:'Alertas',sub:'Notificaciones activas'},sucursales:{title:'Por Sucursal',sub:'Reporte completo · 11 sucursales'},top10:{title:'Merma General / CAM',sub:'Registros gerenciales · todas las categorías'},categorias:{title:'Por Categoría',sub:'Jugos · Bakery · Suplementos · Insumos'},insumos:{title:'Registros Merma CAM',sub:'Pendiente — se cargará agosto'},historico:{title:'Histórico',sub:'S11–S35 · Jugos Cold Pressed'},gestion:{title:'Gestión Integral Suplementos',sub:'Rotación · Desviación · Pérdidas — Suplementos 🆕'},benchmark:{title:'Benchmark de Precios',sub:'Suplementos vs. competencia — corrida 20 jul 2026'},'reporte-junta':{title:'Resumen por Categoría — Control de Merma',sub:'Jugos · Suplementos · Vitch Bakery — desde implementación a S35'}};
-function showPage(id){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.querySelectorAll('.sb-item').forEach(function(b){b.classList.remove('active');});var pg=document.getElementById('page-'+id);if(pg)pg.classList.add('active');var m=PAGE_META[id]||{title:id,sub:''};document.getElementById('page-title').textContent=m.title;document.getElementById('page-sub').textContent=m.sub;document.querySelectorAll('.sb-item').forEach(function(b){if(b.getAttribute('onclick')&&b.getAttribute('onclick').indexOf("'"+id+"'")>=0)b.classList.add('active');});closeSidebar();}
+function showPage(id){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.querySelectorAll('.sb-item').forEach(function(b){b.classList.remove('active');});var pg=document.getElementById('page-'+id);if(pg)pg.classList.add('active');var m=PAGE_META[id]||{title:id,sub:''};document.getElementById('page-title').textContent=m.title;document.getElementById('page-sub').textContent=m.sub;document.querySelectorAll('.sb-item').forEach(function(b){if(b.getAttribute('onclick')&&b.getAttribute('onclick').indexOf("'"+id+"'")>=0)b.classList.add('active');});if(id==='reporte-junta')renderReporteJunta();closeSidebar();}
 
 
 // ─── DATA ───
@@ -2348,6 +2368,16 @@ function renderBmRows(){
 }
 
 function startClock(){setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});},1000);}
+
+function renderReporteJunta(){
+ setTimeout(function(){
+  mkChart('ch-rj-jugos',{type:'line',data:{labels:SEMS,datasets:[{label:'% Merma',data:PCT,borderColor:'#B22222',backgroundColor:'#B22222',borderWidth:2,tension:.3,pointRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:TC,font:{size:8}}},y:{min:0,grid:{color:GC},ticks:{color:TC,callback:function(v){return v+'%';}}}}}});
+
+  mkChart('ch-rj-vb',{type:'line',data:{labels:['Ene','Mar','Abr','May','Jun','Jul'],datasets:[{label:'% Merma',data:[8.7,10.6,7.4,7.4,9.5,7.4],borderColor:'#1baf7a',backgroundColor:'#1baf7a',borderWidth:2,tension:.3,pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:TC}},y:{min:0,max:14,grid:{color:GC},ticks:{color:TC,callback:function(v){return v+'%';}}}}}});
+
+  mkChart('ch-rj-resumen',{type:'bar',data:{labels:['Jugos (S35)','Suplementos (jul)','Vitch Bakery (jul)'],datasets:[{label:'%',data:[17.3,9.1,7.4],backgroundColor:['#B22222','#7F77DD','#1baf7a']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:TC}},y:{min:0,grid:{color:GC},ticks:{color:TC,callback:function(v){return v+'%';}}}}}});
+ },60);
+}
 </script>
 </body>
 </html>
