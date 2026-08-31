@@ -390,7 +390,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <!-- JUGOS -->
   <div class="card">
    <div class="card-head"><div><div class="card-title">🧃 Jugos Cold Pressed</div><div class="card-sub">Categoría con el proceso más maduro — dashboard semanal continuo desde S11</div></div></div>
-   <div style="position:relative;height:200px;margin-bottom:14px"><canvas id="ch-rj-jugos"></canvas></div>
+   <div style="display:flex;gap:16px;margin-bottom:14px">
+    <div style="flex:1.6;position:relative;height:210px"><canvas id="ch-rj-jugos"></canvas></div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+     <div class="kpi" style="border-top:3px solid #1baf7a;padding:12px"><div class="kpi-label">% Merma S35</div><div class="kpi-val" style="font-size:24px">17.3%</div><div class="kpi-sub">Primera semana dentro de política (&lt;22%)</div></div>
+     <div class="kpi" style="border-top:3px solid #E8A33D;padding:12px"><div class="kpi-label">Desviación (rep. vs. real)</div><div class="kpi-val" style="font-size:24px">64%</div><div class="kpi-sub">S35 — brecha más grande a cerrar</div></div>
+    </div>
+   </div>
    <div style="font-size:12.5px;line-height:1.8">
     <b>Qué encontramos:</b>
     <ul style="margin:6px 0 12px 18px;padding:0">
@@ -424,8 +430,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <!-- SUPLEMENTOS -->
   <div class="card">
    <div class="card-head"><div><div class="card-title">💊 Suplementos</div><div class="card-sub">Ejercicio mensual — Gestión Integral, julio 2026 (corregido)</div></div></div>
-   <div style="font-size:11px;color:var(--gris);margin-bottom:8px">Inicial + Compras + Traspasos − Ventas = Teórico vs. Físico, por sucursal</div>
-   <div style="overflow-x:auto">
+   <div style="display:flex;gap:16px;margin-bottom:12px">
+    <div style="flex:1.6"><div style="font-size:11px;color:var(--gris);margin-bottom:8px">Inicial + Compras + Traspasos − Ventas = Teórico vs. Físico, por sucursal</div>
+     <div style="overflow-x:auto">
     <table class="tbl" style="font-size:11.5px">
      <thead><tr><th>Sucursal</th><th>Inicial</th><th>Compras</th><th>Trasp. in</th><th>Trasp. out</th><th>Ventas $</th><th>Físico</th><th>Dif $</th><th>Dif %</th></tr></thead>
      <tbody>
@@ -442,6 +449,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <td>TOTAL</td><td>417</td><td>1,367</td><td>135</td><td>55</td><td>$93,020</td><td>1,113</td><td>$8,491</td><td>9.1%</td>
      </tr></tfoot>
     </table>
+     </div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+     <div class="kpi" style="border-top:3px solid #1baf7a;padding:12px"><div class="kpi-label">% Pérdida julio</div><div class="kpi-val" style="font-size:24px">9.1%</div><div class="kpi-sub">Corregido de 20.9% original</div></div>
+     <div class="kpi" style="border-top:3px solid #2E5940;padding:12px"><div class="kpi-label">Ventas julio</div><div class="kpi-val" style="font-size:24px">$93,020</div><div class="kpi-sub">8 sucursales, mes completo</div></div>
+    </div>
    </div>
    <div style="font-size:12.5px;line-height:1.8;margin-top:14px">
     <b>Qué encontramos:</b>
@@ -464,7 +477,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <!-- VITCH BAKERY -->
   <div class="card">
    <div class="card-head"><div><div class="card-title">🥐 Vitch Bakery</div><div class="card-sub">6 mediciones puntuales (ene, mar, abr, may, jun, jul) — sin corte semanal recurrente</div></div></div>
-   <div style="position:relative;height:200px;margin-bottom:14px"><canvas id="ch-rj-vb"></canvas></div>
+   <div style="display:flex;gap:16px;margin-bottom:14px">
+    <div style="flex:1.6;position:relative;height:210px"><canvas id="ch-rj-vb"></canvas></div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+     <div class="kpi" style="border-top:3px solid #1baf7a;padding:12px"><div class="kpi-label">% Merma julio</div><div class="kpi-val" style="font-size:24px">7.4%</div><div class="kpi-sub">Rango estable 7-11% todo el año</div></div>
+     <div class="kpi" style="border-top:3px solid #718096;padding:12px"><div class="kpi-label">Febrero</div><div class="kpi-val" style="font-size:20px">s/dato</div><div class="kpi-sub">Único mes sin medición</div></div>
+    </div>
+   </div>
    <div style="font-size:12.5px;line-height:1.8">
     <b>Qué sabemos hoy:</b>
     <ul style="margin:6px 0 12px 18px;padding:0">
@@ -481,9 +500,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 
   <!-- RESUMEN COMPARATIVO -->
-  <div class="card">
-   <div class="card-head"><div><div class="card-title">📊 Resumen comparativo</div><div class="card-sub">% Merma / % Pérdida más reciente por categoría</div></div></div>
-   <div style="position:relative;height:220px"><canvas id="ch-rj-resumen"></canvas></div>
+  <div class="card" style="background:#1C3A2A;color:#fff">
+   <div class="card-head"><div><div class="card-title" style="color:#fff">📊 Resumen comparativo — las 3 categorías</div><div class="card-sub" style="color:#CADCFC">Dato más reciente de cada una, mismo denominador de comparación</div></div></div>
+   <div style="display:flex;gap:16px;margin:6px 0 16px">
+    <div style="flex:1;position:relative;height:200px"><canvas id="ch-rj-resumen"></canvas></div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:10px;justify-content:center">
+     <div style="background:rgba(255,255,255,.08);border-radius:8px;padding:10px 14px;border-left:4px solid #B22222">
+      <div style="font-size:11px;color:#CADCFC">Jugos Cold Pressed</div>
+      <div style="font-size:22px;font-weight:700">17.3%</div>
+      <div style="font-size:10.5px;color:#CADCFC">Único con dato semanal — 25 semanas de historia. Mejoró de 22.5% a 17.3%, pero con desviación de reporte alta (64%).</div>
+     </div>
+     <div style="background:rgba(255,255,255,.08);border-radius:8px;padding:10px 14px;border-left:4px solid #7F77DD">
+      <div style="font-size:11px;color:#CADCFC">Suplementos</div>
+      <div style="font-size:22px;font-weight:700">9.1%</div>
+      <div style="font-size:10.5px;color:#CADCFC">Bajó de 20.9% al depurar 2 sucursales con error de captura. Aún mensual, no semanal.</div>
+     </div>
+     <div style="background:rgba(255,255,255,.08);border-radius:8px;padding:10px 14px;border-left:4px solid #1baf7a">
+      <div style="font-size:11px;color:#CADCFC">Vitch Bakery</div>
+      <div style="font-size:22px;font-weight:700">7.4%</div>
+      <div style="font-size:10.5px;color:#CADCFC">La más eficiente y estable (rango 7-11% todo el año), pero sin proceso semanal propio todavía.</div>
+     </div>
+    </div>
+   </div>
+   <div style="font-size:11.5px;color:#CADCFC;line-height:1.6;border-top:1px solid rgba(255,255,255,.15);padding-top:12px">
+    <b style="color:#fff">Lectura de conjunto:</b> las 3 categorías están hoy en un rango de 7% a 17%, muy por debajo de donde arrancó Jugos hace unas semanas (~30%). El reto ya no es "encontrar" la merma — es <b>cerrar la brecha entre lo que se reporta y lo que realmente pasa</b> (Jugos y Suplementos), y <b>llevar Vitch Bakery al mismo nivel de seguimiento semanal</b> que las otras dos.
+   </div>
   </div>
 
   <div class="card" style="background:#E3F2FD;border-left:4px solid #1565C0">
@@ -2375,7 +2416,7 @@ function renderReporteJunta(){
 
   mkChart('ch-rj-vb',{type:'line',data:{labels:['Ene','Mar','Abr','May','Jun','Jul'],datasets:[{label:'% Merma',data:[8.7,10.6,7.4,7.4,9.5,7.4],borderColor:'#1baf7a',backgroundColor:'#1baf7a',borderWidth:2,tension:.3,pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:TC}},y:{min:0,max:14,grid:{color:GC},ticks:{color:TC,callback:function(v){return v+'%';}}}}}});
 
-  mkChart('ch-rj-resumen',{type:'bar',data:{labels:['Jugos (S35)','Suplementos (jul)','Vitch Bakery (jul)'],datasets:[{label:'%',data:[17.3,9.1,7.4],backgroundColor:['#B22222','#7F77DD','#1baf7a']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:TC}},y:{min:0,grid:{color:GC},ticks:{color:TC,callback:function(v){return v+'%';}}}}}});
+  mkChart('ch-rj-resumen',{type:'bar',data:{labels:['Jugos (S35)','Suplementos (jul)','Vitch Bakery (jul)'],datasets:[{label:'%',data:[17.3,9.1,7.4],backgroundColor:['#B22222','#7F77DD','#1baf7a']}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:true}},scales:{x:{min:0,max:20,grid:{color:'rgba(255,255,255,.1)'},ticks:{color:'#CADCFC',callback:function(v){return v+'%';}}},y:{grid:{display:false},ticks:{color:'#fff',font:{size:11}}}}}});
  },60);
 }
 </script>
