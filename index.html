@@ -679,17 +679,31 @@ var SUP_SUCS_1_9AGO=["Colima","Insurgentes","Liverpool","Polanco","Roma","San Mi
 var CBC_ML_SUC=[{"suc": "Condesa", "ml": 59.0}, {"suc": "Colima", "ml": 46.4}, {"suc": "Santa Fe", "ml": 32.1}, {"suc": "Liverpool", "ml": 16.0}, {"suc": "Polanco", "ml": 46.4}, {"suc": "CDI", "ml": 3.5}, {"suc": "Coapa", "ml": 14.6}, {"suc": "Insurgentes", "ml": 19.4}, {"suc": "Roma", "ml": 19.5}, {"suc": "Kitchen Lab", "ml": 9.0}];
 var CBC_KPIS={compras_l:355,ventas_l:264.1,merma_l:39.92,merma_ps:1469.06,ml_total:266100};
 // ─── VITCH BAKERY DATA ───
-var VB_PRODS_DATA=[{n:'Blondie GF',suc:{Condesa:{pz:1,pct_m:0.4},Colima:{pz:41,pct_m:15.8},'Santa Fe':{pz:1,pct_m:0.5},Liverpool:{pz:0,pct_m:0.0},Polanco:{pz:17,pct_m:6.9},'San Miguel':{pz:11,pct_m:12.8},Insurgentes:{pz:32,pct_m:16.3},Roma:{pz:15,pct_m:20.8},'Kitchen Lab':{pz:3,pct_m:15.0}}},{n:'Rollo de Canela',suc:{Condesa:{pz:6,pct_m:4.9},Colima:{pz:12,pct_m:9.0},'Santa Fe':{pz:28,pct_m:16.7},Liverpool:{pz:0,pct_m:0.0},Polanco:{pz:22,pct_m:14.9},'San Miguel':{pz:0,pct_m:0.0},Insurgentes:{pz:8,pct_m:23.5},Roma:{pz:3,pct_m:11.1},'Kitchen Lab':{pz:8,pct_m:80.0}}},{n:'Maple Choco Chip',suc:{Condesa:{pz:21,pct_m:8.9},Colima:{pz:24,pct_m:11.7},'Santa Fe':{pz:0,pct_m:0.0},Liverpool:{pz:21,pct_m:21.4},Polanco:{pz:36,pct_m:15.2},'San Miguel':{pz:6,pct_m:9.1},Insurgentes:{pz:35,pct_m:32.4},Roma:{pz:4,pct_m:6.7},'Kitchen Lab':{pz:2,pct_m:13.3}}},{n:'Panqué de Plátano',suc:{Condesa:{pz:6,pct_m:12.0},Colima:{pz:17,pct_m:34.0},'Santa Fe':{pz:9,pct_m:23.7},Liverpool:{pz:19,pct_m:45.2},Polanco:{pz:14,pct_m:30.4},'Kitchen Lab':{pz:1,pct_m:25.0}}}];
-var VB_SUC_TOTALS={Polanco:{pz:89,pesos:2854},Colima:{pz:94,pesos:2807},Insurgentes:{pz:75,pesos:2034},Liverpool:{pz:40,pesos:1485},'Santa Fe':{pz:38,pesos:1407},Condesa:{pz:34,pesos:1132},Roma:{pz:22,pesos:555},'Kitchen Lab':{pz:14,pesos:451},'San Miguel':{pz:17,pesos:422}};
-var VB_SUC_VENTAS={Polanco:32526,Colima:30810,Insurgentes:12570,Liverpool:14187,'Santa Fe':35058,Condesa:35112,Roma:7239,'Kitchen Lab':1851,'San Miguel':9492};
-var VB_PROD_TOTALS=[{n:'Maple Choco Chip',pesos:4470,pz:149},{n:'Rollo de Canela',pesos:3045,pz:87},{n:'Panqué de Plátano',pesos:2970,pz:66},{n:'Blondie GF',pesos:2662,pz:121}];
+var VB_PRODS_DATA_JUL=[{n:'Blondie GF',suc:{Condesa:{pz:1,pct_m:0.4},Colima:{pz:41,pct_m:15.8},'Santa Fe':{pz:1,pct_m:0.5},Liverpool:{pz:0,pct_m:0.0},Polanco:{pz:17,pct_m:6.9},'San Miguel':{pz:11,pct_m:12.8},Insurgentes:{pz:32,pct_m:16.3},Roma:{pz:15,pct_m:20.8},'Kitchen Lab':{pz:3,pct_m:15.0}}},{n:'Rollo de Canela',suc:{Condesa:{pz:6,pct_m:4.9},Colima:{pz:12,pct_m:9.0},'Santa Fe':{pz:28,pct_m:16.7},Liverpool:{pz:0,pct_m:0.0},Polanco:{pz:22,pct_m:14.9},'San Miguel':{pz:0,pct_m:0.0},Insurgentes:{pz:8,pct_m:23.5},Roma:{pz:3,pct_m:11.1},'Kitchen Lab':{pz:8,pct_m:80.0}}},{n:'Maple Choco Chip',suc:{Condesa:{pz:21,pct_m:8.9},Colima:{pz:24,pct_m:11.7},'Santa Fe':{pz:0,pct_m:0.0},Liverpool:{pz:21,pct_m:21.4},Polanco:{pz:36,pct_m:15.2},'San Miguel':{pz:6,pct_m:9.1},Insurgentes:{pz:35,pct_m:32.4},Roma:{pz:4,pct_m:6.7},'Kitchen Lab':{pz:2,pct_m:13.3}}},{n:'Panqué de Plátano',suc:{Condesa:{pz:6,pct_m:12.0},Colima:{pz:17,pct_m:34.0},'Santa Fe':{pz:9,pct_m:23.7},Liverpool:{pz:19,pct_m:45.2},Polanco:{pz:14,pct_m:30.4},'Kitchen Lab':{pz:1,pct_m:25.0}}}];
+var VB_SUC_TOTALS_JUL={Polanco:{pz:89,pesos:2854},Colima:{pz:94,pesos:2807},Insurgentes:{pz:75,pesos:2034},Liverpool:{pz:40,pesos:1485},'Santa Fe':{pz:38,pesos:1407},Condesa:{pz:34,pesos:1132},Roma:{pz:22,pesos:555},'Kitchen Lab':{pz:14,pesos:451},'San Miguel':{pz:17,pesos:422}};
+var VB_SUC_VENTAS_JUL={Polanco:32526,Colima:30810,Insurgentes:12570,Liverpool:14187,'Santa Fe':35058,Condesa:35112,Roma:7239,'Kitchen Lab':1851,'San Miguel':9492};
+var VB_PROD_TOTALS_JUL=[{n:'Maple Choco Chip',pesos:4470,pz:149},{n:'Rollo de Canela',pesos:3045,pz:87},{n:'Panqué de Plátano',pesos:2970,pz:66},{n:'Blondie GF',pesos:2662,pz:121}];
+var VB_ALERTAS_JUL=[{suc:'Polanco',prod:'Maple Choco Chip',pct:9.0,m:1080},{suc:'Insurgentes',prod:'Maple Choco Chip',pct:24.0,m:1050},{suc:'Santa Fe',prod:'Rollo de Canela',pct:10.1,m:980},{suc:'Colima',prod:'Blondie GF',pct:10.6,m:902},{suc:'Liverpool',prod:'Panqué de Plátano',pct:41.3,m:855},{suc:'Polanco',prod:'Rollo de Canela',pct:8.9,m:770},{suc:'Colima',prod:'Panqué de Plátano',pct:25.8,m:765},{suc:'Colima',prod:'Maple Choco Chip',pct:6.6,m:720},{suc:'Insurgentes',prod:'Blondie GF',pct:11.0,m:704}];
+
+var VB_PRODS_DATA_AGO=[{n:'Blondie GF',suc:{Colima:{pz:15,pesos:330,pct_m:4.6},'Santa Fe':{pz:26,pesos:572,pct_m:10.4},Liverpool:{pz:24,pesos:528,pct_m:21.6},Polanco:{pz:58,pesos:1276,pct_m:21.9},Insurgentes:{pz:32,pesos:704,pct_m:17.4},Roma:{pz:25,pesos:550,pct_m:23.1},'San Miguel':{pz:35,pesos:770,pct_m:25.9}}},{n:'Maple Choco Chip',suc:{Colima:{pz:33,pesos:990,pct_m:11.8},'Santa Fe':{pz:29,pesos:870,pct_m:10.3},Liverpool:{pz:15,pesos:450,pct_m:16.7},Polanco:{pz:76,pesos:2280,pct_m:29.7},Insurgentes:{pz:49,pesos:1470,pct_m:38.3},Roma:{pz:18,pesos:540,pct_m:18.4},'San Miguel':{pz:27,pesos:810,pct_m:22.5}}},{n:'Rollo de Canela',suc:{Colima:{pz:24,pesos:840,pct_m:13.1},'Santa Fe':{pz:14,pesos:490,pct_m:9.2},Liverpool:{pz:11,pesos:385,pct_m:11.6},Polanco:{pz:51,pesos:1785,pct_m:31.1},Insurgentes:{pz:13,pesos:455,pct_m:26.0},Roma:{pz:12,pesos:420,pct_m:35.3},'San Miguel':{pz:5,pesos:175,pct_m:8.3}}},{n:'Panqué de Plátano',suc:{Colima:{pz:2,pesos:90,pct_m:4.0},'Santa Fe':{pz:3,pesos:135,pct_m:10.7},Liverpool:{pz:12,pesos:540,pct_m:27.9},Polanco:{pz:14,pesos:630,pct_m:25.9},Insurgentes:{pz:0,pesos:0,pct_m:0.0},Roma:{pz:0,pesos:0,pct_m:0.0},'San Miguel':{pz:0,pesos:0,pct_m:0.0}}}];
+var VB_SUC_TOTALS_AGO={Polanco:{pz:199,pesos:5971},Insurgentes:{pz:94,pesos:2629},Colima:{pz:74,pesos:2250},'Santa Fe':{pz:72,pesos:2067},Liverpool:{pz:62,pesos:1903},'San Miguel':{pz:67,pesos:1755},Roma:{pz:55,pesos:1510}};
+var VB_SUC_VENTAS_AGO={Colima:21727,Insurgentes:7009,Liverpool:7029,Polanco:15709,Roma:4996,'San Miguel':7020,'Santa Fe':18495};
+var VB_PROD_TOTALS_AGO=[{n:'Maple Choco Chip',pesos:7410,pz:247},{n:'Blondie GF',pesos:4730,pz:215},{n:'Rollo de Canela',pesos:4550,pz:130},{n:'Panqué de Plátano',pesos:1395,pz:31}];
+var VB_ALERTAS_AGO=[{suc:'Polanco',prod:'Maple Choco Chip',pct:29.7,m:2280},{suc:'Polanco',prod:'Rollo de Canela',pct:31.1,m:1785},{suc:'Insurgentes',prod:'Maple Choco Chip',pct:38.3,m:1470},{suc:'Polanco',prod:'Blondie GF',pct:21.9,m:1276},{suc:'Colima',prod:'Maple Choco Chip',pct:11.8,m:990},{suc:'Santa Fe',prod:'Maple Choco Chip',pct:10.3,m:870},{suc:'Colima',prod:'Rollo de Canela',pct:13.1,m:840},{suc:'San Miguel',prod:'Maple Choco Chip',pct:22.5,m:810},{suc:'San Miguel',prod:'Blondie GF',pct:25.9,m:770},{suc:'Insurgentes',prod:'Blondie GF',pct:17.4,m:704},{suc:'Polanco',prod:'Panqué de Plátano',pct:25.9,m:630},{suc:'Santa Fe',prod:'Blondie GF',pct:10.4,m:572},{suc:'Roma',prod:'Blondie GF',pct:23.1,m:550},{suc:'Liverpool',prod:'Panqué de Plátano',pct:27.9,m:540},{suc:'Roma',prod:'Maple Choco Chip',pct:18.4,m:540}];
+
+var activeVBMonth='ago';
+var VB_MESES={
+ jul:{label:'Julio 2026',TOTAL_PESOS:13147,TOTAL_PZ:423,PCT:7.4,PRODS_DATA:VB_PRODS_DATA_JUL,SUC_TOTALS:VB_SUC_TOTALS_JUL,SUC_VENTAS:VB_SUC_VENTAS_JUL,PROD_TOTALS:VB_PROD_TOTALS_JUL,ALERTAS:VB_ALERTAS_JUL,SUCS:['Condesa','Colima','Santa Fe','Liverpool','Polanco','San Miguel','Insurgentes','Roma','Kitchen Lab']},
+ ago:{label:'Agosto 2026',TOTAL_PESOS:18085,TOTAL_PZ:623,PCT:18.1,PRODS_DATA:VB_PRODS_DATA_AGO,SUC_TOTALS:VB_SUC_TOTALS_AGO,SUC_VENTAS:VB_SUC_VENTAS_AGO,PROD_TOTALS:VB_PROD_TOTALS_AGO,ALERTAS:VB_ALERTAS_AGO,SUCS:['Colima','Santa Fe','Liverpool','Polanco','Insurgentes','Roma','San Miguel']}
+};
 
 
-var VB_ALERTAS=[{suc:'Polanco',prod:'Maple Choco Chip',pct:9.0,m:1080},{suc:'Insurgentes',prod:'Maple Choco Chip',pct:24.0,m:1050},{suc:'Santa Fe',prod:'Rollo de Canela',pct:10.1,m:980},{suc:'Colima',prod:'Blondie GF',pct:10.6,m:902},{suc:'Liverpool',prod:'Panqué de Plátano',pct:41.3,m:855},{suc:'Polanco',prod:'Rollo de Canela',pct:8.9,m:770},{suc:'Colima',prod:'Panqué de Plátano',pct:25.8,m:765},{suc:'Colima',prod:'Maple Choco Chip',pct:6.6,m:720},{suc:'Insurgentes',prod:'Blondie GF',pct:11.0,m:704}];
+
+
 var CATS=[
  {id:'SUP',n:'Suplementos',ic:'💊',pol:5,merma:0,ventas:0,pct:0,color:'#eda100',sems:['Condesa','Colima','S.Fe','Liverpool','Polanco','Roma','CDI'],vals:[23.2,38.4,8.2,73.7,42.8,17.2,3.2]},
  {id:'CP',n:'Jugos Cold Pressed',ic:'🥤',pol:22,merma:187234,ventas:1658434,pct:26.1,color:'#2a78d6',sems:['Prom.Ene','Prom.Feb','S11','S12','S13','S14','S15','S16','S17','S18','S19','S20','S21','S22','S23','S24','S25','S26'],vals:[21235,20489,17749,13053,13940,16906,17779,16562,18621,14027,19889,17881,17567,17984,18681,13951,11107,16873]},
- {id:'VB',n:'Vitch Bakery',ic:'🥐',pol:7,merma:13147,ventas:178845,pct:7.4,color:'#1baf7a',sems:['Maple Choco Chip','Rollo de Canela','Panqué de Plátano','Blondie GF'],vals:[4470,3045,2970,2662]},
+ {id:'VB',n:'Vitch Bakery',ic:'🥐',pol:7,merma:18085,ventas:81985,pct:18.1,color:'#1baf7a',sems:['Maple Choco Chip','Blondie GF','Rollo de Canela','Panqué de Plátano'],vals:[7410,4730,4550,1395]},
  {id:'INS',n:'Insumos',ic:'📦',pol:5,merma:115543.4,ventas:0,pct:0,color:'#7F77DD',sems:[],vals:[]}
 ];
 
@@ -904,6 +918,50 @@ var PROT_KPIS={choco_g:40300.7,vaini_g:60104.7,total_g:100405.4,choco_kg:40.3,va
 // ─── SUPLEMENTOS DATA ───
 var SUP_SUCS=["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "Roma", "CDI"];
 // ─── VASOS PLA 16oz ───
+function renderVPAgo(el){
+ var D=window.VP_TABLA_AGO||[];
+ var V=window.VP_VENTAS_DETALLE_AGO||[];
+ var totC=D.reduce(function(a,d){return a+d.comp;},0),totV=D.reduce(function(a,d){return a+d.vta;},0),totM=D.reduce(function(a,d){return a+d.merma;},0);
+ var totIncluido=V.filter(function(p){return p.inc;}).reduce(function(a,p){return a+p.tot;},0);
+ var totNoIncluido=V.filter(function(p){return !p.inc;}).reduce(function(a,p){return a+p.tot;},0);
+ var html='<div class="card" style="background:#FFF8E1;border-left:4px solid var(--ambar)"><div style="font-size:12px;color:var(--txt)"><b>⚠️ Cierre pendiente de validar.</b> El % de merma sale muy alto (~40%) porque la lista de productos que consumen este vaso estaba incompleta — solo se habían contado '+totIncluido.toLocaleString()+' pz de <b>'+V.filter(function(p){return p.inc;}).length+' productos</b>, pero el archivo completo trae <b>'+V.length+' productos</b> distintos con '+(totIncluido+totNoIncluido).toLocaleString()+' pz en total. Abajo está la lista completa para revisar juntos cuáles sí llevan este vaso.</div></div>';
+
+ html+='<div class="kpi-grid">'
+  +'<div class="kpi blue"><div class="kpi-label">Vasos comprados Ago</div><div class="kpi-val">'+totC.toLocaleString()+'</div><div class="kpi-sub">piezas · '+D.length+' sucursales</div></div>'
+  +'<div class="kpi green"><div class="kpi-label">Vasos vendidos Ago (lista actual)</div><div class="kpi-val">'+totV.toLocaleString()+'</div><div class="kpi-sub">solo productos ya marcados ✅</div></div>'
+  +'<div class="kpi amber"><div class="kpi-label">Merma $ (con lista actual)</div><div class="kpi-val">'+f$(totM)+'</div><div class="kpi-sub">~40% · sospechosamente alto</div></div>'
+  +'<div class="kpi red"><div class="kpi-label">Piezas sin clasificar</div><div class="kpi-val">'+totNoIncluido.toLocaleString()+'</div><div class="kpi-sub">'+V.filter(function(p){return !p.inc;}).length+' productos pendientes de revisar</div></div>'
+  +'</div>';
+
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Reporte por sucursal — Vasos PLA 16oz</div><div class="card-sub">Inicial + Compras − Ventas = Teórico vs Final · Agosto 2026 (con lista de productos actual, incompleta)</div></div></div><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Inicial</th><th>Compras</th><th>Ventas</th><th>Teórico</th><th>Final</th><th>Dif.</th><th>Merma $</th><th>Estado</th></tr></thead><tbody>'
+  +D.map(function(d){
+    var col=d.merma<-50?'#E67E22':(d.merma>50?'var(--rojo)':'var(--verde2)');
+    var eb=d.estado.indexOf('OK')>-1?'#E8F5E9':(d.estado.indexOf('SOBRA')>-1?'#E3F2FD':'#FFF8E1');
+    var ec=d.estado.indexOf('OK')>-1?'#1B5E20':(d.estado.indexOf('SOBRA')>-1?'#1565C0':'#9a7d0a');
+    return '<tr><td style="font-weight:700">'+d.suc+'</td><td class="mono">'+d.ini+'</td><td class="mono" style="color:var(--verde2)">+'+d.comp+'</td><td class="mono" style="color:#2a78d6">-'+d.vta+'</td><td class="mono">'+d.teo+'</td><td class="mono">'+d.fin+'</td><td class="mono" style="font-weight:700">'+d.dif+'</td><td class="mono" style="font-weight:700;color:'+col+'">'+f$(d.merma)+'</td><td><span class="badge" style="background:'+eb+';color:'+ec+';font-size:9px">'+d.estado+'</span></td></tr>';
+  }).join('')
+  +'<tr style="background:var(--rojo2);font-weight:700"><td>TOTAL</td><td class="mono">'+D.reduce(function(a,d){return a+d.ini;},0)+'</td><td class="mono" style="color:var(--verde2)">+'+totC+'</td><td class="mono" style="color:#2a78d6">-'+totV+'</td><td></td><td class="mono">'+D.reduce(function(a,d){return a+d.fin;},0)+'</td><td></td><td class="mono">'+f$(totM)+'</td><td></td></tr>'
+  +'</tbody></table></div></div>';
+
+ // Tabla consultable completa de ventas
+ var SUCS_V=['Colima','Santa Fe','Liverpool','Polanco','Insurgentes','Roma','Lomas','San Miguel','CDI'];
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">🔍 Consulta — Ventas de Agosto por producto (todo lo que pudo usar este vaso)</div><div class="card-sub">✅ = ya contado en el cierre de arriba · ⬜ = pendiente de decidir si lleva este vaso · ordenado por piezas totales</div></div></div>'
+  +'<div style="overflow-x:auto"><table class="tbl" style="font-size:11px"><thead><tr><th>✓</th><th>Producto</th>'
+  +SUCS_V.map(function(s){return'<th>'+s+'</th>';}).join('')
+  +'<th>Total</th></tr></thead><tbody>'
+  +V.map(function(p){
+    var chip=p.inc?'<span style="color:var(--verde2);font-weight:700">✅</span>':'<span style="color:var(--gris)">⬜</span>';
+    return '<tr'+(p.inc?'':' style="background:#FFFBEA"')+'><td style="text-align:center">'+chip+'</td><td style="font-weight:600;white-space:nowrap">'+p.n+'</td>'
+    +SUCS_V.map(function(s){return'<td class="mono">'+(p.suc[s]||'—')+'</td>';}).join('')
+    +'<td class="mono" style="font-weight:700">'+p.tot+'</td></tr>';
+  }).join('')
+  +'<tr style="background:var(--verde3);font-weight:700"><td></td><td>TOTAL GENERAL</td>'
+  +SUCS_V.map(function(s){var t=V.reduce(function(a,p){return a+(p.suc[s]||0);},0);return'<td class="mono">'+t+'</td>';}).join('')
+  +'<td class="mono">'+V.reduce(function(a,p){return a+p.tot;},0)+'</td></tr>'
+  +'</tbody></table></div></div>';
+
+ el.innerHTML=html;
+}
 function renderVPJul(el){
  var D=window.VP_TABLA_JUL||[];
  var totC=D.reduce(function(a,d){return a+d.comp;},0),totV=D.reduce(function(a,d){return a+d.vta;},0),totM=D.reduce(function(a,d){return a+d.merma;},0);
@@ -1725,9 +1783,9 @@ function renderCat(i){
 }
 
 
-var activeInsTab='VPJ';
+var activeInsTab='VPA';
 function renderINSMerged(el){
- var tabs=[{id:'VPJ',label:'🥤 Vasos PLA Julio'},{id:'VP',label:'🥤 Vasos PLA Junio'},{id:'CB',label:'☕ Cold Brew Concentrado'},{id:'PI',label:'💪 Proteína Insumo'}];
+ var tabs=[{id:'VPA',label:'🥤 Vasos PLA Agosto 🆕'},{id:'VPJ',label:'🥤 Vasos PLA Julio'},{id:'VP',label:'🥤 Vasos PLA Junio'},{id:'CB',label:'☕ Cold Brew Concentrado'},{id:'PI',label:'💪 Proteína Insumo'}];
  var html='<div class="suc-tabs" id="ins-tabs">'
  +tabs.map(function(t){return '<button class="suc-tab'+(t.id===activeInsTab?' active':'')+'" onclick="setInsTab(\''+t.id+'\')">'+t.label+'</button>';}).join('')
  +'</div><div id="ins-tab-content"></div>';
@@ -1741,7 +1799,8 @@ function setInsTab(id){
 function renderInsTab(id){
  var el=document.getElementById('ins-tab-content');
  if(!el) return;
- if(id==='VPJ') renderVPJul(el);
+ if(id==='VPA') renderVPAgo(el);
+ else if(id==='VPJ') renderVPJul(el);
  else if(id==='VP') renderVP(el);
  else if(id==='CB') renderCBC(el);
  else if(id==='PI') renderPI(el);
@@ -1749,36 +1808,48 @@ function renderInsTab(id){
 
 
 // ─── VITCH BAKERY completo ───
+function setVBMonth(m){
+ activeVBMonth=m;
+ document.querySelectorAll('.vb-month-tab').forEach(function(t){t.classList.remove('active');});
+ var btn=document.getElementById('vb-tab-'+m);
+ if(btn) btn.classList.add('active');
+ renderVB(document.getElementById('cat-content'));
+}
 function renderVB(el){
- var TOTAL_PESOS=13147,TOTAL_PZ=423,POL=3;
- var suc_sorted=Object.keys(VB_SUC_TOTALS).sort(function(a,b){return VB_SUC_TOTALS[b].pesos-VB_SUC_TOTALS[a].pesos;});
- var top_suc_pct=Object.keys(VB_SUC_TOTALS).map(function(s){
- var tot_pz=VB_PRODS_DATA.reduce(function(a,p){return a+(p.suc[s]?p.suc[s].pz:0);},0);
- var pct_vals=VB_PRODS_DATA.filter(function(p){return p.suc[s]&&p.suc[s].pct_m>0;}).map(function(p){return p.suc[s].pct_m;});
+ var D=VB_MESES[activeVBMonth];
+ var TOTAL_PESOS=D.TOTAL_PESOS,TOTAL_PZ=D.TOTAL_PZ;
+ var suc_sorted=Object.keys(D.SUC_TOTALS).sort(function(a,b){return D.SUC_TOTALS[b].pesos-D.SUC_TOTALS[a].pesos;});
+ var top_suc_pct=Object.keys(D.SUC_TOTALS).map(function(s){
+ var pct_vals=D.PRODS_DATA.filter(function(p){return p.suc[s]&&p.suc[s].pct_m>0;}).map(function(p){return p.suc[s].pct_m;});
  var avg_pct=pct_vals.length?pct_vals.reduce(function(a,b){return a+b;},0)/pct_vals.length:0;
  return {s:s,pct:Math.round(avg_pct*10)/10};
  }).sort(function(a,b){return b.pct-a.pct;});
 
-
  var html='';
+ // Selector de mes
+ html+='<div class="suc-tabs" style="margin-bottom:14px">'
+ +'<button id="vb-tab-jul" class="vb-month-tab suc-tab'+(activeVBMonth==='jul'?' active':'')+'" onclick="setVBMonth(\'jul\')">Julio 2026</button>'
+ +'<button id="vb-tab-ago" class="vb-month-tab suc-tab'+(activeVBMonth==='ago'?' active':'')+'" onclick="setVBMonth(\'ago\')">🆕 Agosto 2026</button>'
+ +'</div>';
+ if(activeVBMonth==='ago'){
+  html+='<div class="card" style="background:#FFF8E1;border-left:4px solid var(--ambar)"><div style="font-size:12px;color:var(--txt)"><b>⚠️ Agosto sube a 18.1%</b> (vs. 7.4% julio) — concentrado en <b>Polanco</b> ($5,971, casi un tercio del total). Compras y ventas confirmadas completas para el mes. Solo se trackean los 4 productos con dato de compras (Blondie, Maple, Rollo, Panqué) — Galleta, Chapata, Pastel corazón y Brownie quedan fuera por ahora, sin dato de compras disponible.</div></div>';
+ }
  // KPIs
  html+='<div class="kpi-grid">'
- +'<div class="kpi red"><div class="kpi-label">Merma total Jul</div><div class="kpi-val">'+f$(TOTAL_PESOS)+'</div><div class="kpi-sub">'+TOTAL_PZ+'pz · 9 sucursales</div></div>'
- +'<div class="kpi amber"><div class="kpi-label">% Merma s/ventas</div><div class="kpi-val" style="color:var(--rojo)">7.4%</div><div class="kpi-sub">Objetivo ≤3% <span class="badge badge-crit">Sobre política</span></div></div>'
- +'<div class="kpi purple"><div class="kpi-label">Sucursal líder</div><div class="kpi-val">'+suc_sorted[0]+'</div><div class="kpi-sub">'+f$(VB_SUC_TOTALS[suc_sorted[0]].pesos)+' · '+VB_SUC_TOTALS[suc_sorted[0]].pz+' pz</div></div>'
- +'<div class="kpi green"><div class="kpi-label">Mayor pérdida $</div><div class="kpi-val">'+VB_ALERTAS[0].suc+'</div><div class="kpi-sub">'+f$(VB_ALERTAS[0].m)+' · '+VB_ALERTAS[0].prod+' ('+VB_ALERTAS[0].pct+'%)</div></div>'
+ +'<div class="kpi red"><div class="kpi-label">Merma total '+(activeVBMonth==='jul'?'Jul':'Ago')+'</div><div class="kpi-val">'+f$(TOTAL_PESOS)+'</div><div class="kpi-sub">'+TOTAL_PZ+'pz · '+D.SUCS.length+' sucursales</div></div>'
+ +'<div class="kpi amber"><div class="kpi-label">% Merma (Ini+Compras)</div><div class="kpi-val" style="color:var(--rojo)">'+D.PCT+'%</div><div class="kpi-sub">Objetivo ≤3% <span class="badge badge-crit">Sobre política</span></div></div>'
+ +'<div class="kpi purple"><div class="kpi-label">Sucursal líder</div><div class="kpi-val">'+suc_sorted[0]+'</div><div class="kpi-sub">'+f$(D.SUC_TOTALS[suc_sorted[0]].pesos)+' · '+D.SUC_TOTALS[suc_sorted[0]].pz+' pz</div></div>'
+ +'<div class="kpi green"><div class="kpi-label">Mayor pérdida $</div><div class="kpi-val">'+D.ALERTAS[0].suc+'</div><div class="kpi-sub">'+f$(D.ALERTAS[0].m)+' · '+D.ALERTAS[0].prod+' ('+D.ALERTAS[0].pct+'%)</div></div>'
  +'</div>';
-
 
  // Alertas críticas VB
  html+='<div class="card"><div class="card-head"><div><div class="card-title">🚨 Alertas por producto y sucursal</div><div class="card-sub">% merma sobre ventas · política ≤3% · 🔴 crítica ≥3% y ≥$800</div></div></div>'
  +'<div style="display:flex;flex-wrap:wrap;gap:8px;padding:8px 0">'
- +VB_ALERTAS.map(function(a){
+ +D.ALERTAS.map(function(a){
  var cls=a.m>=800?'badge-crit':'badge-mod';
  return '<span class="badge '+cls+'" style="font-size:12px;padding:4px 10px">'+a.suc+' · '+a.prod+' · '+f$(a.m)+' ('+a.pct+'%)</span>';
  }).join('')
  +'</div></div>';
-
 
  // Gráfica merma $ por sucursal + % por producto
  html+='<div class="g2">'
@@ -1786,52 +1857,47 @@ function renderVB(el){
  +'<div class="card"><div class="card-head"><div class="card-title">Merma $ por producto</div></div><div style="position:relative;height:200px"><canvas id="ch-vb-prod"></canvas></div></div>'
  +'</div>';
 
-
  // Gráfica % merma promedio por sucursal
- html+='<div class="card"><div class="card-head"><div><div class="card-title">Ventas vs Merma por sucursal — Jul 2026</div><div class="card-sub">Barras: Ventas $ y Merma $ · línea: % merma sobre ventas (política 3%)</div></div></div><div style="position:relative;height:240px"><canvas id="ch-vb-pct"></canvas></div></div>';
-
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">Ventas vs Merma por sucursal — '+D.label+'</div><div class="card-sub">Barras: Ventas $ y Merma $ · línea: % merma sobre ventas (política 3%)</div></div></div><div style="position:relative;height:240px"><canvas id="ch-vb-pct"></canvas></div></div>';
 
  // Top por sucursal en $ y en %
  html+='<div class="g2">'
  +'<div class="card"><div class="card-head"><div><div class="card-title">Top sucursales — Merma $</div></div></div>'
- +suc_sorted.map(function(s,i){var d=VB_SUC_TOTALS[s],max=VB_SUC_TOTALS[suc_sorted[0]].pesos,rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name">'+s+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(d.pesos/max*100)+'%;background:#1baf7a"></div></div><div class="rank-val">'+f$(d.pesos)+'</div></div>';}).join('')
+ +suc_sorted.map(function(s,i){var d=D.SUC_TOTALS[s],max=D.SUC_TOTALS[suc_sorted[0]].pesos,rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name">'+s+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(d.pesos/max*100)+'%;background:#1baf7a"></div></div><div class="rank-val">'+f$(d.pesos)+'</div></div>';}).join('')
  +'</div>'
  +'<div class="card"><div class="card-head"><div><div class="card-title">Top sucursales — % Merma</div></div></div>'
  +top_suc_pct.map(function(d,i){var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn',col=d.pct>=30?'#B22222':d.pct>=15?'#E67E22':'#1baf7a';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name">'+d.s+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.min(d.pct/60*100,100)+'%;background:'+col+'"></div></div><div class="rank-val" style="color:'+col+'">'+d.pct+'%</div></div>';}).join('')
  +'</div>'
  +'</div>';
 
-
  // Top productos
  html+='<div class="g2">'
  +'<div class="card"><div class="card-head"><div class="card-title">Top productos — Merma $</div></div>'
- +VB_PROD_TOTALS.map(function(p,i){var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name">'+p.n+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.pesos/VB_PROD_TOTALS[0].pesos*100)+'%;background:#1baf7a"></div></div><div class="rank-val">'+f$(p.pesos)+'</div></div>';}).join('')
+ +D.PROD_TOTALS.map(function(p,i){var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name">'+p.n+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.pesos/D.PROD_TOTALS[0].pesos*100)+'%;background:#1baf7a"></div></div><div class="rank-val">'+f$(p.pesos)+'</div></div>';}).join('')
  +'</div>'
  +'<div class="card"><div class="card-head"><div class="card-title">Top productos — piezas</div></div>'
- +VB_PROD_TOTALS.slice().sort(function(a,b){return b.pz-a.pz;}).map(function(p,i){var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name">'+p.n+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.pz/VB_PROD_TOTALS[0].pz*100)+'%;background:#7F77DD"></div></div><div class="rank-val">'+p.pz+'pz</div></div>';}).join('')
+ +D.PROD_TOTALS.slice().sort(function(a,b){return b.pz-a.pz;}).map(function(p,i){var rk=i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';return'<div class="rank-row"><div class="rank-num '+rk+'">'+(i+1)+'</div><div class="rank-name">'+p.n+'</div><div class="rank-bar"><div class="rank-fill" style="width:'+Math.round(p.pz/D.PROD_TOTALS[0].pz*100)+'%;background:#7F77DD"></div></div><div class="rank-val">'+p.pz+'pz</div></div>';}).join('')
  +'</div>'
  +'</div>';
 
-
  // Tabla completa producto x sucursal
- var SUCS_VB=['Condesa','Colima','Santa Fe','Liverpool','Polanco','San Miguel','Insurgentes','Roma','Kitchen Lab'];
- html+='<div class="card"><div class="card-head"><div><div class="card-title">Tabla completa — producto × sucursal</div><div class="card-sub">Junio 2026 · pz / $ / % merma</div></div></div>'
+ var SUCS_VB=D.SUCS;
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">Tabla completa — producto × sucursal</div><div class="card-sub">'+D.label+' · pz / $ / % merma</div></div></div>'
  +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Producto</th>'
  +SUCS_VB.map(function(s){return'<th colspan="2" style="text-align:center">'+s+'</th>';}).join('')
  +'<th>Total $</th><th>Total pz</th></tr>'
  +'<tr><th></th>'+SUCS_VB.map(function(){return'<th style="font-size:10px;color:var(--gris)">$</th><th style="font-size:10px;color:var(--gris)">%</th>';}).join('')+'<th></th><th></th></tr></thead><tbody>'
- +VB_PRODS_DATA.map(function(p){
- var tot=Object.values(p.suc).reduce(function(a,d){return a+d.pesos;},0);
+ +D.PRODS_DATA.map(function(p){
+ var tot=Object.values(p.suc).reduce(function(a,d){return a+(d.pesos||0);},0);
  var totpz=Object.values(p.suc).reduce(function(a,d){return a+d.pz;},0);
  return'<tr><td style="font-weight:600;white-space:nowrap">'+p.n+'</td>'
- +SUCS_VB.map(function(s){var d=p.suc[s];if(!d)return'<td class="mono" style="color:var(--gris)">—</td><td>—</td>';var pc=d.pct_m,col=pc>=30?'var(--rojo)':pc>=15?'var(--ambar)':'var(--verde2)';return'<td class="mono">'+f$(d.pesos)+'</td><td class="mono" style="font-weight:700;color:'+col+'">'+pc+'%</td>';}).join('')
+ +SUCS_VB.map(function(s){var d=p.suc[s];if(!d)return'<td class="mono" style="color:var(--gris)">—</td><td>—</td>';var pc=d.pct_m,col=pc>=30?'var(--rojo)':pc>=15?'var(--ambar)':'var(--verde2)';return'<td class="mono">'+(d.pesos!=null?f$(d.pesos):'—')+'</td><td class="mono" style="font-weight:700;color:'+col+'">'+pc+'%</td>';}).join('')
  +'<td class="mono" style="font-weight:700">'+f$(tot)+'</td><td class="mono">'+totpz+'pz</td></tr>';
  }).join('')
  +'<tr style="background:var(--verde3);font-weight:700"><td>TOTAL</td>'
- +SUCS_VB.map(function(s){var d=VB_SUC_TOTALS[s]||{pesos:0,pz:0};return'<td class="mono" colspan="2">'+f$(d.pesos)+'<br><span style="font-size:10px;color:var(--gris)">'+d.pz+'pz</span></td>';}).join('')
+ +SUCS_VB.map(function(s){var d=D.SUC_TOTALS[s]||{pesos:0,pz:0};return'<td class="mono" colspan="2">'+f$(d.pesos)+'<br><span style="font-size:10px;color:var(--gris)">'+d.pz+'pz</span></td>';}).join('')
  +'<td class="mono">'+f$(TOTAL_PESOS)+'</td><td class="mono">'+TOTAL_PZ+'pz</td></tr>'
  +'</tbody></table></div></div>';
-
 
 
 
@@ -1850,14 +1916,14 @@ function renderVB(el){
 
  setTimeout(function(){
  var suc_labels=suc_sorted;
- var suc_vals=suc_labels.map(function(s){return VB_SUC_TOTALS[s].pesos;});
+ var suc_vals=suc_labels.map(function(s){return D.SUC_TOTALS[s].pesos;});
  var suc_colors=suc_labels.map(function(s,i){return i===0?'rgba(178,34,34,.8)':'rgba(27,175,122,.7)';});
  mkChart('ch-vb-suc',{type:'bar',data:{labels:suc_labels,datasets:[{label:'Merma $',data:suc_vals,backgroundColor:suc_colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});
- mkChart('ch-vb-prod',{type:'bar',data:{labels:VB_PROD_TOTALS.map(function(p){return p.n;}),datasets:[{label:'Merma $',data:VB_PROD_TOTALS.map(function(p){return p.pesos;}),backgroundColor:['rgba(178,34,34,.8)','rgba(230,126,34,.8)','rgba(27,175,122,.8)','rgba(127,119,221,.8)'],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});
+ mkChart('ch-vb-prod',{type:'bar',data:{labels:D.PROD_TOTALS.map(function(p){return p.n;}),datasets:[{label:'Merma $',data:D.PROD_TOTALS.map(function(p){return p.pesos;}),backgroundColor:['rgba(178,34,34,.8)','rgba(230,126,34,.8)','rgba(27,175,122,.8)','rgba(127,119,221,.8)'],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});
  var vv_labs=suc_sorted;
- var vv_ventas=vv_labs.map(function(s){return VB_SUC_VENTAS[s]||0;});
- var vv_merma=vv_labs.map(function(s){return VB_SUC_TOTALS[s].pesos;});
- var vv_pct=vv_labs.map(function(s){var v=VB_SUC_VENTAS[s]||0;return v?Math.round(VB_SUC_TOTALS[s].pesos/v*1000)/10:0;});
+ var vv_ventas=vv_labs.map(function(s){return D.SUC_VENTAS[s]||0;});
+ var vv_merma=vv_labs.map(function(s){return D.SUC_TOTALS[s].pesos;});
+ var vv_pct=vv_labs.map(function(s){var v=D.SUC_VENTAS[s]||0;return v?Math.round(D.SUC_TOTALS[s].pesos/v*1000)/10:0;});
  mkChart('ch-vb-pct',{type:'bar',data:{labels:vv_labs,datasets:[{label:'Ventas $',data:vv_ventas,backgroundColor:'rgba(27,175,122,.5)',borderRadius:4,yAxisID:'y'},{label:'Merma $',data:vv_merma,backgroundColor:'rgba(178,34,34,.85)',borderRadius:4,yAxisID:'y'},{type:'line',label:'% Merma s/ventas',data:vv_pct,borderColor:'#E67E22',backgroundColor:'#E67E22',borderWidth:2,tension:.3,pointRadius:3,yAxisID:'y1'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{font:{size:9},boxWidth:9}},annotation:{annotations:{line1:{type:'line',yMin:3,yMax:3,yScaleID:'y1',borderColor:'rgba(178,34,34,.7)',borderWidth:1.5,borderDash:[4,3]}}}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{position:'left',grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}},y1:{position:'right',min:0,grid:{display:false},ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
  },80);
 }
