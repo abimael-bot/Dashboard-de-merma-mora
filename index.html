@@ -922,40 +922,38 @@ function renderVPAgo(el){
  var D=window.VP_TABLA_AGO||[];
  var V=window.VP_VENTAS_DETALLE_AGO||[];
  var totC=D.reduce(function(a,d){return a+d.comp;},0),totV=D.reduce(function(a,d){return a+d.vta;},0),totM=D.reduce(function(a,d){return a+d.merma;},0);
- var totIncluido=V.filter(function(p){return p.inc;}).reduce(function(a,p){return a+p.tot;},0);
- var totNoIncluido=V.filter(function(p){return !p.inc;}).reduce(function(a,p){return a+p.tot;},0);
- var html='<div class="card" style="background:#FFF8E1;border-left:4px solid var(--ambar)"><div style="font-size:12px;color:var(--txt)"><b>⚠️ Cierre pendiente de validar.</b> El % de merma sale muy alto (~40%) porque la lista de productos que consumen este vaso estaba incompleta — solo se habían contado '+totIncluido.toLocaleString()+' pz de <b>'+V.filter(function(p){return p.inc;}).length+' productos</b>, pero el archivo completo trae <b>'+V.length+' productos</b> distintos con '+(totIncluido+totNoIncluido).toLocaleString()+' pz en total. Abajo está la lista completa para revisar juntos cuáles sí llevan este vaso.</div></div>';
+ var nImposible=D.filter(function(d){return d.estado.indexOf('IMPOSIBLE')>-1;}).length;
+ var html='<div class="card" style="background:#FDECEA;border-left:4px solid var(--rojo)"><div style="font-size:12px;color:var(--txt)"><b>🔴 '+nImposible+' sucursales con Teórico negativo (imposible)</b> — vendieron más piezas de las que tenían disponibles (Inicial+Compras). Esto indica Compras sin capturar o traspasos entre sucursales no registrados. Ya se agregaron los 28 productos que faltaban (lista completa abajo) — el total pasó de ~40% faltante a '+(totM<0?'sobrante neto':'faltante neto')+' ('+f$(totM)+'), pero hay que resolver estos 2 casos antes de confiar en el número final.</div></div>';
 
  html+='<div class="kpi-grid">'
   +'<div class="kpi blue"><div class="kpi-label">Vasos comprados Ago</div><div class="kpi-val">'+totC.toLocaleString()+'</div><div class="kpi-sub">piezas · '+D.length+' sucursales</div></div>'
-  +'<div class="kpi green"><div class="kpi-label">Vasos vendidos Ago (lista actual)</div><div class="kpi-val">'+totV.toLocaleString()+'</div><div class="kpi-sub">solo productos ya marcados ✅</div></div>'
-  +'<div class="kpi amber"><div class="kpi-label">Merma $ (con lista actual)</div><div class="kpi-val">'+f$(totM)+'</div><div class="kpi-sub">~40% · sospechosamente alto</div></div>'
-  +'<div class="kpi red"><div class="kpi-label">Piezas sin clasificar</div><div class="kpi-val">'+totNoIncluido.toLocaleString()+'</div><div class="kpi-sub">'+V.filter(function(p){return !p.inc;}).length+' productos pendientes de revisar</div></div>'
+  +'<div class="kpi green"><div class="kpi-label">Vasos vendidos Ago</div><div class="kpi-val">'+totV.toLocaleString()+'</div><div class="kpi-sub">40 productos, lista completa</div></div>'
+  +'<div class="kpi amber"><div class="kpi-label">Diferencia neta $</div><div class="kpi-val">'+f$(totM)+'</div><div class="kpi-sub">pendiente de validar los 2 casos imposibles</div></div>'
+  +'<div class="kpi red"><div class="kpi-label">Casos imposibles</div><div class="kpi-val">'+nImposible+'</div><div class="kpi-sub">Santa Fe y San Miguel — ventas &gt; disponible</div></div>'
   +'</div>';
 
- html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Reporte por sucursal — Vasos PLA 16oz</div><div class="card-sub">Inicial + Compras − Ventas = Teórico vs Final · Agosto 2026 (con lista de productos actual, incompleta)</div></div></div><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Inicial</th><th>Compras</th><th>Ventas</th><th>Teórico</th><th>Final</th><th>Dif.</th><th>Merma $</th><th>Estado</th></tr></thead><tbody>'
-  +D.map(function(d){
-    var col=d.merma<-50?'#E67E22':(d.merma>50?'var(--rojo)':'var(--verde2)');
-    var eb=d.estado.indexOf('OK')>-1?'#E8F5E9':(d.estado.indexOf('SOBRA')>-1?'#E3F2FD':'#FFF8E1');
-    var ec=d.estado.indexOf('OK')>-1?'#1B5E20':(d.estado.indexOf('SOBRA')>-1?'#1565C0':'#9a7d0a');
-    return '<tr><td style="font-weight:700">'+d.suc+'</td><td class="mono">'+d.ini+'</td><td class="mono" style="color:var(--verde2)">+'+d.comp+'</td><td class="mono" style="color:#2a78d6">-'+d.vta+'</td><td class="mono">'+d.teo+'</td><td class="mono">'+d.fin+'</td><td class="mono" style="font-weight:700">'+d.dif+'</td><td class="mono" style="font-weight:700;color:'+col+'">'+f$(d.merma)+'</td><td><span class="badge" style="background:'+eb+';color:'+ec+';font-size:9px">'+d.estado+'</span></td></tr>';
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Reporte por sucursal — Vasos PLA 16oz</div><div class="card-sub">Inicial + Compras − Ventas = Teórico vs Final · Agosto 2026 · con los 40 productos ya incluidos</div></div></div><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Inicial</th><th>Compras</th><th>Ventas</th><th>Teórico</th><th>Final</th><th>Dif.</th><th>Merma $</th><th>Estado</th><th style="min-width:220px">Notas / a revisar <span style="font-weight:400;font-size:9px;color:var(--gris)">(editable, no se guarda al recargar)</span></th></tr></thead><tbody>'
+  +D.map(function(d,i){
+    var col=d.merma<-50?'#1baf7a':(d.merma>50?'var(--rojo)':'var(--verde2)');
+    var eb=d.estado.indexOf('OK')>-1?'#E8F5E9':(d.estado.indexOf('SOBRA')>-1?'#E3F2FD':d.estado.indexOf('IMPOSIBLE')>-1?'#FDECEA':'#FFF8E1');
+    var ec=d.estado.indexOf('OK')>-1?'#1B5E20':(d.estado.indexOf('SOBRA')>-1?'#1565C0':d.estado.indexOf('IMPOSIBLE')>-1?'#c0392b':'#9a7d0a');
+    return '<tr'+(d.estado.indexOf('IMPOSIBLE')>-1?' style="background:#FFF5F5"':'')+'><td style="font-weight:700">'+d.suc+'</td><td class="mono">'+d.ini+'</td><td class="mono" style="color:var(--verde2)">+'+d.comp+'</td><td class="mono" style="color:#2a78d6">-'+d.vta+'</td><td class="mono'+(d.teo<0?'" style="color:var(--rojo);font-weight:700':'')+'">'+d.teo+'</td><td class="mono">'+d.fin+'</td><td class="mono" style="font-weight:700">'+d.dif+'</td><td class="mono" style="font-weight:700;color:'+col+'">'+f$(d.merma)+'</td><td><span class="badge" style="background:'+eb+';color:'+ec+';font-size:9px">'+d.estado+'</span></td><td contenteditable="true" style="font-size:10.5px;color:var(--txt);outline:none;border:1px dashed var(--brd);border-radius:4px;padding:4px 6px" data-suc="'+d.suc+'">'+(d.just||'')+'</td></tr>';
   }).join('')
-  +'<tr style="background:var(--rojo2);font-weight:700"><td>TOTAL</td><td class="mono">'+D.reduce(function(a,d){return a+d.ini;},0)+'</td><td class="mono" style="color:var(--verde2)">+'+totC+'</td><td class="mono" style="color:#2a78d6">-'+totV+'</td><td></td><td class="mono">'+D.reduce(function(a,d){return a+d.fin;},0)+'</td><td></td><td class="mono">'+f$(totM)+'</td><td></td></tr>'
+  +'<tr style="background:var(--rojo2);font-weight:700"><td>TOTAL</td><td class="mono">'+D.reduce(function(a,d){return a+d.ini;},0)+'</td><td class="mono" style="color:var(--verde2)">+'+totC+'</td><td class="mono" style="color:#2a78d6">-'+totV+'</td><td></td><td class="mono">'+D.reduce(function(a,d){return a+d.fin;},0)+'</td><td></td><td class="mono">'+f$(totM)+'</td><td></td><td></td></tr>'
   +'</tbody></table></div></div>';
 
  // Tabla consultable completa de ventas
  var SUCS_V=['Colima','Santa Fe','Liverpool','Polanco','Insurgentes','Roma','Lomas','San Miguel','CDI'];
- html+='<div class="card"><div class="card-head"><div><div class="card-title">🔍 Consulta — Ventas de Agosto por producto (todo lo que pudo usar este vaso)</div><div class="card-sub">✅ = ya contado en el cierre de arriba · ⬜ = pendiente de decidir si lleva este vaso · ordenado por piezas totales</div></div></div>'
-  +'<div style="overflow-x:auto"><table class="tbl" style="font-size:11px"><thead><tr><th>✓</th><th>Producto</th>'
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">✅ Ventas de Agosto por producto — lista completa ya incluida</div><div class="card-sub">Los 40 productos confirmados, por sucursal</div></div></div>'
+  +'<div style="overflow-x:auto"><table class="tbl" style="font-size:11px"><thead><tr><th>Producto</th>'
   +SUCS_V.map(function(s){return'<th>'+s+'</th>';}).join('')
   +'<th>Total</th></tr></thead><tbody>'
   +V.map(function(p){
-    var chip=p.inc?'<span style="color:var(--verde2);font-weight:700">✅</span>':'<span style="color:var(--gris)">⬜</span>';
-    return '<tr'+(p.inc?'':' style="background:#FFFBEA"')+'><td style="text-align:center">'+chip+'</td><td style="font-weight:600;white-space:nowrap">'+p.n+'</td>'
+    return '<tr><td style="font-weight:600;white-space:nowrap">'+p.n+'</td>'
     +SUCS_V.map(function(s){return'<td class="mono">'+(p.suc[s]||'—')+'</td>';}).join('')
     +'<td class="mono" style="font-weight:700">'+p.tot+'</td></tr>';
   }).join('')
-  +'<tr style="background:var(--verde3);font-weight:700"><td></td><td>TOTAL GENERAL</td>'
+  +'<tr style="background:var(--verde3);font-weight:700"><td>TOTAL GENERAL</td>'
   +SUCS_V.map(function(s){var t=V.reduce(function(a,p){return a+(p.suc[s]||0);},0);return'<td class="mono">'+t+'</td>';}).join('')
   +'<td class="mono">'+V.reduce(function(a,p){return a+p.tot;},0)+'</td></tr>'
   +'</tbody></table></div></div>';
