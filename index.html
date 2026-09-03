@@ -1688,12 +1688,15 @@ function renderSupSemanal(el){
 }
 // ─── VITCH BAKERY SUCURSAL DETALLE (global scope) ───
 var VB_SUCS_ALL=['Condesa','Colima','Santa Fe','Liverpool','Polanco','San Miguel','Insurgentes','Roma','Kitchen Lab'];
-var activeSucVB='Condesa';
+var activeSucVB='Colima';
 function buildVBSucTabs(){
  var el=document.getElementById('vb-suc-tabs');
  if(!el)return;
- el.innerHTML=VB_SUCS_ALL.map(function(s){
- var tot=VB_CAPTURA.reduce(function(a,p){return a+(p.suc[s]?p.suc[s].merma_pesos:0);},0);
+ var CAP=activeVBMonth==='ago'?(window.VB_CAPTURA_AGO||[]):(window.VB_CAPTURA||[]);
+ var SUCS=activeVBMonth==='ago'?['Colima','Santa Fe','Liverpool','Polanco','Insurgentes','Roma','San Miguel']:VB_SUCS_ALL;
+ if(SUCS.indexOf(activeSucVB)===-1) activeSucVB=SUCS[0];
+ el.innerHTML=SUCS.map(function(s){
+ var tot=CAP.reduce(function(a,p){return a+(p.suc[s]?p.suc[s].merma_pesos:0);},0);
  var cls=tot>2000?' suc-tab-crit':tot>1000?' suc-tab-mod':'';
  var isActive=s===activeSucVB?' active':'';
  return '<button class="suc-tab'+cls+isActive+'" onclick="setVBSuc(&apos;'+s+'&apos;)">'+s+'</button>';
@@ -1708,7 +1711,8 @@ function setVBSuc(s){
  renderVBSuc(s);
 }
 function renderVBSuc(suc){
- var prods=VB_CAPTURA.filter(function(p){return p.suc[suc]&&p.suc[suc].compras>0;});
+ var CAP=activeVBMonth==='ago'?(window.VB_CAPTURA_AGO||[]):(window.VB_CAPTURA||[]);
+ var prods=CAP.filter(function(p){return p.suc[suc]&&p.suc[suc].compras>0;});
  var tot_ini=0,tot_comp=0,tot_vta=0,tot_fin=0,tot_mpz=0,tot_mpesos=0;
  var rows=prods.map(function(p){
  var d=p.suc[suc];
