@@ -1105,6 +1105,25 @@ function renderCBC(el){
 // ─── PROTEÍNA INSUMO ─── 
 function renderPI(el){
  var html='';
+
+ // Hallazgo Agosto 2026 — patron vainilla vs chocolate
+ html+='<div class="card" style="background:#FDECEA;border-left:4px solid var(--rojo)"><div class="card-head"><div><div class="card-title">⚠️ Hallazgo — Agosto 2026: patrón consistente en las 7 sucursales</div><div class="card-sub">Consumo real (Compras+Inicial−Final de insumo) vs. consumo teórico (calculado según recetas y ventas del mes)</div></div></div>'
+ +'<div style="overflow-x:auto"><table class="tbl" style="font-size:11px;margin-bottom:10px"><thead><tr><th>Sabor</th><th>Patrón</th></tr></thead><tbody>'
+ +'<tr><td style="font-weight:700">Vainilla</td><td>El consumo REAL es sistemáticamente MAYOR al teórico (ej. Colima: 53,734g reales vs 31,947g que deberían usarse según ventas — 68% más)</td></tr>'
+ +'<tr><td style="font-weight:700">Chocolate</td><td>El consumo REAL es sistemáticamente MENOR al teórico, casi cero en varias sucursales (Colima: $0 real vs 15,072g que deberían usarse)</td></tr>'
+ +'</tbody></table></div>'
+ +'<div style="font-size:12px;color:var(--txt);line-height:1.7">Esto se repite en las 7 sucursales sin excepción. <b>Sospecha:</b> la proteína de chocolate no se está comprando/registrando correctamente bajo su propio SKU, y probablemente todo se está cargando como "vainilla" aunque se use para productos de chocolate (Macro Coffee, Chocohongo) — eso explicaría por qué vainilla sale sobrada y chocolate parece casi no usarse. <b>Pendiente de validar con el cliente.</b></div>'
+ +'<div style="overflow-x:auto;margin-top:12px"><table class="tbl" style="font-size:11px"><thead><tr><th>Sucursal</th><th>Vainilla Teórico</th><th>Vainilla Real</th><th>Dif. Vainilla</th><th>Chocolate Teórico</th><th>Chocolate Real</th><th>Dif. Chocolate</th></tr></thead><tbody>'
+ +'<tr><td style="font-weight:700">Colima</td><td class="mono">31,947g</td><td class="mono">53,734g</td><td class="mono" style="color:var(--rojo);font-weight:700">+21,787g</td><td class="mono">15,072g</td><td class="mono">0g</td><td class="mono" style="color:var(--rojo);font-weight:700">−15,072g</td></tr>'
+ +'<tr><td style="font-weight:700">Santa Fe</td><td class="mono">13,320g</td><td class="mono">23,265g</td><td class="mono" style="color:var(--rojo);font-weight:700">+9,945g</td><td class="mono">9,642g</td><td class="mono">1,800g</td><td class="mono" style="color:var(--rojo);font-weight:700">−7,842g</td></tr>'
+ +'<tr><td style="font-weight:700">Liverpool</td><td class="mono">7,473g</td><td class="mono">13,628g</td><td class="mono" style="color:var(--rojo);font-weight:700">+6,155g</td><td class="mono">4,512g</td><td class="mono">1,800g</td><td class="mono" style="color:var(--rojo);font-weight:700">−2,712g</td></tr>'
+ +'<tr><td style="font-weight:700">Polanco</td><td class="mono">21,912g</td><td class="mono">35,272g</td><td class="mono" style="color:var(--rojo);font-weight:700">+13,360g</td><td class="mono">13,872g</td><td class="mono">760g</td><td class="mono" style="color:var(--rojo);font-weight:700">−13,112g</td></tr>'
+ +'<tr><td style="font-weight:700">Insurgentes</td><td class="mono">14,742g</td><td class="mono">19,782g</td><td class="mono" style="color:var(--rojo);font-weight:700">+5,040g</td><td class="mono">8,226g</td><td class="mono">522g</td><td class="mono" style="color:var(--rojo);font-weight:700">−7,704g</td></tr>'
+ +'<tr><td style="font-weight:700">Roma</td><td class="mono">12,510g</td><td class="mono">20,534g</td><td class="mono" style="color:var(--rojo);font-weight:700">+8,024g</td><td class="mono">6,966g</td><td class="mono">−116g</td><td class="mono" style="color:var(--rojo);font-weight:700">−7,082g</td></tr>'
+ +'<tr><td style="font-weight:700">San Miguel</td><td class="mono">8,088g</td><td class="mono">17,958g</td><td class="mono" style="color:var(--rojo);font-weight:700">+9,870g</td><td class="mono">4,452g</td><td class="mono">4,306g</td><td class="mono" style="color:var(--rojo);font-weight:700">−146g</td></tr>'
+ +'</tbody></table></div></div>';
+
+
  // KPIs
  html+='<div class="kpi-grid">'
  +'<div class="kpi" style="border-top:3px solid #6D4C41"><div class="kpi-label">Proteína Chocolate Jun</div><div class="kpi-val">'+PROT_KPIS.choco_kg+'kg</div><div class="kpi-sub">'+PROT_KPIS.choco_g.toLocaleString()+'g · '+PROT_PROD_CHOCO.length+' SKUs</div></div>'
