@@ -4,7 +4,7 @@
  <link rel="icon" type="image/png" href="icon.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Mora Mora · Control de Merma</title>
+<title>Mora Mora · Supply/Merma</title>
  <link rel="manifest" href="manifest.json">
  <meta name="mobile-web-app-capable" content="yes">
  <meta name="apple-mobile-web-app-capable" content="yes">
@@ -131,7 +131,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <body>
 <div id="login-screen">
  <div class="login-box">
- <div class="login-logo"><span class="leaf">🌿</span><h1>Mora Mora</h1><p>Control de Merma · 2026</p></div>
+ <div class="login-logo"><span class="leaf">🌿</span><h1>Mora Mora</h1><p>Supply/Merma · 2026</p></div>
  <div class="field"><label>Correo</label><input type="text" id="inp-email" placeholder="correo@moramora.mx" onkeydown="if(event.key==='Enter')document.getElementById('inp-pass').focus()"></div>
  <div class="field"><label>Contraseña</label><input type="password" id="inp-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()"></div>
  <div class="err-msg" id="err-msg">Correo o contraseña incorrectos</div>
@@ -146,7 +146,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
  <div class="layout">
  <aside class="sidebar" id="sidebar">
- <div class="sb-logo"><h2>🌿 ControlMerma</h2><span>Mora Mora · 2026</span></div>
+ <div class="sb-logo"><h2>🌿 Supply/Merma</h2><span>Mora Mora · 2026</span></div>
  <nav class="sb-nav">
  <div class="sb-section">Jugos Cold Pressed</div>
  <button class="sb-item active" onclick="showPage('dashboard')"><span class="ic">📊</span>Dashboard — Jugos CP</button>
@@ -162,6 +162,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
  <button class="sb-item sb-sub" onclick="showCatDirect('VB')"><span class="ic">🥐</span>Vitch Bakery</button>
  <button class="sb-item sb-sub" onclick="showCatDirect('INS')"><span class="ic">📦</span>Insumos</button>
  <button class="sb-item" onclick="showPage('historico')"><span class="ic">📈</span>Histórico</button>
+ <button class="sb-item" onclick="showPage('eficiencia-cat')" style="background:#8E44AD"><span class="ic">⚖️</span>Eficiencia de Categorías 🆕</button>
  <button class="sb-item" onclick="showPage('reporte-junta')" style="background:#1565C0"><span class="ic">📋</span>Resumen por Categoría</button>
  </nav>
  <div class="sb-user">
@@ -369,6 +370,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
  <div class="card-head"><div><div class="card-title">💲 Benchmark de Precios — Competencia</div><div class="card-sub">Suplementos vs. Walmart Express · City Market · GNC · Yema · Liverpool · Sumesa · Farmacia San Pablo</div></div><span class="badge badge-ok" id="bm-badge">✅ Actualizado</span></div>
  <div id="benchmark-content"></div>
  </div>
+ </div>
+
+ <!-- EFICIENCIA DE CATEGORÍAS -->
+ <div class="page" id="page-eficiencia-cat">
+  <div id="eficiencia-cat-content"></div>
  </div>
 
  <!-- REPORTE EJECUTIVO — JUNTA DIRECTIVA -->
@@ -590,8 +596,8 @@ function startApp(u){document.getElementById('login-screen').style.display='none
 function logout(){document.getElementById('app').style.display='none';document.getElementById('login-screen').style.display='flex';document.getElementById('inp-email').value='';document.getElementById('inp-pass').value='';}
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
-var PAGE_META={dashboard:{title:'Dashboard — Jugos Cold Pressed',sub:'S11–S35 · 2026'},margen:{title:'Margen & Utilidad — Jugos Cold Pressed',sub:'Utilidad · Margen · Ventas vs Merma S11–S35'},alertas:{title:'Alertas',sub:'Notificaciones activas'},sucursales:{title:'Por Sucursal',sub:'Reporte completo · 11 sucursales'},top10:{title:'Merma General / CAM',sub:'Registros gerenciales · todas las categorías'},categorias:{title:'Por Categoría',sub:'Jugos · Bakery · Suplementos · Insumos'},insumos:{title:'Registros Merma CAM',sub:'Pendiente — se cargará agosto'},historico:{title:'Histórico',sub:'S11–S35 · Jugos Cold Pressed'},gestion:{title:'Gestión Integral Suplementos',sub:'Rotación · Desviación · Pérdidas — Suplementos 🆕'},benchmark:{title:'Benchmark de Precios',sub:'Suplementos vs. competencia — corrida 20 jul 2026'},'reporte-junta':{title:'Resumen por Categoría — Control de Merma',sub:'Jugos · Suplementos · Vitch Bakery — desde implementación a S35'}};
-function showPage(id){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.querySelectorAll('.sb-item').forEach(function(b){b.classList.remove('active');});var pg=document.getElementById('page-'+id);if(pg)pg.classList.add('active');var m=PAGE_META[id]||{title:id,sub:''};document.getElementById('page-title').textContent=m.title;document.getElementById('page-sub').textContent=m.sub;document.querySelectorAll('.sb-item').forEach(function(b){if(b.getAttribute('onclick')&&b.getAttribute('onclick').indexOf("'"+id+"'")>=0)b.classList.add('active');});if(id==='reporte-junta')renderReporteJunta();closeSidebar();}
+var PAGE_META={dashboard:{title:'Dashboard — Jugos Cold Pressed',sub:'S11–S35 · 2026'},margen:{title:'Margen & Utilidad — Jugos Cold Pressed',sub:'Utilidad · Margen · Ventas vs Merma S11–S35'},alertas:{title:'Alertas',sub:'Notificaciones activas'},sucursales:{title:'Por Sucursal',sub:'Reporte completo · 11 sucursales'},top10:{title:'Merma General / CAM',sub:'Registros gerenciales · todas las categorías'},categorias:{title:'Por Categoría',sub:'Jugos · Bakery · Suplementos · Insumos'},insumos:{title:'Registros Merma CAM',sub:'Pendiente — se cargará agosto'},historico:{title:'Histórico',sub:'S11–S35 · Jugos Cold Pressed'},gestion:{title:'Gestión Integral Suplementos',sub:'Rotación · Desviación · Pérdidas — Suplementos 🆕'},benchmark:{title:'Benchmark de Precios',sub:'Suplementos vs. competencia — corrida 20 jul 2026'},'reporte-junta':{title:'Resumen por Categoría — Control de Merma',sub:'Jugos · Suplementos · Vitch Bakery — desde implementación a S35'},'eficiencia-cat':{title:'Eficiencia de Categorías',sub:'Jugos · Vitch Bakery · Insumos — Ventas vs Compras vs Merma, por tipo de sucursal'}};
+function showPage(id){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.querySelectorAll('.sb-item').forEach(function(b){b.classList.remove('active');});var pg=document.getElementById('page-'+id);if(pg)pg.classList.add('active');var m=PAGE_META[id]||{title:id,sub:''};document.getElementById('page-title').textContent=m.title;document.getElementById('page-sub').textContent=m.sub;document.querySelectorAll('.sb-item').forEach(function(b){if(b.getAttribute('onclick')&&b.getAttribute('onclick').indexOf("'"+id+"'")>=0)b.classList.add('active');});if(id==='reporte-junta')renderReporteJunta();if(id==='eficiencia-cat')renderEficienciaCat();closeSidebar();}
 
 
 // ─── DATA ───
@@ -2522,7 +2528,76 @@ function renderBmRows(){
 
 function startClock(){setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});},1000);}
 
+var EFC_FILTRO_ACTUAL = 'Todas';
+function setEfcFiltro(f){ EFC_FILTRO_ACTUAL = f; renderEficienciaCat(); }
+function renderEficienciaCat(){
+ var el = document.getElementById('eficiencia-cat-content');
+ var JUGOS = window.EFC_JUGOS||{}, VB = window.EFC_VB||{}, VASOS = window.EFC_VASOS||{}, DESV = window.EFC_DESV_HIST||{};
+ var TIPOS = ['Todas','Markets','Restaurante','Juice Bar'];
+
+ function sumaTipos(dict, filtro){
+   if(filtro==='Todas'){
+     var v=0,c=0,m=0;
+     Object.keys(dict).forEach(function(k){v+=dict[k].vta;c+=dict[k].comp;m+=dict[k].merma;});
+     var disp = null; // no recomputamos %, usamos suma ponderada simple
+     var pct = (v+c)? (m/( (v>0?1:1) )) : 0;
+     // recalculamos pct correctamente si tenemos costos base: usamos promedio ponderado por compras+algo -> aproximacion simple
+     var pctSum = 0, pesos=0;
+     Object.keys(dict).forEach(function(k){ pesos += (dict[k].vta+dict[k].comp); pctSum += dict[k].pct*(dict[k].vta+dict[k].comp); });
+     pct = pesos? pctSum/pesos : 0;
+     return {vta:v, comp:c, merma:m, pct:pct};
+   }
+   return dict[filtro] || {vta:0,comp:0,merma:0,pct:0};
+ }
+
+ var html = '<div class="card" style="background:#1C3A2A;color:#fff"><b style="font-size:15px">⚖️ Eficiencia de Categorías</b><br><span style="font-size:12px;opacity:.85">Comparativo Ventas vs Compras vs Merma, filtrable por tipo de sucursal. Solo se incluyen datos verificados (no se usan archivos antiguos con formato inconsistente).</span></div>';
+
+ html += '<div class="card"><div style="font-size:12px;color:var(--gris);margin-bottom:8px">Filtrar por tipo de sucursal:</div><div style="display:flex;gap:8px;flex-wrap:wrap">';
+ TIPOS.forEach(function(t){
+   var activo = t===EFC_FILTRO_ACTUAL;
+   html += '<button onclick="setEfcFiltro(\''+t+'\')" style="padding:6px 14px;border-radius:20px;border:1px solid '+(activo?'#8E44AD':'var(--brd)')+';background:'+(activo?'#8E44AD':'#fff')+';color:'+(activo?'#fff':'var(--txt)')+';font-size:12px;font-weight:600;cursor:pointer">'+t+'</button>';
+ });
+ html += '</div></div>';
+
+ var cats = [
+   {nombre:'🥤 Jugos Cold Pressed', sub:'Semana 36 (31 ago - 6 sep 2026)', dict:JUGOS},
+   {nombre:'🥐 Vitch Bakery', sub:'Agosto 2026', dict:VB},
+   {nombre:'🥤 Insumos — Vasos PLA 16oz', sub:'Agosto 2026', dict:VASOS},
+ ];
+
+ html += '<div class="kpi-grid">';
+ cats.forEach(function(cat){
+   var d = sumaTipos(cat.dict, EFC_FILTRO_ACTUAL);
+   var color = d.pct>25?'var(--rojo)':(d.pct>10?'#e69b00':'var(--verde2)');
+   html += '<div class="card"><div style="font-size:11px;color:var(--gris);margin-bottom:2px">'+cat.nombre+'</div><div style="font-size:9px;color:var(--gris);margin-bottom:8px">'+cat.sub+' · '+EFC_FILTRO_ACTUAL+'</div>'
+     +'<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Ventas</span><b>'+f$(d.vta)+'</b></div>'
+     +'<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Compras</span><b>'+f$(d.comp)+'</b></div>'
+     +'<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Merma $</span><b style="color:'+color+'">'+f$(d.merma)+'</b></div>'
+     +'<div style="display:flex;justify-content:space-between;font-size:13px;margin-top:6px;padding-top:6px;border-top:1px solid var(--brd)"><span>% Merma</span><b style="color:'+color+'">'+d.pct.toFixed(1)+'%</b></div>'
+     +'</div>';
+ });
+ html += '</div>';
+
+ // Suplementos pendiente
+ html += '<div class="card" style="background:#FFF8E1;border-left:4px solid var(--ambar)"><div style="font-size:12px;color:var(--txt)"><b>💊 Suplementos — pendiente</b>: la información capturada hasta ahora (Compras/Ventas/Inicial/Final) no se considera aún verídica al 100% (folios sin confirmar, brechas de Compras detectadas). No se incluye en este comparativo hasta validar la fuente completa con el área de Compras.</div></div>';
+
+ // Desviacion historica Jugos
+ html += '<div class="card"><div class="card-head"><div><div class="card-title">📊 Jugos — Merma Reportada vs Merma Real (Desviación)</div><div class="card-sub">Semanas con dato verificado: S24–S33 y S36 (S34–S35 y S11–S23 sin dato confiable)</div></div></div>'
+   +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Semana</th><th>Merma Reportada</th><th>Merma Real</th><th>Desviación $</th><th>Desviación %</th></tr></thead><tbody>';
+ var semanasDesv = Object.keys(DESV).sort(function(a,b){return parseInt(a.slice(1))-parseInt(b.slice(1));});
+ semanasDesv.forEach(function(s){
+   var d = DESV[s];
+   var mreal = d.desv_dollar + d.merma_reportada;
+   var col = d.desv_pct>0.5?'var(--rojo)':(d.desv_pct>0.3?'#e69b00':'var(--verde2)');
+   html += '<tr><td style="font-weight:700">'+s+'</td><td class="mono">'+f$(d.merma_reportada)+'</td><td class="mono">'+f$(mreal)+'</td><td class="mono">'+f$(d.desv_dollar)+'</td><td class="mono" style="color:'+col+';font-weight:700">'+(d.desv_pct*100).toFixed(1)+'%</td></tr>';
+ });
+ html += '</tbody></table></div><div style="font-size:11px;color:var(--gris);margin-top:8px;padding:0 4px">Desviación % = qué tanto de la merma real NO fue reportada por los gerentes al cierre de la semana. Valores altos (&gt;50%) indican brecha grande entre lo reportado y lo que realmente faltó.</div></div>';
+
+ el.innerHTML = html;
+}
+
 function renderReporteJunta(){
+
  setTimeout(function(){
   var vbEl=document.getElementById('vb-full-report');
   if(vbEl) renderVBReport(vbEl);
