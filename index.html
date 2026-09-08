@@ -2589,6 +2589,26 @@ function renderEficienciaCat(){
  });
  html += '</div>';
 
+ // ===== GRAFICA COMPARATIVA — LAS 4 CATEGORIAS =====
+ var COMP = window.CAT_COMPARATIVO||[];
+ html += '<div class="card" style="background:#1C3A2A"><div class="card-head"><div><div class="card-title" style="color:#fff">📊 Comparativo — % Merma por Categoría</div><div class="card-sub" style="color:#CADCFC">Cierre más reciente de cada categoría</div></div></div><div style="position:relative;height:180px"><canvas id="ch-efc-comparativo"></canvas></div></div>';
+
+ // ===== RESUMEN POR SUCURSAL =====
+ var RS = window.CAT_RESUMEN_SUC||{};
+ var SUCS_RS = ['Colima','Santa Fe','Liverpool','Polanco','Insurgentes','Roma','San Miguel','Lomas'];
+ html += '<div class="card"><div class="card-head"><div><div class="card-title">🏬 Resumen por Sucursal — todas las categorías</div><div class="card-sub">% Merma individual: Jugos (S36) · Vitch Bakery (ago) · Insumos/Vasos (ago)</div></div></div>';
+ html += '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Jugos %</th><th>Jugos $</th><th>Vitch Bakery %</th><th>VB $</th><th>Insumos/Vasos %</th><th>Vasos $</th></tr></thead><tbody>';
+ SUCS_RS.forEach(function(s){
+   var r = RS[s]||{};
+   function celda(pct, merma){
+     if(pct===null||pct===undefined) return '<td class="mono" style="color:var(--gris)">s/d</td><td class="mono" style="color:var(--gris)">—</td>';
+     var col = colorPct(pct);
+     return '<td class="mono" style="color:'+col+';font-weight:700">'+pct+'%</td><td class="mono">'+f$(merma)+'</td>';
+   }
+   html += '<tr><td style="font-weight:700">'+s+'</td>'+celda(r.jugos_pct,r.jugos_merma)+celda(r.vb_pct,r.vb_merma)+celda(r.vasos_pct,r.vasos_merma)+'</tr>';
+ });
+ html += '</tbody></table></div><div style="font-size:10.5px;color:var(--gris);margin-top:6px;padding:0 4px">San Miguel en Insumos/Vasos muestra un valor extremo (Teórico negativo — ventas mayores a lo disponible) pendiente de investigar; no reflejar como definitivo hasta resolver.</div></div>';
+
  // ===== HISTORICO JUGOS =====
  html += '<div class="card"><div class="card-head"><div><div class="card-title">🥤 Jugos Cold Pressed — Histórico</div><div class="card-sub">Ventas $ · Merma $ · % Merma, S11–S36</div></div></div>';
  html += '<div style="position:relative;height:180px;margin-bottom:12px"><canvas id="ch-efc-jugos"></canvas></div>';
@@ -2636,6 +2656,7 @@ function renderEficienciaCat(){
  setTimeout(function(){
    var TC = getComputedStyle(document.body).getPropertyValue('--gris')||'#666';
    var GC = 'rgba(0,0,0,.06)';
+   mkChart('ch-efc-comparativo',{type:'bar',data:{labels:COMP.map(function(c){return c.nombre;}),datasets:[{label:'%',data:COMP.map(function(c){return c.pct;}),backgroundColor:COMP.map(function(c){return c.pct>25?'#B22222':(c.pct>10?'#e69b00':(c.pct<0?'#2a78d6':'#1baf7a'));})}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:true}},scales:{x:{grid:{color:'rgba(255,255,255,.1)'},ticks:{color:'#CADCFC',callback:function(v){return v+'%';}}},y:{grid:{display:false},ticks:{color:'#fff',font:{size:11}}}}}});
    mkChart('ch-efc-jugos',{type:'line',data:{labels:SEMS,datasets:[
      {label:'% Merma',data:PCT,borderColor:'#B22222',backgroundColor:'#B22222',borderWidth:2,tension:.3,pointRadius:2,yAxisID:'y'}
    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:TC,font:{size:8}}},y:{min:0,grid:{color:GC},ticks:{color:TC,callback:function(v){return v+'%';}}}}}});
