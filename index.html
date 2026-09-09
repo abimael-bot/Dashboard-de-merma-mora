@@ -1199,6 +1199,7 @@ function renderPI(el){
 
 // ─── SUPLEMENTOS ───
 var activeSupTab='1-9ago';
+function setSupMonth(m){ window.CURRENT_SUP_MONTH = m; var el2=document.getElementById('cat-content'); if(el2) renderSUP(el2); }
 function renderSUP(el){
  var activeSupMonth = window.CURRENT_SUP_MONTH || 'jul';
  var supData = [
@@ -1215,7 +1216,6 @@ function renderSUP(el){
  var supDataAgo = window.SUP_DATA_AGO||[];
  var totAgo = window.SUP_TOTALES_AGO||{};
 
- function setSupMonth(m){ window.CURRENT_SUP_MONTH = m; renderSUP(document.getElementById('cat-content')||el); }
 
  var monthTabs = '<div style="display:flex;gap:8px;margin-bottom:12px">'
    +'<button onclick="setSupMonth(\'jul\')" style="padding:6px 16px;border-radius:8px;border:1px solid var(--brd);background:'+(activeSupMonth==='jul'?'#7F77DD':'#fff')+';color:'+(activeSupMonth==='jul'?'#fff':'var(--txt)')+';font-weight:700;cursor:pointer;font-size:12px">Julio 2026</button>'
