@@ -1202,8 +1202,8 @@ var activeSupTab='1-9ago';
 function setSupMonth(m){ window.CURRENT_SUP_MONTH = m; var el2=document.getElementById('cat-content'); if(el2) renderSUP(el2); }
 
 var activeSucSUP='Colima';
-function buildSupSucTabs(){
- var el=document.getElementById('sup-suc-tabs');
+function buildSupAgoSucTabs(){
+ var el=document.getElementById('sup-ago-suc-tabs');
  if(!el)return;
  var CAP=window.SUP_CAPTURA_AGO||[];
  var SUCS=['Colima','Santa Fe','Liverpool','Polanco','Insurgentes','Roma','San Miguel'];
@@ -1212,20 +1212,20 @@ function buildSupSucTabs(){
   var tot=CAP.reduce(function(a,p){return a+(p.suc[s]?p.suc[s].merma_pesos:0);},0);
   var cls=Math.abs(tot)>2000?' suc-tab-crit':Math.abs(tot)>1000?' suc-tab-mod':'';
   var isActive=s===activeSucSUP?' active':'';
-  return '<button class="suc-tab'+cls+isActive+'" onclick="setSupSuc(\''+s+'\')">'+s+'</button>';
+  return '<button class="suc-tab'+cls+isActive+'" onclick="setSupAgoSuc(\''+s+'\')">'+s+'</button>';
  }).join('');
- renderSupSuc(activeSucSUP);
+ renderSupAgoSuc(activeSucSUP);
 }
-function setSupSuc(s){
+function setSupAgoSuc(s){
  activeSucSUP=s;
- document.querySelectorAll('#sup-suc-tabs .suc-tab').forEach(function(t){
+ document.querySelectorAll('#sup-ago-suc-tabs .suc-tab').forEach(function(t){
   t.classList.toggle('active',t.textContent.trim()===s);
  });
- renderSupSuc(s);
+ renderSupAgoSuc(s);
 }
-function renderSupSuc(suc){
+function renderSupAgoSuc(suc){
  var CAP=window.SUP_CAPTURA_AGO||[];
- var el=document.getElementById('sup-suc-detail');
+ var el=document.getElementById('sup-ago-suc-detail');
  if(!el)return;
  var prods=CAP.filter(function(p){return p.suc[suc]&&(p.suc[suc].compras>0||p.suc[suc].inv_ini>0||p.suc[suc].ventas>0);});
  prods.sort(function(a,b){return Math.abs(b.suc[suc].merma_pesos)-Math.abs(a.suc[suc].merma_pesos);});
@@ -1328,8 +1328,8 @@ function renderSUP(el){
     +'<tr style="border-top:2px solid var(--brd);font-weight:800"><td>TOTAL</td><td class="mono">'+f$(totAgo.ini)+'</td><td class="mono">'+f$(totAgo.comp)+'</td><td class="mono">'+f$(totAgo.trasp)+'</td><td class="mono">'+f$(totAgo.vta)+'</td><td class="mono">'+f$(totAgo.fin)+'</td><td class="mono">'+f$(totAgo.dif)+'</td><td class="mono">'+totAgo.pct+'%</td></tr>'
     +'</tbody></table></div></div>';
    html+='<div class="card"><div class="card-head"><div><div class="card-title">🔍 Detalle por sucursal — agosto</div><div class="card-sub">Productos con movimiento, Inicial+Compras+Traspasos−Ventas=Teórico vs. Físico</div></div></div>'
-    +'<div class="suc-tabs" id="sup-suc-tabs" style="margin-bottom:12px"></div>'
-    +'<div id="sup-suc-detail"></div></div>';
+    +'<div class="suc-tabs" id="sup-ago-suc-tabs" style="margin-bottom:12px"></div>'
+    +'<div id="sup-ago-suc-detail"></div></div>';
    html+='<div class="card"><div class="card-head"><div><div class="card-title">Pérdida/Sobrante $ por sucursal — agosto</div><div class="card-sub">Verde = sobrante · Morado = faltante moderado · Rojo = faltante alto</div></div></div>'
     +'<div style="position:relative;height:220px"><canvas id="ch-sup-cierre-ago"></canvas></div></div>';
  }
@@ -1342,7 +1342,7 @@ function renderSUP(el){
   } else {
     var orderedAgo=supDataAgo.slice().sort(function(a,b){return Math.abs(b.dif)-Math.abs(a.dif);});
     mkChart('ch-sup-cierre-ago',{type:'bar',data:{labels:orderedAgo.map(function(r){return r.suc;}),datasets:[{label:'Dif $',data:orderedAgo.map(function(r){return r.dif;}),backgroundColor:orderedAgo.map(function(r){return r.dif<0?'#1BAF7A':(Math.abs(r.pct)>30?'#B22222':'#7F77DD');}),borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:GC},ticks:{color:TC,callback:function(v){return'$'+v;}}},y:{grid:{display:false},ticks:{color:TC,font:{size:10}}}}}});
-    buildSupSucTabs();
+    buildSupAgoSucTabs();
   }
  },60);
 }
@@ -1353,8 +1353,8 @@ var CURRENT_SUP_DETALLE = null;
 
 
 function setSupSuc(suc){
- document.querySelectorAll('#sup-suc-tabs .suc-tab').forEach(function(t){t.classList.toggle('active',t.textContent.trim()===suc);});
- renderSupSucTable(suc);
+ document.querySelectorAll('#sup-ago-suc-tabs .suc-tab').forEach(function(t){t.classList.toggle('active',t.textContent.trim()===suc);});
+ renderSupAgoSucTable(suc);
 }
 
 
@@ -1404,7 +1404,7 @@ function renderSup21Jul(el){
 
  var activeSuc21=SUP_SUCS_21JUL[0];
  html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Detalle por sucursal</div><div class="card-sub">Inv.Ini (20 jul) + Compras − Ventas = Teórico vs Inv.Final (21 jul)</div></div></div>'
- +'<div class="suc-tabs" id="sup-suc-tabs" style="margin-bottom:12px">'
+ +'<div class="suc-tabs" id="sup-ago-suc-tabs" style="margin-bottom:12px">'
  +SUP_SUCS_21JUL.map(function(s){
  var r=SUP_RESUMEN_21JUL.find(function(x){return x.suc===s;});
  var cls=r&&r.diff_ps>200?' suc-tab-crit':r&&r.diff_ps<-200?' suc-tab-ok':''
@@ -1423,7 +1423,7 @@ function renderSup21Jul(el){
  var vals=SUP_RESUMEN_21JUL.map(function(r){return -r.diff_ps;});
  var colors=vals.map(function(v){return v<-200?'rgba(178,34,34,.8)':v>200?'rgba(27,94,32,.8)':'rgba(230,126,34,.8)';});
  mkChart('ch-sup-diff-21jul',{type:'bar',data:{labels:labels,datasets:[{label:'Diff $',data:vals,backgroundColor:colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.abs(v);},font:{size:9},color:TC}}}}});
- renderSupSucTable(activeSuc21);
+ renderSupAgoSucTable(activeSuc21);
  },80);
 }
 
@@ -1507,7 +1507,7 @@ function renderSup22Jul(el){
 
  var activeSuc22=SUP_SUCS_22JUL[0];
  html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Detalle por sucursal</div><div class="card-sub">Inv.Ini + Compras − Ventas = Teórico vs Inv.Final (22 jul)</div></div></div>'
- +'<div class="suc-tabs" id="sup-suc-tabs" style="margin-bottom:12px">'
+ +'<div class="suc-tabs" id="sup-ago-suc-tabs" style="margin-bottom:12px">'
  +SUP_SUCS_22JUL.map(function(s){
  var r=SUP_RESUMEN_22JUL.find(function(x){return x.suc===s;});
  var cls=r&&r.diff_ps>200?' suc-tab-crit':r&&r.diff_ps<-200?' suc-tab-ok':''
@@ -1525,7 +1525,7 @@ function renderSup22Jul(el){
  var vals=SUP_RESUMEN_22JUL.map(function(r){return -r.diff_ps;});
  var colors=vals.map(function(v){return v<-200?'rgba(178,34,34,.8)':v>200?'rgba(27,94,32,.8)':'rgba(230,126,34,.8)';});
  mkChart('ch-sup-diff-22jul',{type:'bar',data:{labels:labels,datasets:[{label:'Diff $',data:vals,backgroundColor:colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.abs(v);},font:{size:9},color:TC}}}}});
- renderSupSucTable(activeSuc22);
+ renderSupAgoSucTable(activeSuc22);
  },80);
 }
 
@@ -1577,7 +1577,7 @@ function renderSup23Jul(el){
 
  var activeSuc23=SUP_SUCS_23JUL[0];
  html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Detalle por sucursal</div><div class="card-sub">Inv.Ini + Compras − Ventas = Teórico vs Inv.Final (23 jul)</div></div></div>'
- +'<div class="suc-tabs" id="sup-suc-tabs" style="margin-bottom:12px">'
+ +'<div class="suc-tabs" id="sup-ago-suc-tabs" style="margin-bottom:12px">'
  +SUP_SUCS_23JUL.map(function(s){
  var r=SUP_RESUMEN_23JUL.find(function(x){return x.suc===s;});
  var cls=r&&r.diff_ps>200?' suc-tab-crit':r&&r.diff_ps<-200?' suc-tab-ok':''
@@ -1595,7 +1595,7 @@ function renderSup23Jul(el){
  var vals=SUP_RESUMEN_23JUL.map(function(r){return -r.diff_ps;});
  var colors=vals.map(function(v){return v<-200?'rgba(178,34,34,.8)':v>200?'rgba(27,94,32,.8)':'rgba(230,126,34,.8)';});
  mkChart('ch-sup-diff-23jul',{type:'bar',data:{labels:labels,datasets:[{label:'Diff $',data:vals,backgroundColor:colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.abs(v);},font:{size:9},color:TC}}}}});
- renderSupSucTable(activeSuc23);
+ renderSupAgoSucTable(activeSuc23);
  },80);
 }
 
@@ -1659,7 +1659,7 @@ function renderSupDayAgo(el,cfg){
  +'</div>';
  var activeSuc=SUCS[0];
  html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Detalle por sucursal</div><div class="card-sub">Inv.Ini + Compras − Ventas = Teórico vs Inv.Final</div></div></div>'
- +'<div class="suc-tabs" id="sup-suc-tabs" style="margin-bottom:12px">'
+ +'<div class="suc-tabs" id="sup-ago-suc-tabs" style="margin-bottom:12px">'
  +SUCS.map(function(s){
   var r=RES.find(function(x){return x.suc===s;});
   var cls=r&&r.diff_ps>200?' suc-tab-crit':r&&r.diff_ps<-200?' suc-tab-ok':'';
@@ -1673,7 +1673,7 @@ function renderSupDayAgo(el,cfg){
   var vals=RES.map(function(r){return -r.diff_ps;});
   var colors=vals.map(function(v){return v<-200?'rgba(178,34,34,.8)':v>200?'rgba(27,94,32,.8)':'rgba(230,126,34,.8)';});
   mkChart('ch-sup-diff-'+cfg.dayId,{type:'bar',data:{labels:labels,datasets:[{label:'Diff $',data:vals,backgroundColor:colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.abs(v);},font:{size:9},color:TC}}}}});
-  renderSupSucTable(activeSuc);
+  renderSupAgoSucTable(activeSuc);
  },80);
 }
 function renderSup1_19Jul(el){
@@ -1721,7 +1721,7 @@ function renderSup1_19Jul(el){
 
  var activeSucSup19=SUP_SUCS_1_19JUL[0];
  html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Detalle por sucursal</div><div class="card-sub">Inv.Ini + Compras − Ventas = Teórico vs Inv.Final (19 jul)</div></div></div>'
- +'<div class="suc-tabs" id="sup-suc-tabs" style="margin-bottom:12px">'
+ +'<div class="suc-tabs" id="sup-ago-suc-tabs" style="margin-bottom:12px">'
  +SUP_SUCS_1_19JUL.map(function(s){
  var r=SUP_RESUMEN_1_19JUL.find(function(x){return x.suc===s;});
  var cls=r&&r.diff_ps>200?' suc-tab-crit':r&&r.diff_ps<-200?' suc-tab-ok':''
@@ -1737,7 +1737,7 @@ function renderSup1_19Jul(el){
  var vals=SUP_RESUMEN_1_19JUL.map(function(r){return -r.diff_ps;});
  var colors=vals.map(function(v){return v<-200?'rgba(178,34,34,.8)':v>200?'rgba(27,94,32,.8)':'rgba(230,126,34,.8)';});
  mkChart('ch-sup-diff-1-19',{type:'bar',data:{labels:labels,datasets:[{label:'Diff $',data:vals,backgroundColor:colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.abs(v);},font:{size:9},color:TC}}}}});
- renderSupSucTable('Condesa');
+ renderSupAgoSucTable('Condesa');
  },80);
 }
 
@@ -1746,7 +1746,7 @@ function renderSup1_19Jul(el){
 
 
 
-function renderSupSucTable(suc){
+function renderSupAgoSucTable(suc){
  var el=document.getElementById('sup-det-content');
  if(!el) return;
  var rows=CURRENT_SUP_DETALLE.filter(function(r){
