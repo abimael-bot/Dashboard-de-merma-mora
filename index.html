@@ -1200,6 +1200,72 @@ function renderPI(el){
 // ─── SUPLEMENTOS ───
 var activeSupTab='1-9ago';
 function setSupMonth(m){ window.CURRENT_SUP_MONTH = m; var el2=document.getElementById('cat-content'); if(el2) renderSUP(el2); }
+
+var activeSucSUP='Colima';
+function buildSupSucTabs(){
+ var el=document.getElementById('sup-suc-tabs');
+ if(!el)return;
+ var CAP=window.SUP_CAPTURA_AGO||[];
+ var SUCS=['Colima','Santa Fe','Liverpool','Polanco','Insurgentes','Roma','San Miguel'];
+ if(SUCS.indexOf(activeSucSUP)===-1) activeSucSUP=SUCS[0];
+ el.innerHTML=SUCS.map(function(s){
+  var tot=CAP.reduce(function(a,p){return a+(p.suc[s]?p.suc[s].merma_pesos:0);},0);
+  var cls=Math.abs(tot)>2000?' suc-tab-crit':Math.abs(tot)>1000?' suc-tab-mod':'';
+  var isActive=s===activeSucSUP?' active':'';
+  return '<button class="suc-tab'+cls+isActive+'" onclick="setSupSuc(\''+s+'\')">'+s+'</button>';
+ }).join('');
+ renderSupSuc(activeSucSUP);
+}
+function setSupSuc(s){
+ activeSucSUP=s;
+ document.querySelectorAll('#sup-suc-tabs .suc-tab').forEach(function(t){
+  t.classList.toggle('active',t.textContent.trim()===s);
+ });
+ renderSupSuc(s);
+}
+function renderSupSuc(suc){
+ var CAP=window.SUP_CAPTURA_AGO||[];
+ var el=document.getElementById('sup-suc-detail');
+ if(!el)return;
+ var prods=CAP.filter(function(p){return p.suc[suc]&&(p.suc[suc].compras>0||p.suc[suc].inv_ini>0||p.suc[suc].ventas>0);});
+ prods.sort(function(a,b){return Math.abs(b.suc[suc].merma_pesos)-Math.abs(a.suc[suc].merma_pesos);});
+ var tot_ini=0,tot_comp=0,tot_trasp=0,tot_vta=0,tot_fin=0,tot_mpz=0,tot_mpesos=0;
+ var rows=prods.map(function(p){
+  var d=p.suc[suc];
+  tot_ini+=d.inv_ini; tot_comp+=d.compras; tot_trasp+=(d.trasp||0); tot_vta+=d.ventas; tot_fin+=d.inv_fin;
+  tot_mpz+=d.merma_pz; tot_mpesos+=d.merma_pesos;
+  var col=d.pct_merma>=30?'var(--rojo)':d.pct_merma>=15?'var(--ambar)':d.pct_merma>=7?'#E67E22':(d.pct_merma<0?'#2a78d6':'var(--verde2)');
+  var traspTxt=(d.trasp||0)>0?'+'+d.trasp:(d.trasp||0);
+  return '<tr>'
+   +'<td style="font-weight:600">'+p.n+'</td>'
+   +'<td class="mono" style="color:var(--gris)">$'+p.costo+'</td>'
+   +'<td class="mono">'+d.inv_ini+'</td>'
+   +'<td class="mono" style="color:var(--verde2)">+'+d.compras+'</td>'
+   +'<td class="mono">'+traspTxt+'</td>'
+   +'<td class="mono" style="color:#2a78d6">'+d.ventas+'</td>'
+   +'<td class="mono" style="color:var(--gris)">'+d.inv_fin+'</td>'
+   +'<td class="mono" style="font-weight:700;color:'+col+'">'+d.merma_pz+'</td>'
+   +'<td class="mono" style="font-weight:700;color:'+col+'">'+f$(d.merma_pesos)+'</td>'
+   +'<td class="mono" style="font-weight:700;color:'+col+'">'+d.pct_merma+'%</td>'
+   +'</tr>';
+ }).join('');
+ var disp=tot_ini+tot_comp;
+ var tot_pct=disp?Math.round(tot_mpesos/disp*1000)/10:0;
+ var tot_col=tot_pct>=30?'var(--rojo)':tot_pct>=15?'var(--ambar)':tot_pct>=7?'#E67E22':(tot_pct<0?'#2a78d6':'var(--verde2)');
+ rows+='<tr style="background:var(--rojo2);font-weight:700">'
+  +'<td>TOTAL '+suc+'</td><td></td>'
+  +'<td class="mono">'+tot_ini+'</td>'
+  +'<td class="mono" style="color:var(--verde2)">+'+tot_comp+'</td>'
+  +'<td class="mono">'+tot_trasp+'</td>'
+  +'<td class="mono" style="color:#2a78d6">'+tot_vta+'</td>'
+  +'<td class="mono">'+tot_fin+'</td>'
+  +'<td class="mono" style="color:'+tot_col+'">'+tot_mpz+'</td>'
+  +'<td class="mono" style="color:'+tot_col+'">'+f$(tot_mpesos)+'</td>'
+  +'<td class="mono" style="color:'+tot_col+'">'+tot_pct+'%</td>'
+  +'</tr>';
+ el.innerHTML='<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Producto</th><th>Costo</th><th>Inicial</th><th>Compras</th><th>Traspasos</th><th>Ventas</th><th>Físico</th><th>Merma pz</th><th>Merma $</th><th>% Merma</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+
 function renderSUP(el){
  var activeSupMonth = window.CURRENT_SUP_MONTH || 'jul';
  var supData = [
@@ -1261,6 +1327,9 @@ function renderSUP(el){
     }).join('')
     +'<tr style="border-top:2px solid var(--brd);font-weight:800"><td>TOTAL</td><td class="mono">'+f$(totAgo.ini)+'</td><td class="mono">'+f$(totAgo.comp)+'</td><td class="mono">'+f$(totAgo.trasp)+'</td><td class="mono">'+f$(totAgo.vta)+'</td><td class="mono">'+f$(totAgo.fin)+'</td><td class="mono">'+f$(totAgo.dif)+'</td><td class="mono">'+totAgo.pct+'%</td></tr>'
     +'</tbody></table></div></div>';
+   html+='<div class="card"><div class="card-head"><div><div class="card-title">🔍 Detalle por sucursal — agosto</div><div class="card-sub">Productos con movimiento, Inicial+Compras+Traspasos−Ventas=Teórico vs. Físico</div></div></div>'
+    +'<div class="suc-tabs" id="sup-suc-tabs" style="margin-bottom:12px"></div>'
+    +'<div id="sup-suc-detail"></div></div>';
    html+='<div class="card"><div class="card-head"><div><div class="card-title">Pérdida/Sobrante $ por sucursal — agosto</div><div class="card-sub">Verde = sobrante · Morado = faltante moderado · Rojo = faltante alto</div></div></div>'
     +'<div style="position:relative;height:220px"><canvas id="ch-sup-cierre-ago"></canvas></div></div>';
  }
@@ -1273,6 +1342,7 @@ function renderSUP(el){
   } else {
     var orderedAgo=supDataAgo.slice().sort(function(a,b){return Math.abs(b.dif)-Math.abs(a.dif);});
     mkChart('ch-sup-cierre-ago',{type:'bar',data:{labels:orderedAgo.map(function(r){return r.suc;}),datasets:[{label:'Dif $',data:orderedAgo.map(function(r){return r.dif;}),backgroundColor:orderedAgo.map(function(r){return r.dif<0?'#1BAF7A':(Math.abs(r.pct)>30?'#B22222':'#7F77DD');}),borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:GC},ticks:{color:TC,callback:function(v){return'$'+v;}}},y:{grid:{display:false},ticks:{color:TC,font:{size:10}}}}}});
+    buildSupSucTabs();
   }
  },60);
 }
