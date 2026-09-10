@@ -795,13 +795,22 @@ function filterSuc(name,el){
  if(!name){document.getElementById('suc-detail-view').style.display='none';document.getElementById('suc-grid-view').style.display='';renderBranchGrid();}
  else{var b=BRANCHES.find(function(x){return x.n===name;});if(b)showBranchFull(b);}
 }
+function ultimasSemanasIdx(b){
+ var keys = Object.keys(b.s||{}).map(Number).filter(function(n){return !isNaN(n);}).sort(function(a,c){return a-c;});
+ var last = keys.length?keys[keys.length-1]:null;
+ var prev = keys.length>1?keys[keys.length-2]:null;
+ return {last:last, prev:prev};
+}
 function renderBranchGrid(){
  document.getElementById('branch-grid').innerHTML=BRANCHES.map(function(b,i){
- var s26=b.s[29]||0,s25=b.s[28]||0,trend=s26>0&&s25>0?(s26>s25?'<span style="color:var(--rojo)">↑</span>':'<span style="color:var(--verde2)">↓</span>'):'—';
+ var idx=ultimasSemanasIdx(b);
+ var s26=idx.last!==null?(b.s[idx.last]||0):0, s25=idx.prev!==null?(b.s[idx.prev]||0):0;
+ var trend=s26>0&&s25>0?(s26>s25?'<span style="color:var(--rojo)">↑</span>':'<span style="color:var(--verde2)">↓</span>'):'—';
  var pCls=b.pct>=30?'bc-pct-crit':b.pct>=22?'bc-pct-mod':'bc-pct-ok';
  var insT=(b.ins[0]||0)+(b.ins[1]||0)+(b.ins[2]||0);
- var p26=b.pct_s&&b.pct_s[29]?Math.round(b.pct_s[29]*1000)/10:null;
- return'<div class="branch-card bc-'+b.s+'" onclick="showBranchFull(BRANCHES['+i+'])">'+'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="bc-name">'+b.n+'</div>'+pillHtml(b.pct)+'</div>'+'<div class="bc-pct '+pCls+'">'+(b.pct?fp(b.pct):'—')+'</div>'+'<div class="bc-meta">S29 Jugos: '+(s26?f$(s26):'—')+' '+trend+(p26?' · '+p26+'%':'')+'</div>'+'<div class="bc-meta" style="margin-top:2px">Insumos Jun acum: '+(insT?f$(insT):'—')+'</div>'+'<div class="bc-bar"><div class="bc-fill" style="width:'+Math.min(b.pct/50*100,100)+'%;background:'+sc(b.pct)+'"></div></div></div>';
+ var p26=b.pct_s&&idx.last!==null&&b.pct_s[idx.last]?Math.round(b.pct_s[idx.last]*1000)/10:null;
+ var lbl=idx.last!==null?'S'+idx.last:'—';
+ return'<div class="branch-card bc-'+b.s+'" onclick="showBranchFull(BRANCHES['+i+'])">'+'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="bc-name">'+b.n+'</div>'+pillHtml(b.pct)+'</div>'+'<div class="bc-pct '+pCls+'">'+(b.pct?fp(b.pct):'—')+'</div>'+'<div class="bc-meta">'+lbl+' Jugos: '+(s26?f$(s26):'—')+' '+trend+(p26?' · '+p26+'%':'')+'</div>'+'<div class="bc-meta" style="margin-top:2px">Insumos Jun acum: '+(insT?f$(insT):'—')+'</div>'+'<div class="bc-bar"><div class="bc-fill" style="width:'+Math.min(b.pct/50*100,100)+'%;background:'+sc(b.pct)+'"></div></div></div>';
  }).join('');
 }
 function showBranchFull(b){
@@ -809,28 +818,40 @@ function showBranchFull(b){
  var dv=document.getElementById('suc-detail-view');dv.style.display='';
  var hist=SUC_HIST_PCT[b.n]||[];
  var insAcum=(b.ins[0]||0)+(b.ins[1]||0)+(b.ins[2]||0);
- var s26=b.s[29]||0,s25=b.s[28]||0;
- var p26=b.pct_s&&b.pct_s[29]?Math.round(b.pct_s[29]*1000)/10:null;
-
+ var idx=ultimasSemanasIdx(b);
+ var s26=idx.last!==null?(b.s[idx.last]||0):0, s25=idx.prev!==null?(b.s[idx.prev]||0):0;
+ var p26=b.pct_s&&idx.last!==null&&b.pct_s[idx.last]?Math.round(b.pct_s[idx.last]*1000)/10:null;
+ var lblLast=idx.last!==null?'S'+idx.last:'—', lblPrev=idx.prev!==null?'S'+idx.prev:'—';
+ var detalle = (window.JUGOS_S36_DETALLE||{})[b.n] || [];
 
  // Get top10 data for this branch
  var top10d = TOP10_SUC[b.n] || null;
 
-
  dv.innerHTML='<button onclick="resetSucView()" style="margin-bottom:13px;padding:7px 14px;border:1.5px solid var(--brd);border-radius:8px;background:#fff;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit">← Volver</button>'
  +'<div class="kpi-grid" style="margin-bottom:13px">'
  +'<div class="kpi blue"><div class="kpi-label">% Merma prom.</div><div class="kpi-val" style="color:'+sc(b.pct)+'">'+( b.pct?fp(b.pct):'—')+'</div><div class="kpi-sub">'+pillHtml(b.pct)+'</div></div>'
- +'<div class="kpi red"><div class="kpi-label">S29 Merma $</div><div class="kpi-val">'+(s26?f$(s26):'—')+'</div><div class="kpi-sub">'+(p26?p26+'% merma':'')+'</div></div>'
- +'<div class="kpi amber"><div class="kpi-label">S28 Merma $</div><div class="kpi-val">'+(s25?f$(s25):'—')+'</div><div class="kpi-sub">'+(s26&&s25?(s26>s25?'↑ Subió':'↓ Bajó'):'')+'</div></div>'
+ +'<div class="kpi red"><div class="kpi-label">'+lblLast+' Merma $</div><div class="kpi-val">'+(s26?f$(s26):'—')+'</div><div class="kpi-sub">'+(p26?p26+'% merma':'')+'</div></div>'
+ +'<div class="kpi amber"><div class="kpi-label">'+lblPrev+' Merma $</div><div class="kpi-val">'+(s25?f$(s25):'—')+'</div><div class="kpi-sub">'+(s26&&s25?(s26>s25?'↑ Subió':'↓ Bajó'):'')+'</div></div>'
  +'<div class="kpi purple"><div class="kpi-label">Insumos Jun acum.</div><div class="kpi-val">'+(insAcum?f$(insAcum):'—')+'</div><div class="kpi-sub">S1 → S2 → S3</div></div>'
  +'</div>'
  +'<div class="g2">'
- +(hist.length>0?'<div class="card"><div class="card-head"><div><div class="card-title">🥤 Jugos — % Merma histórico</div><div class="card-sub">S11–S28 · línea roja = 22%</div></div></div><div style="position:relative;height:180px"><canvas id="ch-suc-det"></canvas></div></div>':'<div class="card" style="text-align:center;padding:24px;color:var(--gris)">Sin datos históricos por semana para esta sucursal.</div>')
+ +(hist.length>0?'<div class="card"><div class="card-head"><div><div class="card-title">🥤 Jugos — % Merma histórico</div><div class="card-sub">S11–'+(idx.last!==null?'S'+idx.last:'S28')+' · línea roja = 22%</div></div></div><div style="position:relative;height:180px"><canvas id="ch-suc-det"></canvas></div></div>':'<div class="card" style="text-align:center;padding:24px;color:var(--gris)">Sin datos históricos por semana para esta sucursal.</div>')
  +'<div class="card"><div class="card-head"><div><div class="card-title">📦 Insumos Jun 2026</div></div></div>'
  +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">'+['Jun S1','Jun S2','Jun S3'].map(function(s,i){var v=b.ins[i]||0;var prev=i>0?(b.ins[i-1]||0):null;var trend=prev!==null?(v>prev?'<span style="color:var(--rojo)">↑</span>':'<span style="color:var(--verde2)">↓</span>'):'';return'<div style="background:var(--bg);border-radius:8px;padding:12px;text-align:center"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--gris);margin-bottom:4px">'+s+'</div><div style="font-size:16px;font-weight:700">'+(v?f$(v):'—')+' '+trend+'</div></div>';}).join('')+'</div>'
  +'<div style="margin-top:12px">'+buildSucAnalysis(b)+'</div></div>'
  +'</div>';
 
+ // NUEVO: Desglose detallado de la semana actual (S36), por producto, para accionar
+ if(detalle.length){
+  var detHtml = '<div class="card" style="margin-top:13px"><div class="card-head"><div><div class="card-title">🔎 Desglose '+lblLast+' — '+b.n+' (para acción)</div><div class="card-sub">Productos con movimiento, ordenados por impacto $ · Jugos Cold Pressed</div></div></div>'
+   +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Producto</th><th>Inicial</th><th>Compras</th><th>Ventas</th><th>Físico</th><th>Merma pz</th><th>Merma $</th></tr></thead><tbody>'
+   +detalle.map(function(p){
+     var col=p.merma_dollar<0?'var(--verde2)':(Math.abs(p.merma_dollar)>400?'var(--rojo)':(Math.abs(p.merma_dollar)>150?'#e69b00':'var(--txt)'));
+     return '<tr><td style="font-weight:600">'+p.prod+'</td><td class="mono">'+p.ini+'</td><td class="mono" style="color:var(--verde2)">+'+p.comp+'</td><td class="mono" style="color:#2a78d6">'+p.vta+'</td><td class="mono">'+p.fin+'</td><td class="mono" style="font-weight:700;color:'+col+'">'+p.merma_pz+'</td><td class="mono" style="font-weight:700;color:'+col+'">'+f$(p.merma_dollar)+'</td></tr>';
+   }).join('')
+   +'</tbody></table></div></div>';
+  dv.innerHTML += detHtml;
+ }
 
  // Top 10 section
  if(top10d){
