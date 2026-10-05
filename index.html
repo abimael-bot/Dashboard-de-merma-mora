@@ -175,7 +175,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
  <div class="main">
  <header class="topbar">
  <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
- <div><div class="topbar-title" id="page-title">Dashboard — Jugos Cold Pressed</div><div class="topbar-sub" id="page-sub">S11–S35 · 2026</div></div>
+ <div><div class="topbar-title" id="page-title">Dashboard — Jugos Cold Pressed</div><div class="topbar-sub" id="page-sub">S11–S40 · 2026</div></div>
  <div class="topbar-right"><span class="live-badge"><span class="live-dot"></span>En vivo</span><span class="clock" id="clock"></span></div>
  </header>
  <div class="content">
@@ -184,12 +184,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
  <!-- DASHBOARD -->
  <div class="page active" id="page-dashboard">
  <div class="kpi-grid-5">
- <div class="kpi blue"><div class="kpi-label">Ventas S35</div><div class="kpi-val">$97,738</div><div class="kpi-sub"><span style="color:var(--verde2)">↑ +4.6%</span> vs S34 · semana completa</div></div>
- <div class="kpi red"><div class="kpi-label">Merma S35</div><div class="kpi-val">$10,249</div><div class="kpi-sub"><span style="color:var(--rojo)">↑ +$876</span> vs S34</div></div>
- <div class="kpi amber"><div class="kpi-label">% Merma S35</div><div class="kpi-val">17.3%</div><div class="kpi-sub"><span class="badge badge-ok">OK</span></div></div>
- <div class="kpi green"><div class="kpi-label">Merma reportada S35</div><div class="kpi-val">$3,679</div><div class="kpi-sub">Desv: $6,570 (64.1%)</div></div>
- <div class="kpi purple"><div class="kpi-label">Semanas registradas</div><div class="kpi-val">35</div><div class="kpi-sub">S11 → S35 + Ene/Feb</div></div>
- <div class="kpi teal"><div class="kpi-label">% Merma s/ventas S34</div><div class="kpi-val">10.0%</div><div class="kpi-sub">🆕 Comparable con VB (7.4%)</div></div>
+ <div class="kpi blue"><div class="kpi-label">Ventas S40</div><div class="kpi-val">$126,532</div><div class="kpi-sub"><span style="color:var(--verde2)">↑ +14.9%</span> vs S39 · semana completa</div></div>
+ <div class="kpi red"><div class="kpi-label">Merma S40</div><div class="kpi-val">$13,273</div><div class="kpi-sub"><span style="color:#E67E22">⚠ parcial</span> · 6 de 8 sucursales</div></div>
+ <div class="kpi amber"><div class="kpi-label">% Merma S40</div><div class="kpi-val">28.1%</div><div class="kpi-sub"><span class="badge badge-mod">Moderada</span> parcial · S39: 19.7%</div></div>
+ <div class="kpi green"><div class="kpi-label">Merma reportada S40</div><div class="kpi-val">n/d</div><div class="kpi-sub">Sin dato · S39: $4,868 (desv. 60.3%)</div></div>
+ <div class="kpi purple"><div class="kpi-label">Semanas registradas</div><div class="kpi-val">40</div><div class="kpi-sub">S11 → S40 + Ene/Feb</div></div>
+ <div class="kpi teal"><div class="kpi-label">% Merma s/ventas S40</div><div class="kpi-val">10.5%</div><div class="kpi-sub">⚠ parcial · S39: 11.1%</div></div>
  </div>
  <!-- TABS DASHBOARD -->
  <div class="suc-tabs" id="dash-main-tabs" style="margin:12px 0">
@@ -200,7 +200,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
  <div id="dash-week-filter" style="margin-bottom:10px"></div>
  <div class="g2">
  <div class="card">
- <div class="card-head"><div><div class="card-title">% Merma semanal vs Política</div><div class="card-sub">S11–S35 · línea roja = 22% · línea naranja = 30%</div></div><span class="badge badge-ok">S35: 17.3%</span></div>
+ <div class="card-head"><div><div class="card-title">% Merma semanal vs Política</div><div class="card-sub">S11–S40 · línea roja = 22% · línea naranja = 30%</div></div><span class="badge badge-mod">S40: 28.1% (parcial)</span></div>
  <div style="position:relative;height:200px"><canvas id="ch-trend"></canvas></div>
  </div>
  <div class="card">
@@ -225,14 +225,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <!-- MARGEN -->
  <div class="page" id="page-margen">
  <div class="kpi-grid">
- <div class="kpi green"><div class="kpi-label">Utilidad % promedio</div><div class="kpi-val">60.7%</div><div class="kpi-sub">S11–S35 acumulado</div></div>
- <div class="kpi blue"><div class="kpi-label">Ventas acumuladas</div><div class="kpi-val">$3.34M</div><div class="kpi-sub">S11–S35 Jugos CP</div></div>
- <div class="kpi teal"><div class="kpi-label">Margen total S35</div><div class="kpi-val">$68,884</div><div class="kpi-sub">Ventas − Costo − Merma S35</div></div>
- <div class="kpi red"><div class="kpi-label">Impacto merma total</div><div class="kpi-val">$377,929</div><div class="kpi-sub">Acumulado S11–S35</div></div>
+ <div class="kpi green"><div class="kpi-label">Utilidad % promedio</div><div class="kpi-val">61.8%</div><div class="kpi-sub">S11–S40 acumulado</div></div>
+ <div class="kpi blue"><div class="kpi-label">Ventas acumuladas</div><div class="kpi-val">$3.90M</div><div class="kpi-sub">S11–S40 Jugos CP</div></div>
+ <div class="kpi teal"><div class="kpi-label">Margen total S40</div><div class="kpi-val">$85,082</div><div class="kpi-sub">Ventas − Costo − Merma S40</div></div>
+ <div class="kpi red"><div class="kpi-label">Impacto merma total</div><div class="kpi-val">$441,430</div><div class="kpi-sub">Acumulado S11–S40</div></div>
  </div>
  <div class="g2">
  <div class="card">
- <div class="card-head"><div><div class="card-title">Utilidad % por semana</div><div class="card-sub">S11–S35 · teal = utilidad, rojo = % merma</div></div></div>
+ <div class="card-head"><div><div class="card-title">Utilidad % por semana</div><div class="card-sub">S11–S40 · teal = utilidad, rojo = % merma</div></div></div>
  <div style="position:relative;height:210px"><canvas id="ch-util"></canvas></div>
  </div>
  <div class="card">
@@ -255,21 +255,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
  <div class="page" id="page-alertas">
  <div class="card">
  <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gris);margin-bottom:10px;">🔴 Críticas — Acción inmediata</div>
- <div class="alert-item alert-ok"><div class="alert-ico">✅</div><div class="alert-body"><div class="alert-title">S35 — 17.3% OK (mejora vs S34)</div><div class="alert-desc">Baja de 22.5% a 17.3% — primera semana dentro de política (&lt;22%). Merma real $10,249 (+$876 vs S34, pero ventas subieron +4.6%). Ventas $97,738.</div></div></div>
- <div class="alert-item alert-mod"><div class="alert-ico">🟡</div><div class="alert-body"><div class="alert-title">Desviación S35: $6,570 (64.1%)</div><div class="alert-desc">Merma real $10,249 vs reportada $3,679 — revisar capturas. 3 SKUs (todos "Jugo de Apio", en Santa Fe/Polanco/Insurgentes) quedaron excluidos por desviación extrema.</div></div></div>
+ <div class="alert-item alert-mod"><div class="alert-ico">🟡</div><div class="alert-body"><div class="alert-title">S40 — 28.1% (parcial, sube vs S39)</div><div class="alert-desc">Sube de 19.7% (S39, dentro de política &lt;22%) a 28.1%, con 6 de 8 sucursales (sin Santa Fe ni Lomas). Merma $13,273 sobre ventas $126,532 (+14.9% vs S39).</div></div></div>
+  <div class="alert-item alert-crit"><div class="alert-ico">🔴</div><div class="alert-body"><div class="alert-title">Liverpool — 39.2% en S40</div><div class="alert-desc">La más alta de las 6 sucursales con cierre. En S38 fue 39.6% y en S39 bajó a 24.5%; vuelve a subir. Merma $2,254.</div></div></div>
+ <div class="alert-item alert-mod"><div class="alert-ico">🟡</div><div class="alert-body"><div class="alert-title">Desviación S39: $7,404 (60.3%)</div><div class="alert-desc">Merma real $12,272 vs reportada $4,868 — brecha alta de nuevo (S38: 69.9%). La S40 no tiene merma reportada cargada.</div></div></div>
  </div>
  <div class="card">
  <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gris);margin-bottom:10px;">🟡 Moderadas — Monitorear</div>
- <div class="alert-item alert-mod"><div class="alert-ico">🟡</div><div class="alert-body"><div class="alert-title">Merma $ por sucursal (S35)</div><div class="alert-desc">Mayores: Liverpool $2,327 · Polanco $2,227 · Santa Fe $1,795 · Insurgentes $1,251.</div></div></div>
- <div class="alert-item alert-mod"><div class="alert-ico">🟡</div><div class="alert-body"><div class="alert-title">Patrón "Jugo de Apio" fuera de rango</div><div class="alert-desc">3 sucursales distintas (Santa Fe, Polanco, Insurgentes) muestran el mismo producto con desviación &gt;150% — sugiere problema de receta/captura del SKU, no un caso aislado.</div></div></div>
- <div class="alert-item alert-mod"><div class="alert-ico">🟡</div><div class="alert-body"><div class="alert-title">San Miguel sin Merma Reportada</div><div class="alert-desc">No se recibió el dato de merma reportada de esa sucursal esta semana.</div></div></div>
- <div class="alert-item alert-mod"><div class="alert-ico">🟡</div><div class="alert-body"><div class="alert-title">Condesa fuera del corte</div><div class="alert-desc">Cerrada temporalmente; sus suplementos/productos se traspasaron a Colima.</div></div></div>
+ <div class="alert-item alert-mod"><div class="alert-ico">🟡</div><div class="alert-body"><div class="alert-title">Merma $ por sucursal (S40)</div><div class="alert-desc">Mayores: Polanco $3,573 · Colima $2,561 · Liverpool $2,254 · San Miguel $2,174 · Insurgentes $1,394 · Roma $1,317.</div></div></div>
+ <div class="alert-item alert-mod"><div class="alert-ico">🟡</div><div class="alert-body"><div class="alert-title">Costo de Guerrero de Mandarina</div><div class="alert-desc">S37 y S38 se cerraron con costo $0 (el log lo traía en 0); desde S39 se usa $41.39. Su merma en $ de esas dos semanas está subvaluada (≈ +$952 en S37).</div></div></div>
+ <div class="alert-item alert-mod"><div class="alert-ico">🟡</div><div class="alert-body"><div class="alert-title">Santa Fe y Lomas sin cierre en S40</div><div class="alert-desc">No hay conteo de cierre en el log de inventario (Santa Fe: última captura 2-oct; Lomas: el conteo del 3-oct no trae jugos). Quedan fuera de la S40 hasta que lo manden.</div></div></div>
+  <div class="alert-item alert-mod"><div class="alert-ico">🟡</div><div class="alert-body"><div class="alert-title">S40 sin Merma Reportada</div><div class="alert-desc">No se ha cargado la merma reportada de la semana; la desviación se calcula hasta S39.</div></div></div>
+ <div class="alert-item alert-mod"><div class="alert-ico">🟡</div><div class="alert-body"><div class="alert-title">Condesa reabrió el 28-sep</div><div class="alert-desc">Sigue fuera del corte por indicación. Su compra de apertura (27-sep) y su conteo del 4-oct ya están disponibles para incorporarla.</div></div></div>
  </div>
  <div class="card">
  <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gris);margin-bottom:10px;">✅ Positivas</div>
- <div class="alert-item alert-ok"><div class="alert-ico">✅</div><div class="alert-body"><div class="alert-title">Colima — merma prácticamente en cero</div><div class="alert-desc">Solo $746 en S35, la más baja de las sucursales activas, con 78.5% de venta sobre lo disponible.</div></div></div>
- <div class="alert-item alert-ok"><div class="alert-ico">✅</div><div class="alert-body"><div class="alert-title">Roma — desviación de reporte controlada</div><div class="alert-desc">Solo $602 de diferencia entre lo reportado y la merma real.</div></div></div>
- <div class="alert-item alert-ok"><div class="alert-ico">✅</div><div class="alert-body"><div class="alert-title">Utilidad se mantiene sólida — 70.5%</div><div class="alert-desc">Muy por encima del promedio histórico (60.7%), segunda semana consecutiva arriba del 70%.</div></div></div>
+ <div class="alert-item alert-ok"><div class="alert-ico">✅</div><div class="alert-body"><div class="alert-title">Roma — la merma más baja de la semana</div><div class="alert-desc">20.1% y $1,317 en S40: el menor % y el menor $ de las 6 sucursales con cierre.</div></div></div>
+ <div class="alert-item alert-ok"><div class="alert-ico">✅</div><div class="alert-body"><div class="alert-title">Ventas S40: $126,532</div><div class="alert-desc">La semana más alta desde la S29 (+14.9% vs S39). Utilidad 67.2%.</div></div></div>
+ <div class="alert-item alert-ok"><div class="alert-ico">✅</div><div class="alert-body"><div class="alert-title">S39 — 19.7% dentro de política</div><div class="alert-desc">Segunda semana dentro de política (&lt;22%) tras la S35 (17.3%). Merma $12,272 con las 8 sucursales.</div></div></div>
  </div>
  <div class="alert-item alert-ok"><div class="alert-ico">✅</div><div class="alert-body"><div class="alert-title">Utilidad se mantiene sólida — 70.4%</div><div class="alert-desc">Muy por encima del promedio histórico (60.3%) esta semana.</div></div></div>
  </div>
@@ -382,14 +384,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="card" style="background:#1C3A2A;color:#fff">
    <div style="font-size:13px;line-height:1.8">
     <b style="font-size:15px">Control de Merma — Resumen General</b><br>
-    Desde que se implementó el seguimiento sistemático (mayo 2026, S11) hasta hoy (S35, agosto 2026) hemos pasado de <b>no tener visibilidad semanal de merma</b> a un proceso de conciliación replicable, con hallazgos accionables por categoría. Este reporte resume qué encontramos, qué cambiamos, y qué sigue pendiente — no solo los números.
+    Desde que se implementó el seguimiento sistemático (mayo 2026, S11) hasta hoy (S40, octubre 2026) hemos pasado de <b>no tener visibilidad semanal de merma</b> a un proceso de conciliación replicable, con hallazgos accionables por categoría. Este reporte resume qué encontramos, qué cambiamos, y qué sigue pendiente — no solo los números.
    </div>
   </div>
 
   <div class="kpi-grid">
-   <div class="kpi" style="border-top:3px solid #B22222"><div class="kpi-label">Jugos Cold Pressed</div><div class="kpi-val">17.3%</div><div class="kpi-sub">% Merma S35 · 25 semanas de historial (S11→S35)</div></div>
+   <div class="kpi" style="border-top:3px solid #B22222"><div class="kpi-label">Jugos Cold Pressed</div><div class="kpi-val">28.1%</div><div class="kpi-sub">% Merma S40 (parcial: 6 de 8 sucursales) · 30 semanas de historial (S11→S40)</div></div>
    <div class="kpi" style="border-top:3px solid #7F77DD"><div class="kpi-label">Suplementos</div><div class="kpi-val">9.1%</div><div class="kpi-sub">Pérdida bruta / Ventas · reporte mensual julio (Gestión Integral, corregido)</div></div>
-   <div class="kpi" style="border-top:3px solid #1baf7a"><div class="kpi-label">Vitch Bakery</div><div class="kpi-val">7.4%</div><div class="kpi-sub">% merma s/ventas (jul) · rango estable 7-11% todo el año</div></div>
+   <div class="kpi" style="border-top:3px solid #1baf7a"><div class="kpi-label">Vitch Bakery</div><div class="kpi-val">12.9%</div><div class="kpi-sub">% merma (Ini+Compras) · sep 2026 · ago fue 8.2%</div></div>
   </div>
 
   <!-- JUGOS -->
@@ -398,20 +400,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
    <div style="display:flex;gap:16px;margin-bottom:14px">
     <div style="flex:1.6;position:relative;height:210px"><canvas id="ch-rj-jugos"></canvas></div>
     <div style="flex:1;display:flex;flex-direction:column;gap:10px">
-     <div class="kpi" style="border-top:3px solid #1baf7a;padding:12px"><div class="kpi-label">% Merma S35</div><div class="kpi-val" style="font-size:24px">17.3%</div><div class="kpi-sub">Primera semana dentro de política (&lt;22%)</div></div>
-     <div class="kpi" style="border-top:3px solid #E8A33D;padding:12px"><div class="kpi-label">Desviación (rep. vs. real)</div><div class="kpi-val" style="font-size:24px">64%</div><div class="kpi-sub">S35 — brecha más grande a cerrar</div></div>
+     <div class="kpi" style="border-top:3px solid #E8A33D;padding:12px"><div class="kpi-label">% Merma S40</div><div class="kpi-val" style="font-size:24px">28.1%</div><div class="kpi-sub">Parcial (6 de 8 sucursales) · S39 fue 19.7%, dentro de política (&lt;22%)</div></div>
+     <div class="kpi" style="border-top:3px solid #E8A33D;padding:12px"><div class="kpi-label">Desviación (rep. vs. real)</div><div class="kpi-val" style="font-size:24px">60%</div><div class="kpi-sub">S39 — última con dato (S38: 70%)</div></div>
     </div>
    </div>
    <div style="font-size:12.5px;line-height:1.8">
     <b>Qué encontramos:</b>
     <ul style="margin:6px 0 12px 18px;padding:0">
-     <li>El % de merma venía fluctuando entre 22% y 32% la mayoría de las semanas — por encima de la política del 22%. La S35 (esta semana) es la <b>primera dentro de política (17.3%)</b>.</li>
-     <li>La <b>desviación</b> entre lo que reportan los gerentes y la merma real calculada es consistentemente alta (56–64% en las últimas 2 semanas) — los reportes de campo no están capturando toda la pérdida real.</li>
+     <li>El % de merma ha fluctuado entre 17% y 32% semana a semana. Solo la S35 (17.3%) y la S39 (19.7%) cerraron <b>dentro de política (&lt;22%)</b>; la S40 (28.1%, parcial) vuelve a quedar por encima.</li>
+     <li>La <b>desviación</b> entre lo que reportan los gerentes y la merma real calculada es consistentemente alta (60–70% en S38 y S39) — los reportes de campo no están capturando toda la pérdida real.</li>
      <li>Varias semanas mostraron errores de captura puntuales (ej. un "111" que debía ser "11" en Roma) que, sin revisión, habrían distorsionado el resultado real de la sucursal.</li>
     </ul>
     <b>Qué hicimos:</b>
     <ul style="margin:6px 0 12px 18px;padding:0">
-     <li>Excluimos del cálculo a Condesa (cerrada), que antes distorsionaba las cifras.</li>
+     <li>Excluimos del cálculo a Condesa (cerrada hasta el 27-sep; reabrió el 28-sep): sigue fuera hasta confirmar sus datos de apertura.</li>
      <li>Confirmamos y documentamos la fórmula correcta de % Merma (previamente ambigua en el archivo legado).</li>
      <li>Empezamos a medir Desviación (Reportado vs. Real) por sucursal para identificar dónde falla más la captura de campo.</li>
      <li>Construimos un proceso repetible (skill) para que el corte semanal ya no dependa de reconstruir todo desde cero cada vez.</li>
@@ -419,13 +421,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <b>Pendiente / seguimiento:</b>
     <ul style="margin:6px 0 12px 18px;padding:0">
      <li><b>Cerrar la brecha de desviación</b> — probablemente requiere capacitar a gerentes en cómo/qué reportar como merma, no solo mejorar el cálculo.</li>
-     <li><b>Kitchen Lab</b> ha tenido semanas sin captura de Físico Final — sin dato, no se puede medir su merma esa semana.</li>
+     <li><b>Kitchen Lab</b> ha tenido semanas sin captura de Físico Final — sin dato, no se puede medir su merma esa semana. En la S40 también quedó sin cierre Santa Fe (sin conteo de cierre en el log).</li>
      <li>Patrón repetido en "Jugo de Apio" (3 sucursales distintas con desviación extrema en S35) — posible problema de receta o de cómo se captura ese producto específico, pendiente investigar causa raíz.</li>
      <li>Estamos en proceso de implementación de <b>Odoo</b> para tener mejor visibilidad de los movimientos — entradas, compras, traspasos, etc. — de forma más integrada y confiable que la captura manual actual.</li>
     </ul>
     <b>Próximos pasos:</b>
     <ol style="margin:6px 0 0 18px;padding:0">
-     <li>Capacitar a gerentes de sucursal sobre qué y cómo reportar como merma, para cerrar la brecha de desviación (56-64% en las últimas semanas).</li>
+     <li>Capacitar a gerentes de sucursal sobre qué y cómo reportar como merma, para cerrar la brecha de desviación (60-70% en S38 y S39).</li>
      <li>Resolver la captura intermitente de Kitchen Lab — acordar con esa sucursal un checklist de cierre semanal fijo.</li>
      <li>Investigar a fondo el patrón de "Jugo de Apio" en Santa Fe, Polanco e Insurgentes — revisar receta, unidad de captura y si el problema es de sistema o de campo.</li>
      <li>Mantener la validación semanal de outliers de captura (como el caso Roma "111→11") antes de cerrar cada corte.</li>
@@ -523,7 +525,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
      <div style="background:rgba(255,255,255,.08);border-radius:8px;padding:10px 14px;border-left:4px solid #B22222">
       <div style="font-size:11px;color:#CADCFC">Jugos Cold Pressed</div>
       <div style="font-size:22px;font-weight:700">17.3%</div>
-      <div style="font-size:10.5px;color:#CADCFC">Único con dato semanal — 25 semanas de historia. Mejoró de 22.5% a 17.3%, pero con desviación de reporte alta (64%).</div>
+      <div style="font-size:10.5px;color:#CADCFC">Único con dato semanal — 30 semanas de historia. Pasó de 19.7% (S39) a 28.1% en S40 (parcial: 6 de 8 sucursales), con desviación de reporte alta (60% en S39).</div>
      </div>
      <div style="background:rgba(255,255,255,.08);border-radius:8px;padding:10px 14px;border-left:4px solid #7F77DD">
       <div style="font-size:11px;color:#CADCFC">Suplementos</div>
@@ -563,11 +565,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
  <!-- HISTÓRICO -->
  <div class="page" id="page-historico">
  <div class="card">
- <div class="card-head"><div><div class="card-title">Merma $ y % semanal — S11–S35</div></div></div>
+ <div class="card-head"><div><div class="card-title">Merma $ y % semanal — S11–S40</div></div></div>
  <div style="position:relative;height:210px"><canvas id="ch-hist-main"></canvas></div>
  </div>
  <div class="card">
- <div class="card-head"><div><div class="card-title">% Merma por sucursal — evolución S11–S35</div></div></div>
+ <div class="card-head"><div><div class="card-title">% Merma por sucursal — evolución S11–S40</div></div></div>
  <div style="position:relative;height:230px"><canvas id="ch-hist-suc"></canvas></div>
  </div>
  <div class="card">
@@ -595,19 +597,19 @@ function startApp(u){document.getElementById('login-screen').style.display='none
 function logout(){document.getElementById('app').style.display='none';document.getElementById('login-screen').style.display='flex';document.getElementById('inp-email').value='';document.getElementById('inp-pass').value='';}
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
-var PAGE_META={dashboard:{title:'Dashboard — Jugos Cold Pressed',sub:'S11–S35 · 2026'},margen:{title:'Margen & Utilidad — Jugos Cold Pressed',sub:'Utilidad · Margen · Ventas vs Merma S11–S35'},alertas:{title:'Alertas',sub:'Notificaciones activas'},sucursales:{title:'Por Sucursal',sub:'Reporte completo · 11 sucursales'},top10:{title:'Merma General / CAM',sub:'Registros gerenciales · todas las categorías'},categorias:{title:'Por Categoría',sub:'Jugos · Bakery · Suplementos · Insumos'},insumos:{title:'Registros Merma CAM',sub:'Pendiente — se cargará agosto'},historico:{title:'Histórico',sub:'S11–S35 · Jugos Cold Pressed'},gestion:{title:'Gestión Integral Suplementos',sub:'Rotación · Desviación · Pérdidas — Suplementos 🆕'},benchmark:{title:'Benchmark de Precios',sub:'Suplementos vs. competencia — corrida 20 jul 2026'},'reporte-junta':{title:'Resumen por Categoría — Control de Merma',sub:'Jugos · Suplementos · Vitch Bakery — desde implementación a S35'},'eficiencia-cat':{title:'Eficiencia de Categorías',sub:'Jugos · Vitch Bakery · Suplementos · Insumos — Ventas, Merma y Desviación'}};
+var PAGE_META={dashboard:{title:'Dashboard — Jugos Cold Pressed',sub:'S11–S40 · 2026'},margen:{title:'Margen & Utilidad — Jugos Cold Pressed',sub:'Utilidad · Margen · Ventas vs Merma S11–S40'},alertas:{title:'Alertas',sub:'Notificaciones activas'},sucursales:{title:'Por Sucursal',sub:'Reporte completo · 11 sucursales'},top10:{title:'Merma General / CAM',sub:'Registros gerenciales · todas las categorías'},categorias:{title:'Por Categoría',sub:'Jugos · Bakery · Suplementos · Insumos'},insumos:{title:'Registros Merma CAM',sub:'Pendiente — se cargará agosto'},historico:{title:'Histórico',sub:'S11–S40 · Jugos Cold Pressed'},gestion:{title:'Gestión Integral Suplementos',sub:'Rotación · Desviación · Pérdidas — Suplementos 🆕'},benchmark:{title:'Benchmark de Precios',sub:'Suplementos vs. competencia — corrida 20 jul 2026'},'reporte-junta':{title:'Resumen por Categoría — Control de Merma',sub:'Jugos · Suplementos · Vitch Bakery — desde implementación a S40'},'eficiencia-cat':{title:'Eficiencia de Categorías',sub:'Jugos · Vitch Bakery · Suplementos · Insumos — Ventas, Merma y Desviación'}};
 function showPage(id){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.querySelectorAll('.sb-item').forEach(function(b){b.classList.remove('active');});var pg=document.getElementById('page-'+id);if(pg)pg.classList.add('active');var m=PAGE_META[id]||{title:id,sub:''};document.getElementById('page-title').textContent=m.title;document.getElementById('page-sub').textContent=m.sub;document.querySelectorAll('.sb-item').forEach(function(b){if(b.getAttribute('onclick')&&b.getAttribute('onclick').indexOf("'"+id+"'")>=0)b.classList.add('active');});if(id==='reporte-junta')renderReporteJunta();if(id==='eficiencia-cat')renderEficienciaCat();closeSidebar();}
 
 
 // ─── DATA ───
-var SEMS=['S11','S12','S13','S14','S15','S16','S17','S18','S19','S20','S21','S22','S23','S24','S25','S26','S27','S28','S29','S30','S31','S32','S33','S34','S35','S36'];
-var VTAS=[174936, 155029, 137978, 138413, 132693, 154214, 149782, 143000, 138510, 144120, 149601, 138958, 142886, 127826, 135866, 136035, 133441, 132288, 188666, 116443, 89452, 101995, 91629, 93440, 97738, 102421];
-var MRMA=[17749, 13053, 13940, 16906, 17779, 16562, 18621, 14027, 19889, 17881, 17567, 17984, 18681, 13951, 11107, 17304, 14818, 13114, 15129, 16896, 11460, 11084, 12805, 9373, 10249, 12600];
-var PCT=[26.6, 24.5, 22.7, 26.5, 27.2, 24.5, 28.1, 22.1, 29.5, 28.3, 26.5, 28.9, 29.8, 25.2, 22.8, 30.7, 23.2, 25.0, 31.6, 31.6, 28.3, 26.2, 29.7, 22.5, 17.3, 25.7];
-var PCT_VTAS=[10.1,8.4,10.1,12.2,13.4,10.7,12.4,9.8,14.4,12.4,11.7,12.9,13.1,10.9,8.2,12.7,11.1,9.9,8.0,14.5,12.8,10.9,14.0,10.0,10.5,58.6];
-var COSTO=[52726,46919,41502,42472,40134,46259,45390,43202,41122,42164,43090,42571,42052,35813,37657,37738,36851,36128,33356,32867,25539,28806,25418,27702,28854,32330];
-var MARGEN=[122210,108110,96476,95941,92559,107955,104392,99798,97388,101956,106511,96387,100834,92013,98209,98297,96590,96160,155310,83576,69913,73190,66212,65738,68884,70090];
-var UTILIDAD_P=[59.71,61.32,59.82,57.10,56.36,59.26,57.26,59.98,55.95,58.34,59.45,56.42,57.50,61.07,64.11,59.54,61.28,62.78,74.30,57.26,58.64,60.9,58.28,70.36,70.47,68.43];
+var SEMS=['S11','S12','S13','S14','S15','S16','S17','S18','S19','S20','S21','S22','S23','S24','S25','S26','S27','S28','S29','S30','S31','S32','S33','S34','S35','S36','S37','S38','S39','S40'];
+var VTAS=[174936, 155029, 137978, 138413, 132693, 154214, 149782, 143000, 138510, 144120, 149601, 138958, 142886, 127826, 135866, 136035, 133441, 132288, 188666, 116443, 89452, 101995, 91629, 93440, 97738, 102421,107630,107698,110084,126532];
+var MRMA=[17749, 13053, 13940, 16906, 17779, 16562, 18621, 14027, 19889, 17881, 17567, 17984, 18681, 13951, 11107, 17304, 14818, 13114, 15129, 16896, 11460, 11084, 12805, 9373, 10249, 12600,13266,12090,12272,13273];
+var PCT=[26.6, 24.5, 22.7, 26.5, 27.2, 24.5, 28.1, 22.1, 29.5, 28.3, 26.5, 28.9, 29.8, 25.2, 22.8, 30.7, 23.2, 25.0, 31.6, 31.6, 28.3, 26.2, 29.7, 22.5, 17.3, 25.7,25.0,22.9,19.7,28.1];
+var PCT_VTAS=[10.1,8.4,10.1,12.2,13.4,10.7,12.4,9.8,14.4,12.4,11.7,12.9,13.1,10.9,8.2,12.7,11.1,9.9,8.0,14.5,12.8,10.9,14.0,10.0,10.5,12.3,12.3,11.2,11.1,10.5];
+var COSTO=[52726,46919,41502,42472,40134,46259,45390,43202,41122,42164,43090,42571,42052,35813,37657,37738,36851,36128,33356,32867,25539,28806,25418,27702,28854,32330,34938,35474,35840,41450];
+var MARGEN=[122210,108110,96476,95941,92559,107955,104392,99798,97388,101956,106511,96387,100834,92013,98209,98297,96590,96160,155310,83576,69913,73190,66212,65738,68884,70090,72691,72223,74243,85082];
+var UTILIDAD_P=[59.71,61.32,59.82,57.10,56.36,59.26,57.26,59.98,55.95,58.34,59.45,56.42,57.50,61.07,64.11,59.54,61.28,62.78,74.30,57.26,58.64,60.9,58.28,70.36,70.47,68.43,67.54,67.06,67.44,67.24];
 var DESV=MRMA.map(function(v,i){return i===0?0:v-MRMA[i-1];});
 var MESES=[{m:'Enero',v:654125,mr:89186},{m:'Febrero',v:730659,mr:81956},{m:'Marzo',v:522721,mr:61648},{m:'Abril',v:579689,mr:66990}];
 
@@ -615,16 +617,16 @@ var MESES=[{m:'Enero',v:654125,mr:89186},{m:'Febrero',v:730659,mr:81956},{m:'Mar
 // Sucursales con datos S11-S26 completos
 var BRANCHES=[
  {n:'Condesa', pct:20.9, s:{11:2776,12:3001,13:2011,14:3095,15:2011,16:2112,17:3470,18:2540,19:3655,20:3480,21:2690,22:3109,23:2942,24:0,25:1277,26:4189,27:4506.3,28:3289.24,29:2340.04}, pct_s:{11:.189,12:.238,13:.158,14:.178,15:.158,16:.152,17:.266,18:.164,19:.258,20:.227,21:.205,22:.249,23:null,24:null,25:.157,26:.389,27:.295,28:.34,29:.24}, st:'mod', ins:[958.93,1751.34,822.14]},
- {n:'Colima', pct:28.2, s:{11:5237,12:2589,13:3545,14:2799,15:3545,16:2579,17:2485,18:3884,19:4240,20:3069,21:3870,22:3286,23:2519,24:1651,25:1990,26:1913,27:1693.37,28:1975.02,29:2035.56,30:2777,31:3112,32:1484,33:1570.75,34:2161.89,35:745.71,36:2870.16}, pct_s:{11:.375,12:.323,13:.266,14:.323,15:.275,16:.266,17:.262,18:.23,19:.361,20:.202,21:.296,22:.284,23:null,24:.187,25:.189,26:.194,27:.138,28:.239,29:.276,30:null,31:null,32:null,33:null,34:null,35:null,36:0.223}, st:'mod', ins:[1874.53,1009.80,4939.49]},
- {n:'Santa Fe', pct:23.1, s:{11:1467,12:1823,13:1835,14:994,15:1546,16:2185,17:1693,18:1442,19:879,20:1378,21:1060,22:1895,23:1051,24:1812,25:2113,26:2423,27:1773.21,28:886.13,29:604.93,30:1461,31:803,32:1685,33:2326.52,34:193.16,35:1795.4,36:1423.08}, pct_s:{11:.215,12:.228,13:.21,14:.218,15:.222,16:.21,17:.226,18:.176,19:.174,20:.173,21:.221,22:.274,23:null,24:.258,25:.301,26:.299,27:.32,28:.169,29:.185,30:null,31:null,32:null,33:null,34:null,35:null,36:0.207}, st:'ok', ins:[709.30,833.75,526.72]},
- {n:'Liverpool', pct:35.0, s:{11:1127,12:1216,13:1773,14:1043,15:1773,16:2177,17:1936,18:1361,19:2597,20:1841,21:2998,22:1897,23:761,24:2411,25:897,26:1905,27:961.61,28:1199.8,29:2222.74,30:1468,31:1812,32:1329,33:2050,34:1668.62,35:2327.04,36:1833.26}, pct_s:{11:.281,12:.274,13:.353,14:.328,15:.356,16:.353,17:.37,18:.305,19:.385,20:.398,21:.404,22:.345,23:null,24:.421,25:.231,26:.359,27:.203,28:.277,29:.584,30:null,31:null,32:null,33:null,34:null,35:null,36:0.351}, st:'crit',ins:[362.23,1189.82,1175.06]},
- {n:'Polanco', pct:19.9, s:{11:1463,12:880,13:2165,14:2453,15:2291,16:1724,17:2614,18:3116,19:1868,20:1356,21:2058,22:1481,23:1140,24:726,25:1361,26:1740,27:1682.94,28:666.97,29:1412.04,30:2328,31:2434,32:1678,33:2951.54,34:2134.36,35:2226.78,36:3430.24}, pct_s:{11:.185,12:.191,13:.125,14:.196,15:.124,16:.256,17:.236,18:.268,19:.175,20:.158,21:.19,22:.182,23:null,24:.127,25:.211,26:.238,27:.252,28:.129,29:.234,30:null,31:null,32:null,33:null,34:null,35:null,36:0.37}, st:'mod', ins:[6408.65,3917.41,4939.49]},
+ {n:'Colima', pct:28.2, s:{11:5237,12:2589,13:3545,14:2799,15:3545,16:2579,17:2485,18:3884,19:4240,20:3069,21:3870,22:3286,23:2519,24:1651,25:1990,26:1913,27:1693.37,28:1975.02,29:2035.56,30:2777,31:3112,32:1484,33:1570.75,34:2161.89,35:745.71,36:2870.16,37:2962.75,38:1391.54,39:2044.51,40:2561.2}, pct_s:{11:.375,12:.323,13:.266,14:.323,15:.275,16:.266,17:.262,18:.23,19:.361,20:.202,21:.296,22:.284,23:null,24:.187,25:.189,26:.194,27:.138,28:.239,29:.276,30:null,31:null,32:null,33:null,34:null,35:null,36:0.223,37:0.255,38:0.143,39:0.173,40:0.241}, st:'mod', ins:[1874.53,1009.80,4939.49]},
+ {n:'Santa Fe', pct:23.1, s:{11:1467,12:1823,13:1835,14:994,15:1546,16:2185,17:1693,18:1442,19:879,20:1378,21:1060,22:1895,23:1051,24:1812,25:2113,26:2423,27:1773.21,28:886.13,29:604.93,30:1461,31:803,32:1685,33:2326.52,34:193.16,35:1795.4,36:1423.08,37:1209.59,38:1833.35,39:3070.45}, pct_s:{11:.215,12:.228,13:.21,14:.218,15:.222,16:.21,17:.226,18:.176,19:.174,20:.173,21:.221,22:.274,23:null,24:.258,25:.301,26:.299,27:.32,28:.169,29:.185,30:null,31:null,32:null,33:null,34:null,35:null,36:0.207,37:0.156,38:0.22,39:0.271}, st:'ok', ins:[709.30,833.75,526.72]},
+ {n:'Liverpool', pct:35.0, s:{11:1127,12:1216,13:1773,14:1043,15:1773,16:2177,17:1936,18:1361,19:2597,20:1841,21:2998,22:1897,23:761,24:2411,25:897,26:1905,27:961.61,28:1199.8,29:2222.74,30:1468,31:1812,32:1329,33:2050,34:1668.62,35:2327.04,36:1833.26,37:1600.31,38:2322.35,39:1389.68,40:2253.96}, pct_s:{11:.281,12:.274,13:.353,14:.328,15:.356,16:.353,17:.37,18:.305,19:.385,20:.398,21:.404,22:.345,23:null,24:.421,25:.231,26:.359,27:.203,28:.277,29:.584,30:null,31:null,32:null,33:null,34:null,35:null,36:0.351,37:0.273,38:0.396,39:0.245,40:0.392}, st:'crit',ins:[362.23,1189.82,1175.06]},
+ {n:'Polanco', pct:19.9, s:{11:1463,12:880,13:2165,14:2453,15:2291,16:1724,17:2614,18:3116,19:1868,20:1356,21:2058,22:1481,23:1140,24:726,25:1361,26:1740,27:1682.94,28:666.97,29:1412.04,30:2328,31:2434,32:1678,33:2951.54,34:2134.36,35:2226.78,36:3430.24,37:2570.93,38:2450.96,39:2543.34,40:3573.21}, pct_s:{11:.185,12:.191,13:.125,14:.196,15:.124,16:.256,17:.236,18:.268,19:.175,20:.158,21:.19,22:.182,23:null,24:.127,25:.211,26:.238,27:.252,28:.129,29:.234,30:null,31:null,32:null,33:null,34:null,35:null,36:0.37,37:0.289,38:0.245,39:0.228,40:0.312}, st:'mod', ins:[6408.65,3917.41,4939.49]},
  {n:'Coapa', pct:29.9, s:{11:1496,12:782,13:232,14:652,15:578,16:950,17:493,18:830,19:956,20:659,21:560,22:574,23:815,24:919,25:381,26:738}, pct_s:{11:.284,12:.185,13:.165,14:.33,15:.333,16:.333,17:.408,18:.537,19:.39,20:.131,21:.24,22:.267,23:null,24:.198,25:.24,26:.24}, st:'mod', ins:[32.52,397.87,213.75]},
- {n:'Insurgentes',pct:29.8, s:{11:3044,12:1082,13:60,14:3075,15:2770,16:2465,17:2151,18:259,19:2131,20:2198,21:1701,22:1358,23:2716,24:3609,25:1471,26:1740,27:1858.44,28:861.24,29:1266.74,30:1084,33:504,34:715.92,35:1250.96,36:1244.9}, pct_s:{11:.367,12:.273,13:.127,14:.319,15:.273,16:.287,17:.26,18:.261,19:.387,20:.388,21:.297,22:.314,23:null,24:.529,25:.24,26:.406,27:.41,28:.307,29:.313,30:null,33:null,34:null,35:null,36:0.25}, st:'crit', ins:[968.27,2232.44,2321.67]},
- {n:'Roma', pct:27.2, s:{11:946,12:902,13:1579,14:2064,15:1818,16:1306,17:1677,18:1272,19:2373,20:2485,21:1765,22:2195,23:2136,24:1806,25:739,26:1337,27:769.0,28:1164.1,29:1602.21,30:737,31:1351,32:801,33:850.37,34:1248.47,35:784.23,36:876.07}, pct_s:{11:.2,12:.217,13:.265,14:.223,15:.265,16:.265,17:.165,18:.19,19:.452,20:.382,21:.328,22:.335,23:null,24:.323,25:.201,26:.246,27:.176,28:.288,29:.374,30:null,31:null,32:null,33:null,34:null,35:null,36:0.181}, st:'crit', ins:[1240.57,850.15,526.72]},
- {n:'Kitchen Lab',pct:36.1, s:{11:927,12:707,13:739,14:731,15:1140,16:505,17:2103,18:772,19:0,20:0,21:0,22:528,23:472,24:209,25:666,26:368,27:924.71,28:484.81,29:139.39,30:303,31:135,32:980,33:329,35:234.11,36:278.99}, pct_s:{11:.308,12:.277,13:.308,14:.384,15:.22,16:.273,17:.573,18:.464,19:null,20:null,21:null,22:null,23:null,24:null,25:null,26:null,27:null,28:.15,29:.146,30:null,31:null,32:null,33:null,35:null,36:0.334}, st:'ok',ins:[22.00,1114.59,1108.93]},
+ {n:'Insurgentes',pct:29.8, s:{11:3044,12:1082,13:60,14:3075,15:2770,16:2465,17:2151,18:259,19:2131,20:2198,21:1701,22:1358,23:2716,24:3609,25:1471,26:1740,27:1858.44,28:861.24,29:1266.74,30:1084,33:504,34:715.92,35:1250.96,36:1244.9,37:1203.0,38:854.89,39:795.66,40:1393.85}, pct_s:{11:.367,12:.273,13:.127,14:.319,15:.273,16:.287,17:.26,18:.261,19:.387,20:.388,21:.297,22:.314,23:null,24:.529,25:.24,26:.406,27:.41,28:.307,29:.313,30:null,33:null,34:null,35:null,36:0.25,37:0.225,38:0.171,39:0.129,40:0.226}, st:'crit', ins:[968.27,2232.44,2321.67]},
+ {n:'Roma', pct:27.2, s:{11:946,12:902,13:1579,14:2064,15:1818,16:1306,17:1677,18:1272,19:2373,20:2485,21:1765,22:2195,23:2136,24:1806,25:739,26:1337,27:769.0,28:1164.1,29:1602.21,30:737,31:1351,32:801,33:850.37,34:1248.47,35:784.23,36:876.07,37:1863.82,38:685.59,39:139.92,40:1317.09}, pct_s:{11:.2,12:.217,13:.265,14:.223,15:.265,16:.265,17:.165,18:.19,19:.452,20:.382,21:.328,22:.335,23:null,24:.323,25:.201,26:.246,27:.176,28:.288,29:.374,30:null,31:null,32:null,33:null,34:null,35:null,36:0.181,37:0.293,38:0.131,39:0.023,40:0.201}, st:'crit', ins:[1240.57,850.15,526.72]},
+ {n:'Kitchen Lab',pct:36.1, s:{11:927,12:707,13:739,14:731,15:1140,16:505,17:2103,18:772,19:0,20:0,21:0,22:528,23:472,24:209,25:666,26:368,27:924.71,28:484.81,29:139.39,30:303,31:135,32:980,33:329,35:234.11,36:278.99,37:99.94,38:396.74,39:-331.3}, pct_s:{11:.308,12:.277,13:.308,14:.384,15:.22,16:.273,17:.573,18:.464,19:null,20:null,21:null,22:null,23:null,24:null,25:null,26:null,27:null,28:.15,29:.146,30:null,31:null,32:null,33:null,35:null,36:0.334,37:0.068,38:0.315,39:-0.209}, st:'ok',ins:[22.00,1114.59,1108.93]},
  {n:'Duraznos', pct:0, s:{}, pct_s:{}, stat:'na', ins:[0,0,0]},
- {n:'San Miguel', pct:21.1, s:{28:1441.5,29:2378.24,30:1599,31:461,32:1574,33:1251.87,34:1250.08,35:885.08,36:642.84}, pct_s:{28:.211,29:.256,30:null,31:null,32:null,33:null,34:null,35:null,36:0.16}, st:'mod', ins:[0,0,0]},
+ {n:'San Miguel', pct:21.1, s:{28:1441.5,29:2378.24,30:1599,31:461,32:1574,33:1251.87,34:1250.08,35:885.08,36:642.84,37:1755.91,38:2154.45,39:2619.95,40:2173.58}, pct_s:{28:.211,29:.256,30:null,31:null,32:null,33:null,34:null,35:null,36:0.16,37:0.306,38:0.293,39:0.312,40:0.326}, st:'mod', ins:[0,0,0]},
  {n:'CDI', pct:0, s:{}, pct_s:{}, stat:'na', ins:[0,0,0]}
 ];
 
@@ -695,11 +697,18 @@ var VB_SUC_TOTALS_AGO={Colima:{pz:38,pesos:1240.0},Insurgentes:{pz:38,pesos:1104
 var VB_SUC_VENTAS_AGO={Colima:21727.0,Insurgentes:7383.0,Liverpool:7381.0,Polanco:15753.0,Roma:5282.0,'San Miguel':7350.0,'Santa Fe':18847.0};
 var VB_PROD_TOTALS_AGO=[{n:'Maple Choco Chip',pesos:3930.0,pz:131},{n:'Rollo de Canela',pesos:2100.0,pz:60},{n:'Blondie GF',pesos:1166.0,pz:53},{n:'Panqué de Plátano',pesos:990.0,pz:22}];
 var VB_ALERTAS_AGO=[{suc:'Polanco',prod:'Maple Choco Chip',pct:18.4,m:1410},{suc:'Polanco',prod:'Rollo de Canela',pct:19.5,m:1120},{suc:'Insurgentes',prod:'Maple Choco Chip',pct:21.1,m:810},{suc:'Polanco',prod:'Blondie GF',pct:12.5,m:726},{suc:'Colima',prod:'Maple Choco Chip',pct:7.9,m:660},{suc:'Colima',prod:'Rollo de Canela',pct:7.7,m:490},{suc:'Santa Fe',prod:'Maple Choco Chip',pct:5.7,m:480},{suc:'Liverpool',prod:'Panqué de Plátano',pct:23.3,m:450}];
+var VB_PRODS_DATA_SEP=[{"n":"Blondie GF","suc":{"Colima":{"pz":39,"pesos":858.0,"pct_m":11.0},"Insurgentes":{"pz":55,"pesos":1210.0,"pct_m":23.1},"Liverpool":{"pz":13,"pesos":286.0,"pct_m":10.7},"Polanco":{"pz":36,"pesos":792.0,"pct_m":15.9},"Roma":{"pz":31,"pesos":682.0,"pct_m":21.4},"San Miguel":{"pz":9,"pesos":198.0,"pct_m":7.8},"Santa Fe":{"pz":29,"pesos":638.0,"pct_m":11.0}}},{"n":"Maple Choco Chip","suc":{"Colima":{"pz":23,"pesos":690.0,"pct_m":8.3},"Insurgentes":{"pz":27,"pesos":810.0,"pct_m":24.3},"Liverpool":{"pz":8,"pesos":240.0,"pct_m":7.8},"Polanco":{"pz":30,"pesos":900.0,"pct_m":14.4},"Roma":{"pz":10,"pesos":300.0,"pct_m":10.1},"San Miguel":{"pz":17,"pesos":510.0,"pct_m":15.5},"Santa Fe":{"pz":10,"pesos":300.0,"pct_m":3.5}}},{"n":"Rollo de Canela","suc":{"Colima":{"pz":36,"pesos":1260.0,"pct_m":18.9},"Insurgentes":{"pz":-2,"pesos":-70.0,"pct_m":-4.0},"Liverpool":{"pz":7,"pesos":245.0,"pct_m":13.0},"Polanco":{"pz":21,"pesos":735.0,"pct_m":17.8},"Roma":{"pz":8,"pesos":280.0,"pct_m":19.5},"San Miguel":{"pz":5,"pesos":175.0,"pct_m":8.1},"Santa Fe":{"pz":20,"pesos":700.0,"pct_m":13.3}}},{"n":"Panqué de Plátano","suc":{"Colima":{"pz":1,"pesos":45.0,"pct_m":1.6},"Insurgentes":{"pz":2,"pesos":90.0,"pct_m":12.5},"Liverpool":{"pz":9,"pesos":405.0,"pct_m":23.7},"Polanco":{"pz":14,"pesos":630.0,"pct_m":22.6},"Roma":{"pz":1,"pesos":45.0,"pct_m":8.3},"San Miguel":{"pz":1,"pesos":45.0,"pct_m":7.7},"Santa Fe":{"pz":3,"pesos":135.0,"pct_m":8.6}}}];
+var VB_SUC_TOTALS_SEP={"Colima":{"pz":99,"pesos":2853.0},"Insurgentes":{"pz":82,"pesos":2040.0},"Liverpool":{"pz":37,"pesos":1176.0},"Polanco":{"pz":101,"pesos":3057.0},"Roma":{"pz":50,"pesos":1307.0},"San Miguel":{"pz":32,"pesos":928.0},"Santa Fe":{"pz":62,"pesos":1773.0}};
+var VB_SUC_VENTAS_SEP={"Colima":21673.0,"Insurgentes":8266.0,"Liverpool":7207.0,"Polanco":15097.0,"Roma":5765.0,"San Miguel":6762.0,"Santa Fe":18440.0};
+var VB_PROD_TOTALS_SEP=[{"n":"Blondie GF","pesos":4664.0,"pz":212},{"n":"Maple Choco Chip","pesos":3750.0,"pz":125},{"n":"Rollo de Canela","pesos":3325.0,"pz":95},{"n":"Panqué de Plátano","pesos":1395.0,"pz":31}];
+var VB_ALERTAS_SEP=[{"suc":"Colima","prod":"Rollo de Canela","pct":18.9,"m":1260},{"suc":"Insurgentes","prod":"Blondie GF","pct":23.1,"m":1210},{"suc":"Polanco","prod":"Maple Choco Chip","pct":14.4,"m":900},{"suc":"Colima","prod":"Blondie GF","pct":11.0,"m":858},{"suc":"Insurgentes","prod":"Maple Choco Chip","pct":24.3,"m":810},{"suc":"Polanco","prod":"Blondie GF","pct":15.9,"m":792},{"suc":"Polanco","prod":"Rollo de Canela","pct":17.8,"m":735},{"suc":"Santa Fe","prod":"Rollo de Canela","pct":13.3,"m":700},{"suc":"Colima","prod":"Maple Choco Chip","pct":8.3,"m":690},{"suc":"Roma","prod":"Blondie GF","pct":21.4,"m":682}];
 
-var activeVBMonth='ago';
+var activeVBMonth='sep';
+var VB_CAP_KEY={jul:'VB_CAPTURA',ago:'VB_CAPTURA_AGO',sep:'VB_CAPTURA_SEP'};
 var VB_MESES={
  jul:{label:'Julio 2026',TOTAL_PESOS:13147,TOTAL_PZ:423,PCT:7.4,PRODS_DATA:VB_PRODS_DATA_JUL,SUC_TOTALS:VB_SUC_TOTALS_JUL,SUC_VENTAS:VB_SUC_VENTAS_JUL,PROD_TOTALS:VB_PROD_TOTALS_JUL,ALERTAS:VB_ALERTAS_JUL,SUCS:['Condesa','Colima','Santa Fe','Liverpool','Polanco','San Miguel','Insurgentes','Roma','Kitchen Lab']},
- ago:{label:'Agosto 2026',TOTAL_PESOS:8186,TOTAL_PZ:266,PCT:8.2,PRODS_DATA:VB_PRODS_DATA_AGO,SUC_TOTALS:VB_SUC_TOTALS_AGO,SUC_VENTAS:VB_SUC_VENTAS_AGO,PROD_TOTALS:VB_PROD_TOTALS_AGO,ALERTAS:VB_ALERTAS_AGO,SUCS:['Colima','Santa Fe','Liverpool','Polanco','Insurgentes','Roma','San Miguel']}
+ ago:{label:'Agosto 2026',TOTAL_PESOS:8186,TOTAL_PZ:266,PCT:8.2,PRODS_DATA:VB_PRODS_DATA_AGO,SUC_TOTALS:VB_SUC_TOTALS_AGO,SUC_VENTAS:VB_SUC_VENTAS_AGO,PROD_TOTALS:VB_PROD_TOTALS_AGO,ALERTAS:VB_ALERTAS_AGO,SUCS:['Colima','Santa Fe','Liverpool','Polanco','Insurgentes','Roma','San Miguel']},
+ sep:{label:'Septiembre 2026',TOTAL_PESOS:13134,TOTAL_PZ:463,PCT:12.9,PRODS_DATA:VB_PRODS_DATA_SEP,SUC_TOTALS:VB_SUC_TOTALS_SEP,SUC_VENTAS:VB_SUC_VENTAS_SEP,PROD_TOTALS:VB_PROD_TOTALS_SEP,ALERTAS:VB_ALERTAS_SEP,SUCS:['Colima','Santa Fe','Liverpool','Polanco','Insurgentes','Roma','San Miguel']}
 };
 
 
@@ -758,7 +767,7 @@ function buildDashboard(){
  var _fd=getDashData();
  mkChart('ch-trend',{type:'line',data:{labels:_fd.sems,datasets:[{label:'% Merma',data:_fd.pct,borderColor:'#B22222',borderWidth:2.5,pointBackgroundColor:_fd.pct.map(function(v){return v>=30?'#B22222':v>=22?'#E67E22':'#27AE60';}),pointRadius:5,fill:{target:'origin',above:'rgba(178,34,34,.05)'},tension:.3},{label:'% s/ventas',data:_fd.pctv,borderColor:'#1565C0',borderWidth:2,pointRadius:3,tension:.3},{label:'Política 22%',data:_fd.sems.map(function(){return 22;}),borderColor:'#E67E22',borderDash:[5,3],borderWidth:1.5,pointRadius:0},{label:'Crítica 30%',data:_fd.sems.map(function(){return 30;}),borderColor:'#B22222',borderDash:[3,3],borderWidth:1,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10},boxWidth:9}}},scales:{x:{grid:{color:GC},ticks:{font:{size:9},color:TC}},y:{min:5,max:45,grid:{color:GC},ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
  mkChart('ch-desv',{type:'bar',data:{labels:_fd.sems,datasets:[{label:'Var. Merma $',data:_fd.desv,backgroundColor:DESV.map(function(v){return v>0?'rgba(178,34,34,.7)':'rgba(39,174,96,.7)';}),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:TC}},y:{grid:{color:GC},ticks:{callback:function(v){return'$'+Math.round(v/1000)+'k';},font:{size:9},color:TC}}}}});
- var al=[{cls:'ok',ico:'✅',t:'S35 — 17.3% OK (mejora vs S34)',d:'Baja de 22.5% a 17.3% — primera semana dentro de política (<22%). Merma real $10,249 (+$876 vs S34, pero ventas subieron +4.6%). Ventas $97,738.'},{cls:'mod',ico:'🟡',t:'Desviación S35: $6,570 (64.1%)',d:'Merma real $10,249 vs reportada $3,679 — revisar capturas. 3 SKUs (todos "Jugo de Apio", en Santa Fe/Polanco/Insurgentes) quedaron excluidos por desviación extrema — patrón a investigar.'},{cls:'ok',ico:'✅',t:'Liverpool y Polanco concentran la merma',d:'Liverpool $2,327 · Polanco $2,227 · Santa Fe $1,795.'}];
+ var al=[{cls:'mod',ico:'🟡',t:'S40 — 28.1% (parcial, sube vs S39)',d:'Sube de 19.7% (S39) a 28.1% con 6 de 8 sucursales (sin Santa Fe ni Lomas). Merma real $13,273. Ventas $126,532.'},{cls:'mod',ico:'🟡',t:'Desviación S39: $7,404 (60.3%)',d:'Merma real $12,272 vs reportada $4,868. La S40 no tiene merma reportada cargada.'},{cls:'ok',ico:'✅',t:'Roma — la merma más baja de S40',d:'Roma 20.1% ($1,317). Liverpool 39.2% ($2,254) es la más alta con cierre.'}];
  document.getElementById('dash-alerts').innerHTML=al.map(function(a){return'<div class="alert-item alert-'+a.cls+'"><div class="alert-ico">'+a.ico+'</div><div class="alert-body"><div class="alert-title">'+a.t+'</div><div class="alert-desc">'+a.d+'</div></div></div>';}).join('');
  var ranked=BRANCHES.filter(function(b){return b.pct>0;}).sort(function(a,b){return a.pct-b.pct;});
  var maxP=ranked[ranked.length-1].pct;
@@ -822,7 +831,7 @@ function showBranchFull(b){
  var s26=idx.last!==null?(b.s[idx.last]||0):0, s25=idx.prev!==null?(b.s[idx.prev]||0):0;
  var p26=b.pct_s&&idx.last!==null&&b.pct_s[idx.last]?Math.round(b.pct_s[idx.last]*1000)/10:null;
  var lblLast=idx.last!==null?'S'+idx.last:'—', lblPrev=idx.prev!==null?'S'+idx.prev:'—';
- var detalle = (window.JUGOS_S36_DETALLE||{})[b.n] || [];
+ var detalle = (window.JUGOS_DETALLE_ULTIMA||window.JUGOS_S36_DETALLE||{})[b.n] || [];
 
  // Get top10 data for this branch
  var top10d = TOP10_SUC[b.n] || null;
@@ -841,7 +850,7 @@ function showBranchFull(b){
  +'<div style="margin-top:12px">'+buildSucAnalysis(b)+'</div></div>'
  +'</div>';
 
- // NUEVO: Desglose detallado de la semana actual (S36), por producto, para accionar
+ // Desglose detallado de la última semana con cierre de cada sucursal, por producto, para accionar
  if(detalle.length){
   var detHtml = '<div class="card" style="margin-top:13px"><div class="card-head"><div><div class="card-title">🔎 Desglose '+lblLast+' — '+b.n+' (para acción)</div><div class="card-sub">Productos con movimiento, ordenados por impacto $ · Jugos Cold Pressed</div></div></div>'
    +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Producto</th><th>Inicial</th><th>Compras</th><th>Ventas</th><th>Físico</th><th>Merma pz</th><th>Merma $</th></tr></thead><tbody>'
@@ -1852,8 +1861,8 @@ var activeSucVB='Colima';
 function buildVBSucTabs(){
  var el=document.getElementById('vb-suc-tabs');
  if(!el)return;
- var CAP=activeVBMonth==='ago'?(window.VB_CAPTURA_AGO||[]):(window.VB_CAPTURA||[]);
- var SUCS=activeVBMonth==='ago'?['Colima','Santa Fe','Liverpool','Polanco','Insurgentes','Roma','San Miguel']:VB_SUCS_ALL;
+ var CAP=window[VB_CAP_KEY[activeVBMonth]]||[];
+ var SUCS=(activeVBMonth==='jul')?VB_SUCS_ALL:VB_MESES[activeVBMonth].SUCS;
  if(SUCS.indexOf(activeSucVB)===-1) activeSucVB=SUCS[0];
  el.innerHTML=SUCS.map(function(s){
  var tot=CAP.reduce(function(a,p){return a+(p.suc[s]?p.suc[s].merma_pesos:0);},0);
@@ -1871,7 +1880,7 @@ function setVBSuc(s){
  renderVBSuc(s);
 }
 function renderVBSuc(suc){
- var CAP=activeVBMonth==='ago'?(window.VB_CAPTURA_AGO||[]):(window.VB_CAPTURA||[]);
+ var CAP=window[VB_CAP_KEY[activeVBMonth]]||[];
  var prods=CAP.filter(function(p){return p.suc[suc]&&p.suc[suc].compras>0;});
  var tot_ini=0,tot_comp=0,tot_vta=0,tot_fin=0,tot_mpz=0,tot_mpesos=0;
  var rows=prods.map(function(p){
@@ -1991,14 +2000,18 @@ function renderVB(el){
  // Selector de mes
  html+='<div class="suc-tabs" style="margin-bottom:14px">'
  +'<button id="vb-tab-jul" class="vb-month-tab suc-tab'+(activeVBMonth==='jul'?' active':'')+'" onclick="setVBMonth(\'jul\')">Julio 2026</button>'
- +'<button id="vb-tab-ago" class="vb-month-tab suc-tab'+(activeVBMonth==='ago'?' active':'')+'" onclick="setVBMonth(\'ago\')">🆕 Agosto 2026</button>'
+ +'<button id="vb-tab-ago" class="vb-month-tab suc-tab'+(activeVBMonth==='ago'?' active':'')+'" onclick="setVBMonth(\'ago\')">Agosto 2026</button>'
+ +'<button id="vb-tab-sep" class="vb-month-tab suc-tab'+(activeVBMonth==='sep'?' active':'')+'" onclick="setVBMonth(\'sep\')">🆕 Septiembre 2026</button>'
  +'</div>';
  if(activeVBMonth==='ago'){
   html+='<div class="card" style="background:#E8F5E9;border-left:4px solid var(--verde2)"><div style="font-size:12px;color:var(--txt)"><b>✅ Agosto en 8.2%</b> (vs. 7.4% julio) — en línea con el resto del año. Corregido el 3-sep: (1) el Físico Final de agosto tenía un error de captura de mayúsculas que dejaba el Final en $0; (2) se sumaron 98 pz del combo "Xoco Latte + Blondie" a las ventas de Blondie GF (no estaban en el conteo original). Con ambas correcciones la merma bajó de 18.1% → 9.9% → 8.2%. Concentrado en <b>Polanco</b> ($3,571, ~44% del total). Solo se trackean los 4 productos con dato de compras (Blondie, Maple, Rollo, Panqué) — Galleta, Chapata, Pastel corazón y Brownie quedan fuera por ahora, sin dato de compras disponible. Falta agregar el combo a Lomas (11 pz) por no tener datos de esa sucursal en agosto.</div></div>';
  }
+ if(activeVBMonth==='sep'){
+  html+='<div class="card" style="background:#FFF4D6;border-left:4px solid var(--ambar)"><div style="font-size:12px;color:var(--txt)"><b>⚠️ Septiembre en 12.9%</b> (vs. 8.2% agosto) — el más alto de mayo a septiembre. Cierre al 30-sep: ventas del 1 al 30, compras de los pedidos del 31-ago al 29-sep (llegan al día siguiente; validado con los conteos del mes) y conteo físico del 30-sep. Las celdas en blanco del conteo final (Polanco, e Insurgentes Blondie y Panqué) se tomaron como 0 por indicación: sin Polanco el mes sería $10,077 (12.0%); si aparece el conteo real hay que recalcular. Condesa y Lomas omitidas. Chapatas (1,446 pz, $14,460) sin conteo, fuera del cálculo. Solo se trackean Blondie, Maple, Rollo y Panqué.</div></div>';
+ }
  // KPIs
  html+='<div class="kpi-grid">'
- +'<div class="kpi red"><div class="kpi-label">Merma total '+(activeVBMonth==='jul'?'Jul':'Ago')+'</div><div class="kpi-val">'+f$(TOTAL_PESOS)+'</div><div class="kpi-sub">'+TOTAL_PZ+'pz · '+D.SUCS.length+' sucursales</div></div>'
+ +'<div class="kpi red"><div class="kpi-label">Merma total '+({jul:'Jul',ago:'Ago',sep:'Sep'}[activeVBMonth])+'</div><div class="kpi-val">'+f$(TOTAL_PESOS)+'</div><div class="kpi-sub">'+TOTAL_PZ+'pz · '+D.SUCS.length+' sucursales</div></div>'
  +'<div class="kpi amber"><div class="kpi-label">% Merma (Ini+Compras)</div><div class="kpi-val" style="color:var(--rojo)">'+D.PCT+'%</div><div class="kpi-sub">Objetivo ≤3% <span class="badge badge-crit">Sobre política</span></div></div>'
  +'<div class="kpi purple"><div class="kpi-label">Sucursal líder</div><div class="kpi-val">'+suc_sorted[0]+'</div><div class="kpi-sub">'+f$(D.SUC_TOTALS[suc_sorted[0]].pesos)+' · '+D.SUC_TOTALS[suc_sorted[0]].pz+' pz</div></div>'
  +'<div class="kpi green"><div class="kpi-label">Mayor pérdida $</div><div class="kpi-val">'+D.ALERTAS[0].suc+'</div><div class="kpi-sub">'+f$(D.ALERTAS[0].m)+' · '+D.ALERTAS[0].prod+' ('+D.ALERTAS[0].pct+'%)</div></div>'
@@ -2147,7 +2160,7 @@ var _activeSem = -1; // -1 = todo
 function buildWeekFilter(){
   var el = document.getElementById('dash-week-filter');
   if(!el) return;
-  var opts = '<option value="-1"' + (_activeSem===-1?' selected':'') + '>📅 Todo S11–S35</option>'
+  var opts = '<option value="-1"' + (_activeSem===-1?' selected':'') + '>📅 Todo S11–S40</option>'
     + SEMS.map(function(s,i){
         var p = PCT[i];
         return '<option value="'+i+'"'+(_activeSem===i?' selected':'')+'>'+
@@ -2299,13 +2312,13 @@ function renderDashSucReport(name){
     +'<div class="kpi-val">$'+Math.round(s27merma).toLocaleString()+'</div>'
     +'<div class="kpi-sub">semana actual</div></div>'
 
-    +'<div class="kpi blue"><div class="kpi-label">Promedio S11–S35</div>'
+    +'<div class="kpi blue"><div class="kpi-label">Promedio S11–S40</div>'
     +'<div class="kpi-val">'+avgPct.toFixed(1)+'%</div>'
     +'<div class="kpi-sub">histórico acumulado</div></div>'
 
     +'<div class="kpi purple"><div class="kpi-label">Merma $ acumulada</div>'
     +'<div class="kpi-val">$'+Math.round(totalMerma).toLocaleString()+'</div>'
-    +'<div class="kpi-sub">S11–S35 total</div></div>'
+    +'<div class="kpi-sub">S11–S40 total</div></div>'
 
     +'<div class="kpi amber"><div class="kpi-label">Rango histórico</div>'
     +'<div class="kpi-val">'+minPct.toFixed(1)+'%–'+maxPct.toFixed(1)+'%</div>'
@@ -2314,7 +2327,7 @@ function renderDashSucReport(name){
 
     // Gráfica + Tabla histórica
     +'<div class="g2" style="margin-bottom:12px">'
-    +'<div class="card"><div class="card-head"><div><div class="card-title">📈 Tendencia % Merma S11–S35</div>'
+    +'<div class="card"><div class="card-head"><div><div class="card-title">📈 Tendencia % Merma S11–S40</div>'
     +'<div class="card-sub">Línea naranja = política 22% · Rojo = 30%</div></div>'
     +'<span class="badge '+(p27>=30?'badge-crit':p27>=22?'badge-mod':'badge-ok')+'">S29: '+p27.toFixed(1)+'%</span></div>'
     +'<div style="position:relative;height:200px"><canvas id="ch-suc-dash-'+name.replace(/ /g,'_')+'"></canvas></div></div>'
@@ -2326,7 +2339,7 @@ function renderDashSucReport(name){
 
     // Recomendaciones
     +'<div class="card" style="margin-bottom:12px"><div class="card-head"><div><div class="card-title">💡 Recomendaciones — '+name+'</div>'
-    +'<div class="card-sub">Basadas en datos S11–S35</div></div></div>'
+    +'<div class="card-sub">Basadas en datos S11–S40</div></div></div>'
     +recos.map(function(r){
       return '<div class="alert-item alert-'+(r.cls==='alert-crit'?'crit':r.cls==='alert-ok'?'ok':'mod')+'">'
         +'<div class="alert-ico">'+r.ico+'</div>'
@@ -2682,7 +2695,7 @@ function renderEficienciaCat(){
 
  function colorPct(p){ return p>25?'var(--rojo)':(p>10?'#e69b00':'var(--verde2)'); }
 
- var html = '<div class="card" style="background:#1C3A2A;color:#fff"><b style="font-size:16px">⚖️ Eficiencia de Categorías</b><br><span style="font-size:12px;opacity:.85">Vista unificada: Ventas · Merma · Desviación, por categoría — base sólida para toma de decisiones. Solo información validada (Jugos S11–S36 · Vitch Bakery may–ago · Suplementos jul–ago · Insumos ago).</span></div>';
+ var html = '<div class="card" style="background:#1C3A2A;color:#fff"><b style="font-size:16px">⚖️ Eficiencia de Categorías</b><br><span style="font-size:12px;opacity:.85">Vista unificada: Ventas · Merma · Desviación, por categoría — base sólida para toma de decisiones. Solo información validada (Jugos S11–S40 · Vitch Bakery may–sep · Suplementos jul–ago · Insumos ago).</span></div>';
 
  // ===== FILTRO =====
  html += '<div class="card"><div style="font-size:12px;color:var(--gris);margin-bottom:8px">Filtrar snapshot actual por tipo de sucursal:</div><div style="display:flex;gap:8px;flex-wrap:wrap">';
@@ -2694,8 +2707,8 @@ function renderEficienciaCat(){
 
  // ===== CONSOLIDADO — snapshot mas reciente por categoria =====
  var snapCats = [
-   {nombre:'🥤 Jugos Cold Pressed', sub:'S36 (31 ago–6 sep)', dict:JUGOS},
-   {nombre:'🥐 Vitch Bakery', sub:'Agosto 2026', dict:VB},
+   {nombre:'🥤 Jugos Cold Pressed', sub:'S40 (28 sep–4 oct) · parcial: 6 de 8 sucursales', dict:JUGOS},
+   {nombre:'🥐 Vitch Bakery', sub:'Septiembre 2026', dict:VB},
    {nombre:'📦 Insumos — Vasos PLA 16oz', sub:'Agosto 2026', dict:VASOS},
  ];
  html += '<div class="card"><div class="card-head"><div><div class="card-title">📌 Consolidado — Snapshot más reciente</div><div class="card-sub">Ventas vs Compras vs Merma, filtrado: '+EFC_FILTRO_ACTUAL+'</div></div></div>';
@@ -2728,8 +2741,8 @@ function renderEficienciaCat(){
    'Polanco':'Restaurante',
    'San Miguel':'Juice Bar','Insurgentes':'Juice Bar','Roma':'Juice Bar','Lomas':'Juice Bar','CDI':'Juice Bar'};
  var CATS_DESV = [
-   {key:'jugos', nombre:'🥤 Jugos Cold Pressed', periodo:'S36'},
-   {key:'vb', nombre:'🥐 Vitch Bakery', periodo:'Agosto'},
+   {key:'jugos', nombre:'🥤 Jugos Cold Pressed', periodo:'S40 (parcial)'},
+   {key:'vb', nombre:'🥐 Vitch Bakery', periodo:'Septiembre'},
    {key:'vasos', nombre:'📦 Insumos — Vasos PLA 16oz', periodo:'Agosto'},
    {key:'sup', nombre:'💊 Suplementos', periodo:'Agosto (en validación)'},
  ];
@@ -2764,7 +2777,7 @@ function renderEficienciaCat(){
  // ===== RESUMEN POR SUCURSAL =====
  var RS = window.CAT_RESUMEN_SUC||{};
  var SUCS_RS = ['Colima','Santa Fe','Liverpool','Polanco','Insurgentes','Roma','San Miguel','Lomas'];
- html += '<div class="card"><div class="card-head"><div><div class="card-title">🏬 Resumen por Sucursal — todas las categorías</div><div class="card-sub">% Merma individual: Jugos (S36) · Vitch Bakery (ago) · Insumos/Vasos (ago)</div></div></div>';
+ html += '<div class="card"><div class="card-head"><div><div class="card-title">🏬 Resumen por Sucursal — todas las categorías</div><div class="card-sub">% Merma individual: Jugos (S40 parcial) · Vitch Bakery (sep) · Insumos/Vasos (ago)</div></div></div>';
  html += '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Jugos %</th><th>Jugos $</th><th>Vitch Bakery %</th><th>VB $</th><th>Insumos/Vasos %</th><th>Vasos $</th></tr></thead><tbody>';
  SUCS_RS.forEach(function(s){
    var r = RS[s]||{};
@@ -2778,7 +2791,7 @@ function renderEficienciaCat(){
  html += '</tbody></table></div><div style="font-size:10.5px;color:var(--gris);margin-top:6px;padding:0 4px">San Miguel en Insumos/Vasos muestra un valor extremo (Teórico negativo — ventas mayores a lo disponible) pendiente de investigar; no reflejar como definitivo hasta resolver.</div></div>';
 
  // ===== HISTORICO JUGOS =====
- html += '<div class="card"><div class="card-head"><div><div class="card-title">🥤 Jugos Cold Pressed — Histórico</div><div class="card-sub">Ventas $ · Merma $ · % Merma, S11–S36</div></div></div>';
+ html += '<div class="card"><div class="card-head"><div><div class="card-title">🥤 Jugos Cold Pressed — Histórico</div><div class="card-sub">Ventas $ · Merma $ · % Merma, S11–S40</div></div></div>';
  html += '<div style="position:relative;height:180px;margin-bottom:12px"><canvas id="ch-efc-jugos"></canvas></div>';
  html += '<div style="overflow-x:auto;max-height:260px;overflow-y:auto"><table class="tbl"><thead style="position:sticky;top:0;background:#fff"><tr><th>Semana</th><th>Ventas $</th><th>Merma $</th><th>% Merma</th></tr></thead><tbody>';
  for(var i=SEMS.length-1;i>=0;i--){
@@ -2808,7 +2821,7 @@ function renderEficienciaCat(){
  html += '</tbody></table></div></div>';
 
  // ===== DESVIACION JUGOS =====
- html += '<div class="card"><div class="card-head"><div><div class="card-title">📊 Jugos — Merma Reportada vs Merma Real (Desviación)</div><div class="card-sub">Semanas con dato verificado: S24–S33 y S36 (S11–S23 y S34–S35 sin dato confiable)</div></div></div>'
+ html += '<div class="card"><div class="card-head"><div><div class="card-title">📊 Jugos — Merma Reportada vs Merma Real (Desviación)</div><div class="card-sub">Semanas con dato verificado: S24–S33, S36 y S38–S39 (S11–S23, S34–S35 y S37 sin dato confiable; S40 sin merma reportada)</div></div></div>'
    +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Semana</th><th>Merma Reportada</th><th>Merma Real</th><th>Desviación $</th><th>Desviación %</th></tr></thead><tbody>';
  var semanasDesv = Object.keys(DESV).sort(function(a,b){return parseInt(a.slice(1))-parseInt(b.slice(1));});
  semanasDesv.forEach(function(s){
@@ -2838,18 +2851,18 @@ function renderReporteJunta(){
 
  setTimeout(function(){
   var vbEl=document.getElementById('vb-full-report');
-  if(vbEl) renderVBReport(vbEl);
+  if(vbEl){ try{ renderVBReport(vbEl); }catch(e){ console.error('renderVBReport',e); } }
 
   mkChart('ch-rj-jugos',{type:'line',data:{labels:SEMS,datasets:[{label:'% Merma',data:PCT,borderColor:'#B22222',backgroundColor:'#B22222',borderWidth:2,tension:.3,pointRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:TC,font:{size:8}}},y:{min:0,grid:{color:GC},ticks:{color:TC,callback:function(v){return v+'%';}}}}}});
 
-  mkChart('ch-rj-vb',{type:'line',data:{labels:['Ene','Mar','Abr','May','Jun','Jul'],datasets:[{label:'% Merma',data:[8.7,10.6,7.4,7.4,9.5,7.4],borderColor:'#1baf7a',backgroundColor:'#1baf7a',borderWidth:2,tension:.3,pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:TC}},y:{min:0,max:14,grid:{color:GC},ticks:{color:TC,callback:function(v){return v+'%';}}}}}});
+  mkChart('ch-rj-vb',{type:'line',data:{labels:['Ene','Mar','Abr','May','Jun','Jul','Ago','Sep'],datasets:[{label:'% Merma',data:[8.7,10.6,7.4,7.4,9.5,7.4,8.2,12.9],borderColor:'#1baf7a',backgroundColor:'#1baf7a',borderWidth:2,tension:.3,pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:TC}},y:{min:0,max:14,grid:{color:GC},ticks:{color:TC,callback:function(v){return v+'%';}}}}}});
 
-  mkChart('ch-rj-resumen',{type:'bar',data:{labels:['Jugos (S35)','Suplementos (jul)','Vitch Bakery (jul)'],datasets:[{label:'%',data:[17.3,9.1,7.4],backgroundColor:['#B22222','#7F77DD','#1baf7a']}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:true}},scales:{x:{min:0,max:20,grid:{color:'rgba(255,255,255,.1)'},ticks:{color:'#CADCFC',callback:function(v){return v+'%';}}},y:{grid:{display:false},ticks:{color:'#fff',font:{size:11}}}}}});
+  mkChart('ch-rj-resumen',{type:'bar',data:{labels:['Jugos (S40 parcial)','Suplementos (jul)','Vitch Bakery (sep)'],datasets:[{label:'%',data:[28.1,9.1,12.9],backgroundColor:['#B22222','#7F77DD','#1baf7a']}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:true}},scales:{x:{min:0,max:35,grid:{color:'rgba(255,255,255,.1)'},ticks:{color:'#CADCFC',callback:function(v){return v+'%';}}},y:{grid:{display:false},ticks:{color:'#fff',font:{size:11}}}}}});
  },60);
 }
 
 function renderVBReport(el){
- var TOTAL_PESOS=13147,TOTAL_PZ=423;
+ var _M=VB_MESES.sep, TOTAL_PESOS=_M.TOTAL_PESOS, TOTAL_PZ=_M.TOTAL_PZ, VB_SUC_TOTALS=_M.SUC_TOTALS, VB_SUC_VENTAS=_M.SUC_VENTAS, VB_PRODS_DATA=_M.PRODS_DATA, VB_PROD_TOTALS=_M.PROD_TOTALS, VB_ALERTAS=_M.ALERTAS, SUCS_VB=_M.SUCS;
  var suc_sorted=Object.keys(VB_SUC_TOTALS).sort(function(a,b){return VB_SUC_TOTALS[b].pesos-VB_SUC_TOTALS[a].pesos;});
  var top_suc_pct=Object.keys(VB_SUC_TOTALS).map(function(s){
   var pct_vals=VB_PRODS_DATA.filter(function(p){return p.suc[s]&&p.suc[s].pct_m>0;}).map(function(p){return p.suc[s].pct_m;});
@@ -2859,8 +2872,8 @@ function renderVBReport(el){
  var SUCS_VB=['Condesa','Colima','Santa Fe','Liverpool','Polanco','San Miguel','Insurgentes','Roma','Kitchen Lab'];
 
  var html='<div class="kpi-grid">'
-  +'<div class="kpi red"><div class="kpi-label">Merma total Jul</div><div class="kpi-val">'+f$(TOTAL_PESOS)+'</div><div class="kpi-sub">'+TOTAL_PZ+'pz · 9 sucursales</div></div>'
-  +'<div class="kpi amber"><div class="kpi-label">% Merma s/ventas</div><div class="kpi-val" style="color:var(--rojo)">7.4%</div><div class="kpi-sub">Objetivo ≤3% <span class="badge badge-crit">Sobre política</span></div></div>'
+  +'<div class="kpi red"><div class="kpi-label">Merma total Sep</div><div class="kpi-val">'+f$(TOTAL_PESOS)+'</div><div class="kpi-sub">'+TOTAL_PZ+'pz · '+SUCS_VB.length+' sucursales</div></div>'
+  +'<div class="kpi amber"><div class="kpi-label">% Merma (Ini+Compras)</div><div class="kpi-val" style="color:var(--rojo)">'+_M.PCT+'%</div><div class="kpi-sub">Objetivo ≤3% <span class="badge badge-crit">Sobre política</span></div></div>'
   +'<div class="kpi purple"><div class="kpi-label">Sucursal líder</div><div class="kpi-val">'+suc_sorted[0]+'</div><div class="kpi-sub">'+f$(VB_SUC_TOTALS[suc_sorted[0]].pesos)+' · '+VB_SUC_TOTALS[suc_sorted[0]].pz+' pz</div></div>'
   +'<div class="kpi green"><div class="kpi-label">Mayor pérdida $</div><div class="kpi-val">'+VB_ALERTAS[0].suc+'</div><div class="kpi-sub">'+f$(VB_ALERTAS[0].m)+' · '+VB_ALERTAS[0].prod+' ('+VB_ALERTAS[0].pct+'%)</div></div>'
   +'</div>';
@@ -2875,7 +2888,7 @@ function renderVBReport(el){
   +'<div class="card"><div class="card-head"><div class="card-title">Merma $ por producto</div></div><div style="position:relative;height:200px"><canvas id="ch-vb-prod-rj"></canvas></div></div>'
   +'</div>';
 
- html+='<div class="card"><div class="card-head"><div><div class="card-title">Ventas vs Merma por sucursal — Jul 2026</div><div class="card-sub">Barras: Ventas $ y Merma $ · línea: % merma sobre ventas (política 3%)</div></div></div><div style="position:relative;height:240px"><canvas id="ch-vb-pct-rj"></canvas></div></div>';
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">Ventas vs Merma por sucursal — Sep 2026</div><div class="card-sub">Barras: Ventas $ y Merma $ · línea: % merma sobre ventas (política 3%)</div></div></div><div style="position:relative;height:240px"><canvas id="ch-vb-pct-rj"></canvas></div></div>';
 
  html+='<div class="g2">'
   +'<div class="card"><div class="card-head"><div><div class="card-title">Top sucursales — Merma $</div></div></div>'
@@ -2895,7 +2908,7 @@ function renderVBReport(el){
   +'</div>'
   +'</div>';
 
- html+='<div class="card"><div class="card-head"><div><div class="card-title">Tabla completa — producto × sucursal</div><div class="card-sub">Julio 2026 · $ / % merma</div></div></div>'
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">Tabla completa — producto × sucursal</div><div class="card-sub">Septiembre 2026 · $ / % merma</div></div></div>'
   +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Producto</th>'
   +SUCS_VB.map(function(s){return'<th colspan="2" style="text-align:center">'+s+'</th>';}).join('')
   +'<th>Total $</th><th>Total pz</th></tr>'
