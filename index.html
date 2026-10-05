@@ -2207,8 +2207,8 @@ function buildDashSucTab(){
 
   var btnHtml = BRANCHES.filter(function(b){return b.pct>0;}).map(function(b){
     var hist = SUC_HIST_PCT[b.n]||[];
-    var s27pct = hist[hist.length-1];
-    var p = s27pct ? (s27pct < 1 ? s27pct*100 : s27pct) : b.pct;
+    var s27pct = null; for(var q=hist.length-1;q>=0;q--){ if(hist[q]!==null && hist[q]!==undefined){ s27pct=hist[q]; break; } }
+    var p = (s27pct!==null) ? s27pct : b.pct;
     var cls = p>=30?'suc-tab-crit':p>=22?'suc-tab-mod':'';
     return '<button class="suc-tab '+cls+(b.n===activeSuc?' active':'')+('" onclick="selectDashSuc(&apos;'+b.n+'&apos;)">'+b.n+'</button>');
   }).join('');
@@ -2235,16 +2235,19 @@ function renderDashSucReport(name){
   if(!b){el.innerHTML='<p>Sin datos</p>';return;}
 
   var hist = SUC_HIST_PCT[name]||[];
-  var semKeys = [11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29];
+  var semKeys = SEMS.map(function(s){return parseInt(s.slice(1),10);});
   // Convertir hist a valores legibles
   var histVals = hist.map(function(v){
     if(v===null) return null;
-    return v < 1 ? Math.round(v*1000)/10 : v;
+    return v;
   });
 
   // KPIs clave
-  var p27 = histVals[histVals.length-1]||0;
-  var p26 = histVals[histVals.length-2]||0;
+  var lastI=-1, prevI=-1; for(var ii=histVals.length-1; ii>=0; ii--){ if(histVals[ii]!==null && histVals[ii]!==undefined){ if(lastI<0){lastI=ii;} else {prevI=ii; break;} } }
+ if(lastI<0){ el.innerHTML='<div class="card"><p style="font-size:13px;color:var(--gris)">Sin datos de Jugos para esta sucursal.</p></div>'; return; }
+ var LW='S'+semKeys[lastI], PW=prevI>=0?'S'+semKeys[prevI]:'—';
+ var p27 = histVals[lastI];
+  var p26 = prevI>=0 ? histVals[prevI] : p27;
   var nonNull = histVals.filter(function(v){return v!==null;});
   var avgPct = nonNull.length ? Math.round(nonNull.reduce(function(a,v){return a+v;},0)/nonNull.length*10)/10 : 0;
   var minPct = nonNull.length ? Math.min.apply(null,nonNull) : 0;
@@ -2253,7 +2256,7 @@ function renderDashSucReport(name){
   var semsCrit = nonNull.filter(function(v){return v>=30;}).length;
   var semsOk = nonNull.filter(function(v){return v<22;}).length;
   var totalMerma = semKeys.reduce(function(a,k){return a+(b.s[k]||0);},0);
-  var s27merma = b.s[29]||0;
+  var s27merma = b.s[semKeys[lastI]]||0;
   var insAcum = (b.ins[0]||0)+(b.ins[1]||0)+(b.ins[2]||0);
   var top10d = TOP10_SUC[name]||null;
   var camData = MERMA_GENERAL[name]||null;
@@ -2261,16 +2264,16 @@ function renderDashSucReport(name){
   // ── Generar recomendaciones basadas en datos ──
   var recos = [];
   if(p27>=30){
-    recos.push({ico:'🚨',cls:'alert-crit',t:'Merma crítica S29 ('+p27.toFixed(1)+'%)',d:'Supera 30%. Acción inmediata: revisar recetas, porciones y merma en producción esta semana.'});
+    recos.push({ico:'🚨',cls:'alert-crit',t:'Merma crítica '+LW+' ('+p27.toFixed(1)+'%)',d:'Supera 30%. Acción inmediata: revisar recetas, porciones y merma en producción esta semana.'});
   } else if(p27>=22){
-    recos.push({ico:'⚠️',cls:'alert-mod',t:'Merma moderada S29 ('+p27.toFixed(1)+'%)',d:'Sobre política del 22%. Monitorear de cerca y revisar los top productos con mayor merma.'});
+    recos.push({ico:'⚠️',cls:'alert-mod',t:'Merma moderada '+LW+' ('+p27.toFixed(1)+'%)',d:'Sobre política del 22%. Monitorear de cerca y revisar los top productos con mayor merma.'});
   } else {
-    recos.push({ico:'✅',cls:'alert-ok',t:'Merma bajo control S29 ('+p27.toFixed(1)+'%)',d:'Dentro de política. Mantener procesos actuales y documentar buenas prácticas.'});
+    recos.push({ico:'✅',cls:'alert-ok',t:'Merma bajo control '+LW+' ('+p27.toFixed(1)+'%)',d:'Dentro de política. Mantener procesos actuales y documentar buenas prácticas.'});
   }
   if(delta27>5){
-    recos.push({ico:'📈',cls:'alert-crit',t:'Aumento de '+delta27.toFixed(1)+'pp vs S28',d:'Incremento significativo. Identificar qué cambió esta semana: pedido, producción o inventario.'});
+    recos.push({ico:'📈',cls:'alert-crit',t:'Aumento de '+delta27.toFixed(1)+'pp vs '+PW,d:'Incremento significativo. Identificar qué cambió esta semana: pedido, producción o inventario.'});
   } else if(delta27<-5){
-    recos.push({ico:'📉',cls:'alert-ok',t:'Mejora de '+Math.abs(delta27).toFixed(1)+'pp vs S28',d:'Tendencia positiva. Identificar qué acción funcionó y replicarla.'});
+    recos.push({ico:'📉',cls:'alert-ok',t:'Mejora de '+Math.abs(delta27).toFixed(1)+'pp vs '+PW,d:'Tendencia positiva. Identificar qué acción funcionó y replicarla.'});
   }
   if(semsCrit>=3){
     recos.push({ico:'🔴',cls:'alert-crit',t:semsCrit+' semanas críticas (≥30%) acumuladas',d:'Patrón recurrente. Revisar causas raíz estructurales: rotación de producto, tamaño de pedido, receta.'});
@@ -2304,13 +2307,13 @@ function renderDashSucReport(name){
   var html2 = ''
     // KPIs
     +'<div class="kpi-grid" style="margin-bottom:12px">'
-    +'<div class="kpi '+(p27>=30?'red':p27>=22?'amber':'green')+'"><div class="kpi-label">% Merma S29</div>'
+    +'<div class="kpi '+(p27>=30?'red':p27>=22?'amber':'green')+'"><div class="kpi-label">% Merma '+LW+'</div>'
     +'<div class="kpi-val">'+p27.toFixed(1)+'%</div>'
-    +'<div class="kpi-sub"><span style="color:'+(delta27>0?'var(--rojo)':'#27AE60')+'">'+(delta27>0?'▲+':'▼')+Math.abs(delta27).toFixed(1)+'pp vs S28</span></div></div>'
+    +'<div class="kpi-sub"><span style="color:'+(delta27>0?'var(--rojo)':'#27AE60')+'">'+(delta27>0?'▲+':'▼')+Math.abs(delta27).toFixed(1)+'pp vs '+PW+'</span></div></div>'
 
-    +'<div class="kpi red"><div class="kpi-label">Merma $ S29</div>'
+    +'<div class="kpi red"><div class="kpi-label">Merma $ '+LW+'</div>'
     +'<div class="kpi-val">$'+Math.round(s27merma).toLocaleString()+'</div>'
-    +'<div class="kpi-sub">semana actual</div></div>'
+    +'<div class="kpi-sub">última semana con dato</div></div>'
 
     +'<div class="kpi blue"><div class="kpi-label">Promedio S11–S40</div>'
     +'<div class="kpi-val">'+avgPct.toFixed(1)+'%</div>'
@@ -2329,7 +2332,7 @@ function renderDashSucReport(name){
     +'<div class="g2" style="margin-bottom:12px">'
     +'<div class="card"><div class="card-head"><div><div class="card-title">📈 Tendencia % Merma S11–S40</div>'
     +'<div class="card-sub">Línea naranja = política 22% · Rojo = 30%</div></div>'
-    +'<span class="badge '+(p27>=30?'badge-crit':p27>=22?'badge-mod':'badge-ok')+'">S29: '+p27.toFixed(1)+'%</span></div>'
+    +'<span class="badge '+(p27>=30?'badge-crit':p27>=22?'badge-mod':'badge-ok')+'">'+LW+': '+p27.toFixed(1)+'%</span></div>'
     +'<div style="position:relative;height:200px"><canvas id="ch-suc-dash-'+name.replace(/ /g,'_')+'"></canvas></div></div>'
 
     +'<div class="card"><div class="card-head"><div class="card-title">📋 Histórico detallado</div></div>'
@@ -2428,7 +2431,7 @@ function renderDashSucReport(name){
       ]},options:{responsive:true,maintainAspectRatio:false,
         plugins:{legend:{labels:{font:{size:9},boxWidth:8}}},
         scales:{x:{grid:{color:GC},ticks:{font:{size:9},color:TC}},
-                y:{min:0,max:65,grid:{color:GC},ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
+                y:{min:Math.min(0,Math.floor(Math.min.apply(null,nonNull)/10)*10),max:65,grid:{color:GC},ticks:{callback:function(v){return v+'%';},font:{size:9},color:TC}}}}});
     },80);
   }
 }
