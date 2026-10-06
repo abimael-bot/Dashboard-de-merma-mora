@@ -953,6 +953,44 @@ var PROT_KPIS={choco_g:40300.7,vaini_g:60104.7,total_g:100405.4,choco_kg:40.3,va
 // ─── SUPLEMENTOS DATA ───
 var SUP_SUCS=["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "Roma", "CDI"];
 // ─── VASOS PLA 16oz ───
+// ─── VASOS PLA 16oz · SEPTIEMBRE ───
+function renderVPSep(el){
+ var D=window.VP_TABLA_SEP||[];
+ var V=window.VP_VENTAS_DETALLE_SEP||[];
+ var conIni=D.filter(function(d){return d.ini!==null&&d.ini!==undefined;});
+ var totC=D.reduce(function(a,d){return a+d.comp;},0),totV=D.reduce(function(a,d){return a+d.vta;},0),totM=conIni.reduce(function(a,d){return a+d.merma;},0);
+ var falt=conIni.filter(function(d){return d.estado==='FALTANTE';});
+ var peor=conIni.slice().sort(function(a,b){return b.merma-a.merma;})[0];
+ var sinIni=D.filter(function(d){return d.estado==='SIN INICIAL';}).map(function(d){return d.suc;});
+ var html='<div class="card" style="background:#FFF8E1;border-left:4px solid #F4BD3E"><div style="font-size:12px;color:var(--txt)"><b>Septiembre 2026 · Vaso impreso Mora Mora (SUCEMP186, $3.60)</b> — Inicial = final de agosto; entradas = envíos del mes; ventas = productos con vaso (sin Miu Miu); final = Inventario final septiembre. '
+  +(peor?'El mayor faltante es <b>'+peor.suc+'</b> ('+peor.dif+' vasos, '+f$(peor.merma)+'). ':'')
+  +(sinIni.length?'<b>'+sinIni.join(', ')+'</b> sin conteo inicial: se muestra sin merma.':'')+'</div></div>';
+ html+='<div class="kpi-grid">'
+  +'<div class="kpi blue"><div class="kpi-label">Vasos recibidos Sep</div><div class="kpi-val">'+totC.toLocaleString()+'</div><div class="kpi-sub">piezas · '+D.length+' sucursales</div></div>'
+  +'<div class="kpi green"><div class="kpi-label">Vasos vendidos Sep</div><div class="kpi-val">'+totV.toLocaleString()+'</div><div class="kpi-sub">'+V.length+' productos con vaso</div></div>'
+  +'<div class="kpi amber"><div class="kpi-label">Diferencia neta $</div><div class="kpi-val">'+f$(totM)+'</div><div class="kpi-sub">'+(totM>0?'faltante neto':'sobrante neto')+' · '+conIni.length+' sucursales</div></div>'
+  +'<div class="kpi red"><div class="kpi-label">Sucursales con faltante</div><div class="kpi-val">'+falt.length+'</div><div class="kpi-sub">más de 10 vasos abajo del teórico</div></div>'
+  +'</div>';
+ var n=function(v){return v===null||v===undefined?'—':v;};
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Reporte por sucursal — Vasos PLA 16oz</div><div class="card-sub">Inicial + Entradas + Traspasos − Ventas = Teórico vs Final · Septiembre 2026</div></div></div><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Inicial</th><th>Entradas</th><th>Traspasos</th><th>Ventas</th><th>Teórico</th><th>Final</th><th>Dif.</th><th>Merma $</th><th>Estado</th><th style="min-width:220px">Notas</th></tr></thead><tbody>'
+  +D.slice().sort(function(a,b){return (b.merma||0)-(a.merma||0);}).map(function(d){
+    var col=d.merma<-50?'#1baf7a':(d.merma>50?'var(--rojo)':'var(--verde2)');
+    var eb=d.estado==='OK'?'#E8F5E9':(d.estado==='SOBRA'?'#E3F2FD':(d.estado==='SIN INICIAL'?'#EEEEEE':'#FFF8E1'));
+    var ec=d.estado==='OK'?'#1B5E20':(d.estado==='SOBRA'?'#1565C0':(d.estado==='SIN INICIAL'?'#555':'#9a7d0a'));
+    var t=d.trasp||0;
+    return '<tr><td style="font-weight:700">'+d.suc+'</td><td class="mono">'+n(d.ini)+'</td><td class="mono" style="color:var(--verde2)">+'+d.comp+'</td><td class="mono">'+(t>0?'+'+t:t)+'</td><td class="mono" style="color:#2a78d6">-'+d.vta+'</td><td class="mono">'+n(d.teo)+'</td><td class="mono">'+d.fin+'</td><td class="mono" style="font-weight:700">'+n(d.dif)+'</td><td class="mono" style="font-weight:700;color:'+col+'">'+(d.estado==='SIN INICIAL'?'—':f$(d.merma))+'</td><td><span class="badge" style="background:'+eb+';color:'+ec+';font-size:9px">'+d.estado+'</span></td><td style="font-size:10.5px;color:var(--txt)">'+(d.just||'')+'</td></tr>';
+  }).join('')
+  +'<tr style="background:var(--rojo2);font-weight:700"><td>TOTAL</td><td class="mono">'+conIni.reduce(function(a,d){return a+d.ini;},0)+'</td><td class="mono" style="color:var(--verde2)">+'+totC+'</td><td class="mono">'+D.reduce(function(a,d){return a+(d.trasp||0);},0)+'</td><td class="mono" style="color:#2a78d6">-'+totV+'</td><td></td><td class="mono">'+D.reduce(function(a,d){return a+d.fin;},0)+'</td><td></td><td class="mono">'+f$(totM)+'</td><td></td><td></td></tr>'
+  +'</tbody></table></div></div>';
+ var SUCS_V=['Colima','Polanco','Santa Fe','Roma','Insurgentes','San Miguel','Liverpool','Lomas','CDI','Condesa'];
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">✅ Ventas de Septiembre por producto</div><div class="card-sub">'+V.length+' productos con vaso, por sucursal (sin productos Miu Miu)</div></div></div>'
+  +'<div style="overflow-x:auto"><table class="tbl" style="font-size:11px"><thead><tr><th>Producto</th>'
+  +SUCS_V.map(function(s){return'<th>'+s+'</th>';}).join('')+'<th>Total</th></tr></thead><tbody>'
+  +V.map(function(p){return '<tr><td style="font-weight:600;white-space:nowrap">'+p.n+'</td>'+SUCS_V.map(function(s){return'<td class="mono">'+(p.suc[s]||'—')+'</td>';}).join('')+'<td class="mono" style="font-weight:700">'+p.tot+'</td></tr>';}).join('')
+  +'<tr style="background:var(--verde3);font-weight:700"><td>TOTAL GENERAL</td>'+SUCS_V.map(function(s){return'<td class="mono">'+V.reduce(function(a,p){return a+(p.suc[s]||0);},0)+'</td>';}).join('')+'<td class="mono">'+V.reduce(function(a,p){return a+p.tot;},0)+'</td></tr>'
+  +'</tbody></table></div></div>';
+ el.innerHTML=html;
+}
 function renderVPAgo(el){
  var D=window.VP_TABLA_AGO||[];
  var V=window.VP_VENTAS_DETALLE_AGO||[];
@@ -1954,9 +1992,9 @@ function renderCat(i){
 }
 
 
-var activeInsTab='VPA';
+var activeInsTab='VPS';
 function renderINSMerged(el){
- var tabs=[{id:'VPA',label:'🥤 Vasos PLA Agosto 🆕'},{id:'VPJ',label:'🥤 Vasos PLA Julio'},{id:'VP',label:'🥤 Vasos PLA Junio'},{id:'CB',label:'☕ Cold Brew Concentrado'},{id:'PI',label:'💪 Proteína Insumo'}];
+ var tabs=[{id:'VPS',label:'🥤 Vasos PLA Septiembre 🆕'},{id:'VPA',label:'🥤 Vasos PLA Agosto'},{id:'VPJ',label:'🥤 Vasos PLA Julio'},{id:'VP',label:'🥤 Vasos PLA Junio'},{id:'CB',label:'☕ Cold Brew Concentrado'},{id:'PI',label:'💪 Proteína Insumo'}];
  var html='<div class="suc-tabs" id="ins-tabs">'
  +tabs.map(function(t){return '<button class="suc-tab'+(t.id===activeInsTab?' active':'')+'" onclick="setInsTab(\''+t.id+'\')">'+t.label+'</button>';}).join('')
  +'</div><div id="ins-tab-content"></div>';
@@ -1970,7 +2008,8 @@ function setInsTab(id){
 function renderInsTab(id){
  var el=document.getElementById('ins-tab-content');
  if(!el) return;
- if(id==='VPA') renderVPAgo(el);
+ if(id==='VPS') renderVPSep(el);
+ else if(id==='VPA') renderVPAgo(el);
  else if(id==='VPJ') renderVPJul(el);
  else if(id==='VP') renderVP(el);
  else if(id==='CB') renderCBC(el);
