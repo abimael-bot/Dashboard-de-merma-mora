@@ -1318,8 +1318,8 @@ var activeSucSUP='Colima';
 function buildSupAgoSucTabs(){
  var el=document.getElementById('sup-ago-suc-tabs');
  if(!el)return;
- var CAP=window.SUP_CAPTURA_AGO||[];
- var SUCS=['Colima','Santa Fe','Liverpool','Polanco','Insurgentes','Roma','San Miguel'];
+ var CAP=window[window.CURRENT_SUP_MONTH==='oct'?'SUP_CAPTURA_OCT':'SUP_CAPTURA_AGO']||[];
+ var SUCS=window.CURRENT_SUP_MONTH==='oct'?['Colima','Condesa','Santa Fe','Liverpool','Polanco','Insurgentes','Roma','San Miguel','Lomas','CDI']:['Colima','Santa Fe','Liverpool','Polanco','Insurgentes','Roma','San Miguel'];
  if(SUCS.indexOf(activeSucSUP)===-1) activeSucSUP=SUCS[0];
  el.innerHTML=SUCS.map(function(s){
   var tot=CAP.reduce(function(a,p){return a+(p.suc[s]?p.suc[s].merma_pesos:0);},0);
@@ -1337,7 +1337,7 @@ function setSupAgoSuc(s){
  renderSupAgoSuc(s);
 }
 function renderSupAgoSuc(suc){
- var CAP=window.SUP_CAPTURA_AGO||[];
+ var CAP=window[window.CURRENT_SUP_MONTH==='oct'?'SUP_CAPTURA_OCT':'SUP_CAPTURA_AGO']||[];
  var el=document.getElementById('sup-ago-suc-detail');
  if(!el)return;
  var prods=CAP.filter(function(p){return p.suc[suc]&&(p.suc[suc].compras>0||p.suc[suc].inv_ini>0||p.suc[suc].ventas>0);});
@@ -1380,7 +1380,7 @@ function renderSupAgoSuc(suc){
 }
 
 function renderSUP(el){
- var activeSupMonth = window.CURRENT_SUP_MONTH || 'jul';
+ var activeSupMonth = window.CURRENT_SUP_MONTH || 'oct'; window.CURRENT_SUP_MONTH=activeSupMonth;
  var supData = [
   {suc:'Santa Fe', ini:73, comp:258, tin:0, tout:1, ventas_ps:21188, fin:208, dif:-4311, pct:-20.3},
   {suc:'Polanco', ini:31, comp:116, tin:0, tout:0, ventas_ps:4221, fin:63, dif:3497, pct:82.9},
@@ -1392,13 +1392,16 @@ function renderSUP(el){
   {suc:'Lomas', ini:2, comp:33, tin:1, tout:0, ventas_ps:1750, fin:32, dif:40, pct:2.3},
  ];
  var totVentas=93020, totDif=8491, totPct=9.1;
- var supDataAgo = window.SUP_DATA_AGO||[];
- var totAgo = window.SUP_TOTALES_AGO||{};
+ var esOct = activeSupMonth==='oct';
+ var supDataAgo = (esOct?window.SUP_DATA_OCT:window.SUP_DATA_AGO)||[];
+ var totAgo = (esOct?window.SUP_TOTALES_OCT:window.SUP_TOTALES_AGO)||{};
+ var mesTxt = esOct?'octubre':'agosto';
 
 
  var monthTabs = '<div style="display:flex;gap:8px;margin-bottom:12px">'
    +'<button onclick="setSupMonth(\'jul\')" style="padding:6px 16px;border-radius:8px;border:1px solid var(--brd);background:'+(activeSupMonth==='jul'?'#7F77DD':'#fff')+';color:'+(activeSupMonth==='jul'?'#fff':'var(--txt)')+';font-weight:700;cursor:pointer;font-size:12px">Julio 2026</button>'
    +'<button onclick="setSupMonth(\'ago\')" style="padding:6px 16px;border-radius:8px;border:1px solid var(--brd);background:'+(activeSupMonth==='ago'?'#7F77DD':'#fff')+';color:'+(activeSupMonth==='ago'?'#fff':'var(--txt)')+';font-weight:700;cursor:pointer;font-size:12px">Agosto 2026</button>'
+   +'<button onclick="setSupMonth(\'oct\')" style="padding:6px 16px;border-radius:8px;border:1px solid var(--brd);background:'+(activeSupMonth==='oct'?'#7F77DD':'#fff')+';color:'+(activeSupMonth==='oct'?'#fff':'var(--txt)')+';font-weight:700;cursor:pointer;font-size:12px">🆕 Octubre 2026</button>'
    +'</div>';
 
  var html = monthTabs;
@@ -1424,13 +1427,14 @@ function renderSUP(el){
     +'<div style="position:relative;height:220px"><canvas id="ch-sup-cierre"></canvas></div></div>';
  } else {
    html+='<div class="kpi-grid">'
-    +'<div class="kpi purple"><div class="kpi-label">Cierre de mes — Agosto 2026</div><div class="kpi-val" style="font-size:15px">Gestión Integral</div><div class="kpi-sub">Inicial+Compras+Traspasos−Ventas=Teórico vs. Físico</div></div>'
-    +'<div class="kpi blue"><div class="kpi-label">Ventas agosto</div><div class="kpi-val">'+f$(totAgo.vta)+'</div><div class="kpi-sub">7 sucursales, mes completo</div></div>'
-    +'<div class="kpi red"><div class="kpi-label">Pérdida/Sobrante neto</div><div class="kpi-val">'+f$(totAgo.dif)+'</div><div class="kpi-sub">Compras validadas vs OC Concentrado CEDIS</div></div>'
-    +'<div class="kpi green"><div class="kpi-label">% Pérdida</div><div class="kpi-val">'+totAgo.pct+'%</div><div class="kpi-sub">Excluye 3 SKUs de insumo</div></div>'
+    +'<div class="kpi purple"><div class="kpi-label">Cierre de mes — '+(esOct?'Octubre':'Agosto')+' 2026</div><div class="kpi-val" style="font-size:15px">Gestión Integral</div><div class="kpi-sub">Inicial+Compras+Traspasos−Ventas=Teórico vs. Físico</div></div>'
+    +'<div class="kpi blue"><div class="kpi-label">Ventas '+mesTxt+'</div><div class="kpi-val">'+f$(totAgo.vta)+'</div><div class="kpi-sub">'+supDataAgo.length+' sucursales, mes completo</div></div>'
+    +'<div class="kpi red"><div class="kpi-label">Pérdida/Sobrante neto</div><div class="kpi-val">'+f$(totAgo.dif)+'</div><div class="kpi-sub">'+(esOct?'Compras: entregas de CEDIS en Odoo':'Compras validadas vs OC Concentrado CEDIS')+'</div></div>'
+    +'<div class="kpi green"><div class="kpi-label">% Pérdida</div><div class="kpi-val">'+totAgo.pct+'%</div><div class="kpi-sub">'+(esOct?'Excluye 2 SKUs de insumo':'Excluye 3 SKUs de insumo')+'</div></div>'
     +'</div>';
-   html+='<div class="card" style="background:#E8F5E9;border-left:4px solid var(--verde2)"><div style="font-size:12px;color:var(--txt)"><b>✅ 2.9% en agosto</b> — mejor que julio (9.1%). Compras validadas folio por folio contra OC Concentrado de CEDIS (10 folios excluidos por no confirmar entrega en el periodo, $55,569). 3 SKUs de insumo (consumo de producción) excluidos del cálculo. <b>Polanco (38.6%) y San Miguel (30.3%) siguen siendo los focos reales</b> — a esos no les afectó la depuración de folios, así que su problema es distinto y vale la pena investigar a fondo.</div></div>';
-   html+='<div class="card"><div class="card-head"><div><div class="card-title">📍 Cierre por sucursal — agosto</div><div class="card-sub">Inicial + Compras + Traspasos − Ventas = Teórico vs. Físico</div></div></div>'
+   if(esOct) html+='<div class="card" style="background:#FFF8E1;border-left:4px solid var(--ambar)"><div style="font-size:12px;color:var(--txt)"><b>Octubre: diferencia neta de '+f$(totAgo.dif)+' ('+totAgo.pct+'% de Inicial + Compras)</b>, sin contar el insumo de producción (proteína vainilla Birdman 1.8 kg y chocolate Falcon 1.8 kg). Inicial = inventario final de septiembre (el mismo del corte 1–15 oct); compras = entregas de CEDIS en Odoo del 1 al 31 oct (incluye Habits) y San Miguel inter-compañía; traspasos del Registro; ventas del Looker de conciliación; final = inventario de cierre del 31-oct con auditoría. LMNT en sobres (cajas ×30). <b>San Miguel</b> sale con sobrante de $6,313: vendió producto que no estaba en su inicial de septiembre (Habits, Falcon Performance) → revisar ese conteo inicial. <b>CDI</b> 27.6% sobre poco inventario ($1,187). Sin San Miguel el faltante es de $9,954.</div></div>';
+   else html+='<div class="card" style="background:#E8F5E9;border-left:4px solid var(--verde2)"><div style="font-size:12px;color:var(--txt)"><b>✅ 2.9% en agosto</b> — mejor que julio (9.1%). Compras validadas folio por folio contra OC Concentrado de CEDIS (10 folios excluidos por no confirmar entrega en el periodo, $55,569). 3 SKUs de insumo (consumo de producción) excluidos del cálculo. <b>Polanco (38.6%) y San Miguel (30.3%) siguen siendo los focos reales</b> — a esos no les afectó la depuración de folios, así que su problema es distinto y vale la pena investigar a fondo.</div></div>';
+   html+='<div class="card"><div class="card-head"><div><div class="card-title">📍 Cierre por sucursal — '+mesTxt+'</div><div class="card-sub">Inicial + Compras + Traspasos − Ventas = Teórico vs. Físico</div></div></div>'
     +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Inicial</th><th>Compras</th><th>Traspasos</th><th>Ventas $</th><th>Físico</th><th>Dif $</th><th>Dif %</th></tr></thead><tbody>'
     +supDataAgo.map(function(r){
       var col=r.dif<0?'var(--verde2)':(Math.abs(r.pct)>30?'var(--rojo)':'#7F77DD');
@@ -1440,10 +1444,10 @@ function renderSUP(el){
     }).join('')
     +'<tr style="border-top:2px solid var(--brd);font-weight:800"><td>TOTAL</td><td class="mono">'+f$(totAgo.ini)+'</td><td class="mono">'+f$(totAgo.comp)+'</td><td class="mono">'+f$(totAgo.trasp)+'</td><td class="mono">'+f$(totAgo.vta)+'</td><td class="mono">'+f$(totAgo.fin)+'</td><td class="mono">'+f$(totAgo.dif)+'</td><td class="mono">'+totAgo.pct+'%</td></tr>'
     +'</tbody></table></div></div>';
-   html+='<div class="card"><div class="card-head"><div><div class="card-title">🔍 Detalle por sucursal — agosto</div><div class="card-sub">Productos con movimiento, Inicial+Compras+Traspasos−Ventas=Teórico vs. Físico</div></div></div>'
+   html+='<div class="card"><div class="card-head"><div><div class="card-title">🔍 Detalle por sucursal — '+mesTxt+'</div><div class="card-sub">Productos con movimiento, Inicial+Compras+Traspasos−Ventas=Teórico vs. Físico</div></div></div>'
     +'<div class="suc-tabs" id="sup-ago-suc-tabs" style="margin-bottom:12px"></div>'
     +'<div id="sup-ago-suc-detail"></div></div>';
-   html+='<div class="card"><div class="card-head"><div><div class="card-title">Pérdida/Sobrante $ por sucursal — agosto</div><div class="card-sub">Verde = sobrante · Morado = faltante moderado · Rojo = faltante alto</div></div></div>'
+   html+='<div class="card"><div class="card-head"><div><div class="card-title">Pérdida/Sobrante $ por sucursal — '+mesTxt+'</div><div class="card-sub">Verde = sobrante · Morado = faltante moderado · Rojo = faltante alto</div></div></div>'
     +'<div style="position:relative;height:220px"><canvas id="ch-sup-cierre-ago"></canvas></div></div>';
  }
 
@@ -2810,7 +2814,7 @@ function renderEficienciaCat(){
    var col = colorPct(d.pct);
    html += '<tr><td style="font-weight:700">'+cat.nombre+'</td><td>'+cat.sub+'</td><td class="mono">'+f$(d.vta)+'</td><td class="mono">'+f$(d.comp)+'</td><td class="mono" style="color:'+col+';font-weight:700">'+f$(d.merma)+'</td><td class="mono" style="color:'+col+';font-weight:700">'+d.pct.toFixed(1)+'%</td></tr>';
  });
- html += '<tr style="background:#FFF8E1"><td style="font-weight:700">💊 Suplementos</td><td>Agosto (en validación)</td><td class="mono">—</td><td class="mono">—</td><td class="mono" style="font-weight:700">'+f$(SUP_HIST.length?SUP_HIST[SUP_HIST.length-1].merma:0)+'</td><td class="mono" style="font-weight:700">'+(SUP_HIST.length?SUP_HIST[SUP_HIST.length-1].pct.toFixed(1):'—')+'%</td></tr>';
+ html += '<tr style="background:#FFF8E1"><td style="font-weight:700">💊 Suplementos</td><td>Octubre (en validación)</td><td class="mono">'+f$((window.SUP_TOTALES_OCT||{}).vta||0)+'</td><td class="mono">'+f$((window.SUP_TOTALES_OCT||{}).comp||0)+'</td><td class="mono" style="font-weight:700">'+f$(SUP_HIST.length?SUP_HIST[SUP_HIST.length-1].merma:0)+'</td><td class="mono" style="font-weight:700">'+(SUP_HIST.length?SUP_HIST[SUP_HIST.length-1].pct.toFixed(1):'—')+'%</td></tr>';
  html += '</tbody></table></div><div style="font-size:10.5px;color:var(--gris);margin-top:6px;padding:0 4px">Nota: "Ventas" en Jugos = ingreso real (Data Studio, sin IVA). En Vitch Bakery/Insumos = piezas vendidas × costo unitario (no hay precio de venta homologado aún). Suplementos queda fuera del consolidado por folios de Compras aún sin confirmar.</div></div>';
 
  // ===== TARJETAS POR CATEGORIA (filtro tipo sucursal) =====
@@ -2836,7 +2840,7 @@ function renderEficienciaCat(){
    {key:'jugos', nombre:'🥤 Jugos Cold Pressed', periodo:'S43'},
    {key:'vb', nombre:'🥐 Vitch Bakery', periodo:'Octubre'},
    {key:'vasos', nombre:'📦 Insumos — Vasos PLA 16oz', periodo:'Octubre'},
-   {key:'sup', nombre:'💊 Suplementos', periodo:'Agosto (en validación)'},
+   {key:'sup', nombre:'💊 Suplementos', periodo:'Octubre (en validación)'},
  ];
  html += '<div class="card" style="background:#FDF2E9;border-left:4px solid #E67E22"><div style="font-size:12px;color:var(--txt)"><b>🔎 Desviación de Sucursales — para conciliación de costo</b>: % y $ de merma por sucursal, dentro de cada categoría. Filtrado: '+EFC_FILTRO_ACTUAL+'.</div></div>';
  CATS_DESV.forEach(function(cat){
