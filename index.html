@@ -703,12 +703,20 @@ var VB_SUC_VENTAS_SEP={"Colima":22443.0,"Santa Fe":18836.0,"Liverpool":7471.0,"P
 var VB_PROD_TOTALS_SEP=[{"n":"Blondie GF","pesos":2090.0,"pz":95},{"n":"Maple Choco Chip","pesos":3900.0,"pz":130},{"n":"Rollo de Canela","pesos":3395.0,"pz":97},{"n":"Panqué de Plátano","pesos":1440.0,"pz":32}];
 var VB_ALERTAS_SEP=[{"suc":"Colima","prod":"Rollo de Canela","pct":18.9,"m":1260.0},{"suc":"Polanco","prod":"Maple Choco Chip","pct":14.4,"m":900.0},{"suc":"Insurgentes","prod":"Maple Choco Chip","pct":24.3,"m":810.0},{"suc":"Polanco","prod":"Rollo de Canela","pct":17.8,"m":735.0},{"suc":"Santa Fe","prod":"Rollo de Canela","pct":13.3,"m":700.0},{"suc":"Colima","prod":"Maple Choco Chip","pct":8.3,"m":690.0},{"suc":"Polanco","prod":"Blondie GF","pct":13.7,"m":682.0},{"suc":"Polanco","prod":"Panqué de Plátano","pct":22.6,"m":630.0},{"suc":"San Miguel","prod":"Maple Choco Chip","pct":15.5,"m":510.0},{"suc":"Roma","prod":"Blondie GF","pct":14.5,"m":462.0}];
 
-var activeVBMonth='sep';
-var VB_CAP_KEY={jul:'VB_CAPTURA',ago:'VB_CAPTURA_AGO',sep:'VB_CAPTURA_SEP'};
+var VB_CAPTURA_OCT=[{"n":"Blondie GF","costo":22,"suc":{"Colima":{"inv_ini":11,"compras":290.0,"ventas":256.0,"inv_fin":14.0,"merma_pz":31.0,"merma_pesos":682.0,"pct_merma":10.3},"Santa Fe":{"inv_ini":20,"compras":290.0,"ventas":270.0,"inv_fin":4.0,"merma_pz":36.0,"merma_pesos":792.0,"pct_merma":11.6},"Liverpool":{"inv_ini":8,"compras":116.0,"ventas":91.0,"inv_fin":17.0,"merma_pz":16.0,"merma_pesos":352.0,"pct_merma":12.9},"Polanco":{"inv_ini":0,"compras":224.0,"ventas":221.0,"inv_fin":9.0,"merma_pz":-6.0,"merma_pesos":-132.0,"pct_merma":-2.7},"Insurgentes":{"inv_ini":0,"compras":190.0,"ventas":199.0,"inv_fin":0.0,"merma_pz":-9.0,"merma_pesos":-198.0,"pct_merma":-4.7},"Roma":{"inv_ini":9,"compras":109.0,"ventas":77.0,"inv_fin":19.0,"merma_pz":22.0,"merma_pesos":484.0,"pct_merma":18.6},"San Miguel":{"inv_ini":16,"compras":72.0,"ventas":76.0,"inv_fin":5.0,"merma_pz":7.0,"merma_pesos":154.0,"pct_merma":8.0},"Condesa":{"inv_ini":0,"compras":395.0,"ventas":380.0,"inv_fin":27.0,"merma_pz":-12.0,"merma_pesos":-264.0,"pct_merma":-3.0}}},{"n":"Maple Choco Chip","costo":30,"suc":{"Colima":{"inv_ini":7,"compras":192.0,"ventas":166.0,"inv_fin":0.0,"merma_pz":33.0,"merma_pesos":990.0,"pct_merma":16.6},"Santa Fe":{"inv_ini":8,"compras":281.0,"ventas":254.0,"inv_fin":16.0,"merma_pz":19.0,"merma_pesos":570.0,"pct_merma":6.6},"Liverpool":{"inv_ini":18,"compras":92.0,"ventas":65.0,"inv_fin":23.0,"merma_pz":22.0,"merma_pesos":660.0,"pct_merma":20.0},"Polanco":{"inv_ini":0,"compras":210.0,"ventas":188.0,"inv_fin":4.0,"merma_pz":18.0,"merma_pesos":540.0,"pct_merma":8.6},"Insurgentes":{"inv_ini":15,"compras":62.0,"ventas":70.0,"inv_fin":0.0,"merma_pz":7.0,"merma_pesos":210.0,"pct_merma":9.1},"Roma":{"inv_ini":12,"compras":82.0,"ventas":66.0,"inv_fin":20.0,"merma_pz":8.0,"merma_pesos":240.0,"pct_merma":8.5},"San Miguel":{"inv_ini":10,"compras":58.0,"ventas":59.0,"inv_fin":4.0,"merma_pz":5.0,"merma_pesos":150.0,"pct_merma":7.4},"Condesa":{"inv_ini":0,"compras":252.0,"ventas":243.0,"inv_fin":19.0,"merma_pz":-10.0,"merma_pesos":-300.0,"pct_merma":-4.0}}},{"n":"Rollo de Canela","costo":35,"suc":{"Colima":{"inv_ini":13,"compras":144.0,"ventas":125.0,"inv_fin":13.0,"merma_pz":19.0,"merma_pesos":665.0,"pct_merma":12.1},"Santa Fe":{"inv_ini":7,"compras":168.0,"ventas":151.0,"inv_fin":15.0,"merma_pz":9.0,"merma_pesos":315.0,"pct_merma":5.1},"Liverpool":{"inv_ini":4,"compras":44.0,"ventas":37.0,"inv_fin":4.0,"merma_pz":7.0,"merma_pesos":245.0,"pct_merma":14.6},"Polanco":{"inv_ini":0,"compras":107.0,"ventas":122.0,"inv_fin":0.0,"merma_pz":-15.0,"merma_pesos":-525.0,"pct_merma":-14.0},"Insurgentes":{"inv_ini":8,"compras":13.0,"ventas":22.0,"inv_fin":0.0,"merma_pz":-1.0,"merma_pesos":-35.0,"pct_merma":-4.8},"Roma":{"inv_ini":8,"compras":12.0,"ventas":14.0,"inv_fin":0.0,"merma_pz":6.0,"merma_pesos":210.0,"pct_merma":30.0},"San Miguel":{"inv_ini":5,"compras":43.0,"ventas":47.0,"inv_fin":1.0,"merma_pz":0.0,"merma_pesos":0.0,"pct_merma":0.0},"Condesa":{"inv_ini":0,"compras":142.0,"ventas":152.0,"inv_fin":2.0,"merma_pz":-12.0,"merma_pesos":-420.0,"pct_merma":-8.5}}},{"n":"Panqué de Plátano","costo":45,"suc":{"Colima":{"inv_ini":3,"compras":76.0,"ventas":57.0,"inv_fin":1.0,"merma_pz":21.0,"merma_pesos":945.0,"pct_merma":26.6},"Santa Fe":{"inv_ini":3,"compras":40.0,"ventas":34.0,"inv_fin":3.0,"merma_pz":6.0,"merma_pesos":270.0,"pct_merma":14.0},"Liverpool":{"inv_ini":3,"compras":22.0,"ventas":20.0,"inv_fin":0.0,"merma_pz":5.0,"merma_pesos":225.0,"pct_merma":20.0},"Polanco":{"inv_ini":0,"compras":28.0,"ventas":29.0,"inv_fin":0.0,"merma_pz":-1.0,"merma_pesos":-45.0,"pct_merma":-3.6},"Insurgentes":{"inv_ini":0,"compras":8.0,"ventas":4.0,"inv_fin":0.0,"merma_pz":4.0,"merma_pesos":180.0,"pct_merma":50.0},"Roma":{"inv_ini":5,"compras":12.0,"ventas":10.0,"inv_fin":0.0,"merma_pz":7.0,"merma_pesos":315.0,"pct_merma":41.2},"San Miguel":{"inv_ini":2,"compras":8.0,"ventas":6.0,"inv_fin":0.0,"merma_pz":4.0,"merma_pesos":180.0,"pct_merma":40.0},"Condesa":{"inv_ini":0,"compras":61.0,"ventas":47.0,"inv_fin":6.0,"merma_pz":8.0,"merma_pesos":360.0,"pct_merma":13.1}}}];
+var VB_PRODS_DATA_OCT=[{"n":"Blondie GF","suc":{"Colima":{"pz":31.0,"pesos":682.0,"pct_m":10.3},"Santa Fe":{"pz":36.0,"pesos":792.0,"pct_m":11.6},"Liverpool":{"pz":16.0,"pesos":352.0,"pct_m":12.9},"Polanco":{"pz":-6.0,"pesos":-132.0,"pct_m":-2.7},"Insurgentes":{"pz":-9.0,"pesos":-198.0,"pct_m":-4.7},"Roma":{"pz":22.0,"pesos":484.0,"pct_m":18.6},"San Miguel":{"pz":7.0,"pesos":154.0,"pct_m":8.0},"Condesa":{"pz":-12.0,"pesos":-264.0,"pct_m":-3.0}}},{"n":"Maple Choco Chip","suc":{"Colima":{"pz":33.0,"pesos":990.0,"pct_m":16.6},"Santa Fe":{"pz":19.0,"pesos":570.0,"pct_m":6.6},"Liverpool":{"pz":22.0,"pesos":660.0,"pct_m":20.0},"Polanco":{"pz":18.0,"pesos":540.0,"pct_m":8.6},"Insurgentes":{"pz":7.0,"pesos":210.0,"pct_m":9.1},"Roma":{"pz":8.0,"pesos":240.0,"pct_m":8.5},"San Miguel":{"pz":5.0,"pesos":150.0,"pct_m":7.4},"Condesa":{"pz":-10.0,"pesos":-300.0,"pct_m":-4.0}}},{"n":"Rollo de Canela","suc":{"Colima":{"pz":19.0,"pesos":665.0,"pct_m":12.1},"Santa Fe":{"pz":9.0,"pesos":315.0,"pct_m":5.1},"Liverpool":{"pz":7.0,"pesos":245.0,"pct_m":14.6},"Polanco":{"pz":-15.0,"pesos":-525.0,"pct_m":-14.0},"Insurgentes":{"pz":-1.0,"pesos":-35.0,"pct_m":-4.8},"Roma":{"pz":6.0,"pesos":210.0,"pct_m":30.0},"San Miguel":{"pz":0.0,"pesos":0.0,"pct_m":0.0},"Condesa":{"pz":-12.0,"pesos":-420.0,"pct_m":-8.5}}},{"n":"Panqué de Plátano","suc":{"Colima":{"pz":21.0,"pesos":945.0,"pct_m":26.6},"Santa Fe":{"pz":6.0,"pesos":270.0,"pct_m":14.0},"Liverpool":{"pz":5.0,"pesos":225.0,"pct_m":20.0},"Polanco":{"pz":-1.0,"pesos":-45.0,"pct_m":-3.6},"Insurgentes":{"pz":4.0,"pesos":180.0,"pct_m":50.0},"Roma":{"pz":7.0,"pesos":315.0,"pct_m":41.2},"San Miguel":{"pz":4.0,"pesos":180.0,"pct_m":40.0},"Condesa":{"pz":8.0,"pesos":360.0,"pct_m":13.1}}}];
+var VB_SUC_TOTALS_OCT={"Colima":{"pz":104.0,"pesos":3282.0},"Santa Fe":{"pz":70.0,"pesos":1947.0},"Liverpool":{"pz":50.0,"pesos":1482.0},"Polanco":{"pz":-4.0,"pesos":-162.0},"Insurgentes":{"pz":1.0,"pesos":157.0},"Roma":{"pz":43.0,"pesos":1249.0},"San Miguel":{"pz":16.0,"pesos":484.0},"Condesa":{"pz":-26.0,"pesos":-624.0}};
+var VB_SUC_VENTAS_OCT={"Colima":17552.0,"Santa Fe":20375.0,"Liverpool":6147.0,"Polanco":16077.0,"Insurgentes":7428.0,"Roma":4614.0,"San Miguel":5357.0,"Condesa":23085.0};
+var VB_PROD_TOTALS_OCT=[{"n":"Blondie GF","pesos":1870.0,"pz":85.0},{"n":"Maple Choco Chip","pesos":3060.0,"pz":102.0},{"n":"Rollo de Canela","pesos":455.0,"pz":13.0},{"n":"Panqué de Plátano","pesos":2430.0,"pz":54.0}];
+var VB_ALERTAS_OCT=[{"suc":"Colima","prod":"Maple Choco Chip","pct":16.6,"m":990.0},{"suc":"Colima","prod":"Panqué de Plátano","pct":26.6,"m":945.0},{"suc":"Santa Fe","prod":"Blondie GF","pct":11.6,"m":792.0},{"suc":"Colima","prod":"Blondie GF","pct":10.3,"m":682.0},{"suc":"Colima","prod":"Rollo de Canela","pct":12.1,"m":665.0},{"suc":"Liverpool","prod":"Maple Choco Chip","pct":20.0,"m":660.0},{"suc":"Polanco","prod":"Maple Choco Chip","pct":8.6,"m":540.0},{"suc":"Roma","prod":"Blondie GF","pct":18.6,"m":484.0},{"suc":"Condesa","prod":"Panqué de Plátano","pct":13.1,"m":360.0},{"suc":"Liverpool","prod":"Blondie GF","pct":12.9,"m":352.0}];
+
+var activeVBMonth='oct';
+var VB_CAP_KEY={jul:'VB_CAPTURA',ago:'VB_CAPTURA_AGO',sep:'VB_CAPTURA_SEP',oct:'VB_CAPTURA_OCT'};
 var VB_MESES={
  jul:{label:'Julio 2026',TOTAL_PESOS:13147,TOTAL_PZ:423,PCT:7.4,PRODS_DATA:VB_PRODS_DATA_JUL,SUC_TOTALS:VB_SUC_TOTALS_JUL,SUC_VENTAS:VB_SUC_VENTAS_JUL,PROD_TOTALS:VB_PROD_TOTALS_JUL,ALERTAS:VB_ALERTAS_JUL,SUCS:['Condesa','Colima','Santa Fe','Liverpool','Polanco','San Miguel','Insurgentes','Roma','Kitchen Lab']},
  ago:{label:'Agosto 2026',TOTAL_PESOS:8186,TOTAL_PZ:266,PCT:8.2,PRODS_DATA:VB_PRODS_DATA_AGO,SUC_TOTALS:VB_SUC_TOTALS_AGO,SUC_VENTAS:VB_SUC_VENTAS_AGO,PROD_TOTALS:VB_PROD_TOTALS_AGO,ALERTAS:VB_ALERTAS_AGO,SUCS:['Colima','Santa Fe','Liverpool','Polanco','Insurgentes','Roma','San Miguel']},
- sep:{label:'Septiembre 2026',TOTAL_PESOS:10825,TOTAL_PZ:354,PCT:10.4,PRODS_DATA:VB_PRODS_DATA_SEP,SUC_TOTALS:VB_SUC_TOTALS_SEP,SUC_VENTAS:VB_SUC_VENTAS_SEP,PROD_TOTALS:VB_PROD_TOTALS_SEP,ALERTAS:VB_ALERTAS_SEP,SUCS:['Colima','Santa Fe','Liverpool','Polanco','Insurgentes','Roma','San Miguel','Kitchen Lab']}
+ sep:{label:'Septiembre 2026',TOTAL_PESOS:10825,TOTAL_PZ:354,PCT:10.4,PRODS_DATA:VB_PRODS_DATA_SEP,SUC_TOTALS:VB_SUC_TOTALS_SEP,SUC_VENTAS:VB_SUC_VENTAS_SEP,PROD_TOTALS:VB_PROD_TOTALS_SEP,ALERTAS:VB_ALERTAS_SEP,SUCS:['Colima','Santa Fe','Liverpool','Polanco','Insurgentes','Roma','San Miguel','Kitchen Lab']},
+ oct:{label:'Octubre 2026',TOTAL_PESOS:7815,TOTAL_PZ:254,PCT:6.8,PRODS_DATA:VB_PRODS_DATA_OCT,SUC_TOTALS:VB_SUC_TOTALS_OCT,SUC_VENTAS:VB_SUC_VENTAS_OCT,PROD_TOTALS:VB_PROD_TOTALS_OCT,ALERTAS:VB_ALERTAS_OCT,SUCS:["Colima","Santa Fe","Liverpool","Polanco","Insurgentes","Roma","San Miguel","Condesa"]}
 };
 
 
@@ -954,6 +962,43 @@ var PROT_KPIS={choco_g:40300.7,vaini_g:60104.7,total_g:100405.4,choco_kg:40.3,va
 var SUP_SUCS=["Condesa", "Colima", "Santa Fe", "Liverpool", "Polanco", "Roma", "CDI"];
 // ─── VASOS PLA 16oz ───
 // ─── VASOS PLA 16oz · SEPTIEMBRE ───
+function renderVPOct(el){
+ var D=window.VP_TABLA_OCT||[];
+ var V=window.VP_VENTAS_DETALLE_OCT||[];
+ var conIni=D.filter(function(d){return d.teo!==null&&d.teo!==undefined;});
+ var totC=D.reduce(function(a,d){return a+d.comp;},0),totV=D.reduce(function(a,d){return a+d.vta;},0),totM=conIni.reduce(function(a,d){return a+d.merma;},0);
+ var falt=conIni.filter(function(d){return d.estado==='FALTANTE';});
+ var peor=conIni.slice().sort(function(a,b){return b.merma-a.merma;})[0];
+ var sinIni=D.filter(function(d){return (d.estado==='SIN INICIAL'||d.estado==='SIN FINAL');}).map(function(d){return d.suc;});
+ var html='<div class="card" style="background:#FFF8E1;border-left:4px solid #F4BD3E"><div style="font-size:12px;color:var(--txt)"><b>Octubre 2026 · Vaso impreso Mora Mora (SUCEMP186, $3.60)</b> — Inicial = final de septiembre; entradas = envíos del mes; ventas = productos con vaso (sin Miu Miu); final = inventario de cierre del 31-oct (Registro Operativo). '
+  +(peor?'El mayor faltante es <b>'+peor.suc+'</b> ('+peor.dif+' vasos, '+f$(peor.merma)+'). ':'')
+  +(sinIni.length?'<b>'+sinIni.join(', ')+'</b> sin conteo final de vasos al 31-oct (al 15-oct contó 350): se muestra sin merma.':'')+'</div></div>';
+ html+='<div class="kpi-grid">'
+  +'<div class="kpi blue"><div class="kpi-label">Vasos recibidos Oct</div><div class="kpi-val">'+totC.toLocaleString()+'</div><div class="kpi-sub">piezas · '+D.length+' sucursales</div></div>'
+  +'<div class="kpi green"><div class="kpi-label">Vasos vendidos Oct</div><div class="kpi-val">'+totV.toLocaleString()+'</div><div class="kpi-sub">'+V.length+' productos con vaso</div></div>'
+  +'<div class="kpi amber"><div class="kpi-label">Diferencia neta $</div><div class="kpi-val">'+f$(totM)+'</div><div class="kpi-sub">'+(totM>0?'faltante neto':'sobrante neto')+' · '+conIni.length+' sucursales</div></div>'
+  +'<div class="kpi red"><div class="kpi-label">Sucursales con faltante</div><div class="kpi-val">'+falt.length+'</div><div class="kpi-sub">más de 10 vasos abajo del teórico</div></div>'
+  +'</div>';
+ var n=function(v){return v===null||v===undefined?'—':v;};
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">📋 Reporte por sucursal — Vasos PLA 16oz</div><div class="card-sub">Inicial + Entradas + Traspasos − Ventas = Teórico vs Final · Octubre 2026</div></div></div><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Sucursal</th><th>Inicial</th><th>Entradas</th><th>Traspasos</th><th>Ventas</th><th>Teórico</th><th>Final</th><th>Dif.</th><th>Merma $</th><th>Estado</th><th style="min-width:220px">Notas</th></tr></thead><tbody>'
+  +D.slice().sort(function(a,b){return (b.merma||0)-(a.merma||0);}).map(function(d){
+    var col=d.merma<-50?'#1baf7a':(d.merma>50?'var(--rojo)':'var(--verde2)');
+    var eb=d.estado==='OK'?'#E8F5E9':(d.estado==='SOBRA'?'#E3F2FD':((d.estado==='SIN INICIAL'||d.estado==='SIN FINAL')?'#EEEEEE':'#FFF8E1'));
+    var ec=d.estado==='OK'?'#1B5E20':(d.estado==='SOBRA'?'#1565C0':((d.estado==='SIN INICIAL'||d.estado==='SIN FINAL')?'#555':'#9a7d0a'));
+    var t=d.trasp||0;
+    return '<tr><td style="font-weight:700">'+d.suc+'</td><td class="mono">'+n(d.ini)+'</td><td class="mono" style="color:var(--verde2)">+'+d.comp+'</td><td class="mono">'+(t>0?'+'+t:t)+'</td><td class="mono" style="color:#2a78d6">-'+d.vta+'</td><td class="mono">'+n(d.teo)+'</td><td class="mono">'+d.fin+'</td><td class="mono" style="font-weight:700">'+n(d.dif)+'</td><td class="mono" style="font-weight:700;color:'+col+'">'+((d.estado==='SIN INICIAL'||d.estado==='SIN FINAL')?'—':f$(d.merma))+'</td><td><span class="badge" style="background:'+eb+';color:'+ec+';font-size:9px">'+d.estado+'</span></td><td style="font-size:10.5px;color:var(--txt)">'+(d.just||'')+'</td></tr>';
+  }).join('')
+  +'<tr style="background:var(--rojo2);font-weight:700"><td>TOTAL</td><td class="mono">'+conIni.reduce(function(a,d){return a+d.ini;},0)+'</td><td class="mono" style="color:var(--verde2)">+'+totC+'</td><td class="mono">'+D.reduce(function(a,d){return a+(d.trasp||0);},0)+'</td><td class="mono" style="color:#2a78d6">-'+totV+'</td><td></td><td class="mono">'+D.reduce(function(a,d){return a+d.fin;},0)+'</td><td></td><td class="mono">'+f$(totM)+'</td><td></td><td></td></tr>'
+  +'</tbody></table></div></div>';
+ var SUCS_V=['Colima','Polanco','Santa Fe','Roma','Insurgentes','San Miguel','Liverpool','Lomas','CDI','Condesa'];
+ html+='<div class="card"><div class="card-head"><div><div class="card-title">✅ Ventas de Octubre por producto</div><div class="card-sub">'+V.length+' productos con vaso, por sucursal (sin productos Miu Miu)</div></div></div>'
+  +'<div style="overflow-x:auto"><table class="tbl" style="font-size:11px"><thead><tr><th>Producto</th>'
+  +SUCS_V.map(function(s){return'<th>'+s+'</th>';}).join('')+'<th>Total</th></tr></thead><tbody>'
+  +V.map(function(p){return '<tr><td style="font-weight:600;white-space:nowrap">'+p.n+'</td>'+SUCS_V.map(function(s){return'<td class="mono">'+(p.suc[s]||'—')+'</td>';}).join('')+'<td class="mono" style="font-weight:700">'+p.tot+'</td></tr>';}).join('')
+  +'<tr style="background:var(--verde3);font-weight:700"><td>TOTAL GENERAL</td>'+SUCS_V.map(function(s){return'<td class="mono">'+V.reduce(function(a,p){return a+(p.suc[s]||0);},0)+'</td>';}).join('')+'<td class="mono">'+V.reduce(function(a,p){return a+p.tot;},0)+'</td></tr>'
+  +'</tbody></table></div></div>';
+ el.innerHTML=html;
+}
 function renderVPSep(el){
  var D=window.VP_TABLA_SEP||[];
  var V=window.VP_VENTAS_DETALLE_SEP||[];
@@ -1992,9 +2037,9 @@ function renderCat(i){
 }
 
 
-var activeInsTab='VPS';
+var activeInsTab='VPO';
 function renderINSMerged(el){
- var tabs=[{id:'VPS',label:'🥤 Vasos PLA Septiembre 🆕'},{id:'VPA',label:'🥤 Vasos PLA Agosto'},{id:'VPJ',label:'🥤 Vasos PLA Julio'},{id:'VP',label:'🥤 Vasos PLA Junio'},{id:'CB',label:'☕ Cold Brew Concentrado'},{id:'PI',label:'💪 Proteína Insumo'}];
+ var tabs=[{id:'VPO',label:'🥤 Vasos PLA Octubre 🆕'},{id:'VPS',label:'🥤 Vasos PLA Septiembre'},{id:'VPA',label:'🥤 Vasos PLA Agosto'},{id:'VPJ',label:'🥤 Vasos PLA Julio'},{id:'VP',label:'🥤 Vasos PLA Junio'},{id:'CB',label:'☕ Cold Brew Concentrado'},{id:'PI',label:'💪 Proteína Insumo'}];
  var html='<div class="suc-tabs" id="ins-tabs">'
  +tabs.map(function(t){return '<button class="suc-tab'+(t.id===activeInsTab?' active':'')+'" onclick="setInsTab(\''+t.id+'\')">'+t.label+'</button>';}).join('')
  +'</div><div id="ins-tab-content"></div>';
@@ -2008,7 +2053,8 @@ function setInsTab(id){
 function renderInsTab(id){
  var el=document.getElementById('ins-tab-content');
  if(!el) return;
- if(id==='VPS') renderVPSep(el);
+ if(id==='VPO') renderVPOct(el);
+ else if(id==='VPS') renderVPSep(el);
  else if(id==='VPA') renderVPAgo(el);
  else if(id==='VPJ') renderVPJul(el);
  else if(id==='VP') renderVP(el);
@@ -2040,17 +2086,21 @@ function renderVB(el){
  html+='<div class="suc-tabs" style="margin-bottom:14px">'
  +'<button id="vb-tab-jul" class="vb-month-tab suc-tab'+(activeVBMonth==='jul'?' active':'')+'" onclick="setVBMonth(\'jul\')">Julio 2026</button>'
  +'<button id="vb-tab-ago" class="vb-month-tab suc-tab'+(activeVBMonth==='ago'?' active':'')+'" onclick="setVBMonth(\'ago\')">Agosto 2026</button>'
- +'<button id="vb-tab-sep" class="vb-month-tab suc-tab'+(activeVBMonth==='sep'?' active':'')+'" onclick="setVBMonth(\'sep\')">🆕 Septiembre 2026</button>'
+ +'<button id="vb-tab-sep" class="vb-month-tab suc-tab'+(activeVBMonth==='sep'?' active':'')+'" onclick="setVBMonth(\'sep\')">Septiembre 2026</button>'
+ +'<button id="vb-tab-oct" class="vb-month-tab suc-tab'+(activeVBMonth==='oct'?' active':'')+'" onclick="setVBMonth(\'oct\')">🆕 Octubre 2026</button>'
  +'</div>';
  if(activeVBMonth==='ago'){
   html+='<div class="card" style="background:#E8F5E9;border-left:4px solid var(--verde2)"><div style="font-size:12px;color:var(--txt)"><b>✅ Agosto en 8.2%</b> (vs. 7.4% julio) — en línea con el resto del año. Corregido el 3-sep: (1) el Físico Final de agosto tenía un error de captura de mayúsculas que dejaba el Final en $0; (2) se sumaron 98 pz del combo "Xoco Latte + Blondie" a las ventas de Blondie GF (no estaban en el conteo original). Con ambas correcciones la merma bajó de 18.1% → 9.9% → 8.2%. Concentrado en <b>Polanco</b> ($3,571, ~44% del total). Solo se trackean los 4 productos con dato de compras (Blondie, Maple, Rollo, Panqué) — Galleta, Chapata, Pastel corazón y Brownie quedan fuera por ahora, sin dato de compras disponible. Falta agregar el combo a Lomas (11 pz) por no tener datos de esa sucursal en agosto.</div></div>';
+ }
+ if(activeVBMonth==='oct'){
+  html+='<div class="card" style="background:#E8F5E9;border-left:4px solid var(--verde2)"><div style="font-size:12px;color:var(--txt)"><b>✅ Octubre en 6.8%</b> (vs. 10.4% septiembre, misma fórmula: merma $ / costo de Inicial + Compras). Cierre al 31-oct: inicial = conteo del 30-sep (dashboard); compras = lo recibido en la app de pedidos con entrega 1–31 oct; ventas = Looker de conciliación (MM2) 1–31 oct, incluye el combo Xoco Latte + Blondie; final = inventario de cierre del 31-oct (Registro Operativo). <b>Condesa</b> entra por primera vez y no tenía conteo al 30-sep (se tomó 0): sus negativos son ese inventario inicial que no se contó. <b>Polanco</b> contó 0 al 30-sep y vendió más Rollo de Canela de lo recibido (−15 pz): revisar ese conteo. Kitchen Lab no pidió a Vitch por la app en octubre (fuera).</div></div>';
  }
  if(activeVBMonth==='sep'){
   html+='<div class="card" style="background:#FFF4D6;border-left:4px solid var(--ambar)"><div style="font-size:12px;color:var(--txt)"><b>⚠️ Septiembre en 12.9%</b> (vs. 8.2% agosto) — el más alto de mayo a septiembre. Cierre al 30-sep: ventas del 1 al 30, compras de los pedidos del 31-ago al 29-sep (llegan al día siguiente; validado con los conteos del mes) y conteo físico del 30-sep. Las celdas en blanco del conteo final (Polanco, e Insurgentes Blondie y Panqué) se tomaron como 0 por indicación: sin Polanco el mes sería $10,077 (12.0%); si aparece el conteo real hay que recalcular. Condesa y Lomas omitidas. Chapatas (1,446 pz, $14,460) sin conteo, fuera del cálculo. Solo se trackean Blondie, Maple, Rollo y Panqué.</div></div>';
  }
  // KPIs
  html+='<div class="kpi-grid">'
- +'<div class="kpi red"><div class="kpi-label">Merma total '+({jul:'Jul',ago:'Ago',sep:'Sep'}[activeVBMonth])+'</div><div class="kpi-val">'+f$(TOTAL_PESOS)+'</div><div class="kpi-sub">'+TOTAL_PZ+'pz · '+D.SUCS.length+' sucursales</div></div>'
+ +'<div class="kpi red"><div class="kpi-label">Merma total '+({jul:'Jul',ago:'Ago',sep:'Sep',oct:'Oct'}[activeVBMonth])+'</div><div class="kpi-val">'+f$(TOTAL_PESOS)+'</div><div class="kpi-sub">'+TOTAL_PZ+'pz · '+D.SUCS.length+' sucursales</div></div>'
  +'<div class="kpi amber"><div class="kpi-label">% Merma (Ini+Compras)</div><div class="kpi-val" style="color:var(--rojo)">'+D.PCT+'%</div><div class="kpi-sub">Objetivo ≤3% <span class="badge badge-crit">Sobre política</span></div></div>'
  +'<div class="kpi purple"><div class="kpi-label">Sucursal líder</div><div class="kpi-val">'+suc_sorted[0]+'</div><div class="kpi-sub">'+f$(D.SUC_TOTALS[suc_sorted[0]].pesos)+' · '+D.SUC_TOTALS[suc_sorted[0]].pz+' pz</div></div>'
  +'<div class="kpi green"><div class="kpi-label">Mayor pérdida $</div><div class="kpi-val">'+D.ALERTAS[0].suc+'</div><div class="kpi-sub">'+f$(D.ALERTAS[0].m)+' · '+D.ALERTAS[0].prod+' ('+D.ALERTAS[0].pct+'%)</div></div>'
@@ -2750,8 +2800,8 @@ function renderEficienciaCat(){
  // ===== CONSOLIDADO — snapshot mas reciente por categoria =====
  var snapCats = [
    {nombre:'🥤 Jugos Cold Pressed', sub:'S43 (19–25 oct) · 8 sucursales (Kitchen Lab s/conteo)', dict:JUGOS},
-   {nombre:'🥐 Vitch Bakery', sub:'Septiembre 2026', dict:VB},
-   {nombre:'📦 Insumos — Vasos PLA 16oz', sub:'Agosto 2026', dict:VASOS},
+   {nombre:'🥐 Vitch Bakery', sub:'Octubre 2026', dict:VB},
+   {nombre:'📦 Insumos — Vasos PLA 16oz', sub:'Octubre 2026 (sin Colima)', dict:VASOS},
  ];
  html += '<div class="card"><div class="card-head"><div><div class="card-title">📌 Consolidado — Snapshot más reciente</div><div class="card-sub">Ventas vs Compras vs Merma, filtrado: '+EFC_FILTRO_ACTUAL+'</div></div></div>';
  html += '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Categoría</th><th>Periodo</th><th>Ventas</th><th>Compras</th><th>Merma $</th><th>% Merma</th></tr></thead><tbody>';
@@ -2784,8 +2834,8 @@ function renderEficienciaCat(){
    'San Miguel':'Juice Bar','Insurgentes':'Juice Bar','Roma':'Juice Bar','Lomas':'Juice Bar','CDI':'Juice Bar'};
  var CATS_DESV = [
    {key:'jugos', nombre:'🥤 Jugos Cold Pressed', periodo:'S43'},
-   {key:'vb', nombre:'🥐 Vitch Bakery', periodo:'Septiembre'},
-   {key:'vasos', nombre:'📦 Insumos — Vasos PLA 16oz', periodo:'Agosto'},
+   {key:'vb', nombre:'🥐 Vitch Bakery', periodo:'Octubre'},
+   {key:'vasos', nombre:'📦 Insumos — Vasos PLA 16oz', periodo:'Octubre'},
    {key:'sup', nombre:'💊 Suplementos', periodo:'Agosto (en validación)'},
  ];
  html += '<div class="card" style="background:#FDF2E9;border-left:4px solid #E67E22"><div style="font-size:12px;color:var(--txt)"><b>🔎 Desviación de Sucursales — para conciliación de costo</b>: % y $ de merma por sucursal, dentro de cada categoría. Filtrado: '+EFC_FILTRO_ACTUAL+'.</div></div>';
@@ -2904,7 +2954,7 @@ function renderReporteJunta(){
 }
 
 function renderVBReport(el){
- var _M=VB_MESES.sep, TOTAL_PESOS=_M.TOTAL_PESOS, TOTAL_PZ=_M.TOTAL_PZ, VB_SUC_TOTALS=_M.SUC_TOTALS, VB_SUC_VENTAS=_M.SUC_VENTAS, VB_PRODS_DATA=_M.PRODS_DATA, VB_PROD_TOTALS=_M.PROD_TOTALS, VB_ALERTAS=_M.ALERTAS, SUCS_VB=_M.SUCS;
+ var _M=VB_MESES.oct, TOTAL_PESOS=_M.TOTAL_PESOS, TOTAL_PZ=_M.TOTAL_PZ, VB_SUC_TOTALS=_M.SUC_TOTALS, VB_SUC_VENTAS=_M.SUC_VENTAS, VB_PRODS_DATA=_M.PRODS_DATA, VB_PROD_TOTALS=_M.PROD_TOTALS, VB_ALERTAS=_M.ALERTAS, SUCS_VB=_M.SUCS;
  var suc_sorted=Object.keys(VB_SUC_TOTALS).sort(function(a,b){return VB_SUC_TOTALS[b].pesos-VB_SUC_TOTALS[a].pesos;});
  var top_suc_pct=Object.keys(VB_SUC_TOTALS).map(function(s){
   var pct_vals=VB_PRODS_DATA.filter(function(p){return p.suc[s]&&p.suc[s].pct_m>0;}).map(function(p){return p.suc[s].pct_m;});
