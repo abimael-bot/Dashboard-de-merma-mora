@@ -970,7 +970,7 @@ function renderVPOct(el){
  var falt=conIni.filter(function(d){return d.estado==='FALTANTE';});
  var peor=conIni.slice().sort(function(a,b){return b.merma-a.merma;})[0];
  var sinIni=D.filter(function(d){return (d.estado==='SIN INICIAL'||d.estado==='SIN FINAL');}).map(function(d){return d.suc;});
- var html='<div class="card" style="background:#FFF8E1;border-left:4px solid #F4BD3E"><div style="font-size:12px;color:var(--txt)"><b>Octubre 2026 · Vaso impreso Mora Mora (SUCEMP186, $3.60)</b> — Inicial = final de septiembre; entradas = envíos del mes; ventas = productos con vaso (sin Miu Miu); final = inventario de cierre del 31-oct (Registro Operativo). '
+ var html='<div class="card" style="background:#FFF8E1;border-left:4px solid #F4BD3E"><div style="font-size:12px;color:var(--txt)"><b>Octubre 2026 · Vaso impreso Mora Mora (SUCEMP186, $3.60)</b> — Inicial = final de septiembre; entradas = envíos del mes; ventas = productos con vaso (sin Miu Miu) + extra "Vaso desechable" (EXT002); final = inventario de cierre del 31-oct (Registro Operativo). '
   +(peor?'El mayor faltante es <b>'+peor.suc+'</b> ('+peor.dif+' vasos, '+f$(peor.merma)+'). ':'')
   +(sinIni.length?'<b>'+sinIni.join(', ')+'</b> sin conteo final de vasos al 31-oct (al 15-oct contó 350): se muestra sin merma.':'')+'</div></div>';
  html+='<div class="kpi-grid">'
